@@ -4,6 +4,7 @@ import { BlogPost } from '@/types/blog';
 import { formatDate } from '@/lib/utils';
 import { Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface BlogCardProps {
   post: BlogPost;
@@ -31,6 +32,16 @@ const BlogCard = ({ post, variant = 'default' }: BlogCardProps) => {
       </Link>
       
       <div className={`flex flex-col p-5 ${isFeatured ? 'md:w-1/2' : ''}`}>
+        <div className="mb-3 flex items-center space-x-3">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={post.author.avatar} alt={post.author.name} />
+            <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <div className="text-sm">
+            <span className="font-medium text-futurity-blue">{post.author.name}</span>
+          </div>
+        </div>
+
         <div className="mb-2 flex items-center space-x-2 text-sm text-gray-500">
           <span className="flex items-center">
             <Calendar className="mr-1 h-4 w-4" />

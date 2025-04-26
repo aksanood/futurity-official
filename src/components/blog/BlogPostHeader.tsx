@@ -4,6 +4,7 @@ import { formatDate } from '@/lib/utils';
 import { Calendar, User, Tag as TagIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface BlogPostHeaderProps {
   post: BlogPost;
@@ -21,12 +22,15 @@ const BlogPostHeader = ({ post }: BlogPostHeaderProps) => {
         </Link>
       </div>
       
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">{post.title}</h1>
+      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">{post.title}</h1>
       
       <div className="flex items-center flex-wrap gap-4 text-gray-600 mb-6">
-        <div className="flex items-center">
-          <User className="h-4 w-4 mr-1" />
-          <span>{post.author.name}</span>
+        <div className="flex items-center gap-2">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={post.author.avatar} alt={post.author.name} />
+            <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <span className="font-medium">{post.author.name}</span>
         </div>
         
         <div className="flex items-center">

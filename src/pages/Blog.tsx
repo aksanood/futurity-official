@@ -6,18 +6,26 @@ import BlogCard from '@/components/blog/BlogCard';
 import BlogSidebar from '@/components/blog/BlogSidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { BlogPost } from '@/types/blog';
 import { getAllPosts, getRecentPosts, getAllCategories, getAllTags } from '@/data/blogData';
+
+const POSTS_PER_PAGE = 8;
 
 const Blog = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [currentPage, setCurrentPage] = useState(1);
   
   const allPosts = getAllPosts();
   const recentPosts = getRecentPosts(4);
   const categories = getAllCategories();
   const tags = getAllTags();
+  
+  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+  const currentPosts = posts.slice(startIndex, startIndex + POSTS_PER_PAGE);
   
   useEffect(() => {
     setPosts(allPosts);
@@ -25,6 +33,7 @@ const Blog = () => {
   
   const handleSearch = (term: string) => {
     setSearchTerm(term);
+    setCurrentPage(1);
     
     if (!term.trim()) {
       setPosts(allPosts);
@@ -37,6 +46,11 @@ const Blog = () => {
     });
     
     setPosts(filteredPosts);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   
   return (
@@ -114,8 +128,8 @@ const Blog = () => {
           )}
           
           <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-2' : 'grid-cols-1'}`}>
-            {posts.length > 0 ? (
-              posts.map(post => (
+            {currentPosts.length > 0 ? (
+              currentPosts.map(post => (
                 <BlogCard 
                   key={post.id} 
                   post={post} 
@@ -128,6 +142,40 @@ const Blog = () => {
               </div>
             )}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    />
+                  </PaginationItem>
+                  
+                  {[...Array(totalPages)].map((_, i) => (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        onClick={() => handlePageChange(i + 1)}
+                        isActive={currentPage === i + 1}
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </div>
         
         {/* Sidebar */}
