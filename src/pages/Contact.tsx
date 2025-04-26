@@ -1,0 +1,273 @@
+
+import { useState } from 'react';
+import Layout from '@/components/layout/Layout';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+
+// Form state type
+interface FormState {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
+const Contact = () => {
+  const { toast } = useToast();
+  const [formState, setFormState] = useState<FormState>({
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormState(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    setTimeout(() => {
+      setIsSubmitting(false);
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for your message. We'll respond within 24 hours.",
+      });
+      setFormState({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: ''
+      });
+    }, 1500);
+  };
+
+  return (
+    <Layout>
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 bg-futurity-blue text-white">
+        <div className="container-wide">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-on-scroll">Get in Touch</h1>
+            <p className="text-xl text-white/90 mb-8 animate-on-scroll stagger-delay-1">
+              Have a project in mind? We'd love to hear from you. Reach out to discuss how we can help.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="section">
+        <div className="container-wide">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Contact Form */}
+            <div className="animate-on-scroll">
+              <h2 className="text-3xl font-bold mb-6">Send Us a Message</h2>
+              <p className="text-futurity-gray mb-8">
+                Fill out the form below and our team will get back to you as soon as possible.
+              </p>
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium mb-2">
+                      Your Name <span className="text-futurity-orange">*</span>
+                    </label>
+                    <Input
+                      id="name"
+                      name="name"
+                      value={formState.name}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium mb-2">
+                      Email Address <span className="text-futurity-orange">*</span>
+                    </label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formState.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                      Phone Number
+                    </label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formState.phone}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="subject" className="block text-sm font-medium mb-2">
+                      Subject <span className="text-futurity-orange">*</span>
+                    </label>
+                    <Input
+                      id="subject"
+                      name="subject"
+                      value={formState.subject}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium mb-2">
+                    Your Message <span className="text-futurity-orange">*</span>
+                  </label>
+                  <Textarea
+                    id="message"
+                    name="message"
+                    rows={5}
+                    value={formState.message}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                
+                <Button type="submit" size="lg" disabled={isSubmitting}>
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                </Button>
+              </form>
+            </div>
+            
+            {/* Contact Info */}
+            <div className="animate-on-scroll stagger-delay-1">
+              <h2 className="text-3xl font-bold mb-6">Contact Information</h2>
+              <p className="text-futurity-gray mb-8">
+                Get in touch with us directly using the information below.
+              </p>
+              
+              <div className="space-y-8 mb-10">
+                <ContactInfoItem
+                  icon={<Phone size={24} />}
+                  title="Phone"
+                  content="+1 (555) 123-4567"
+                  href="tel:+15551234567"
+                />
+                <ContactInfoItem
+                  icon={<Mail size={24} />}
+                  title="Email"
+                  content="hello@futurity.com"
+                  href="mailto:hello@futurity.com"
+                />
+                <ContactInfoItem
+                  icon={<MapPin size={24} />}
+                  title="Office"
+                  content="123 Innovation Drive, San Francisco, CA 94105"
+                  href="https://maps.google.com"
+                />
+                <ContactInfoItem
+                  icon={<Clock size={24} />}
+                  title="Business Hours"
+                  content="Monday - Friday: 9:00 AM - 5:00 PM"
+                />
+              </div>
+              
+              <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
+                <h3 className="text-xl font-semibold mb-4">Follow Us</h3>
+                <div className="flex space-x-4">
+                  <SocialButton name="Facebook" />
+                  <SocialButton name="Twitter" />
+                  <SocialButton name="LinkedIn" />
+                  <SocialButton name="Instagram" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Map Section */}
+      <section className="section bg-gray-50 pt-0">
+        <div className="container-wide">
+          <div className="bg-white p-6 rounded-lg shadow-sm -mt-16 mb-8">
+            <h3 className="text-xl font-semibold mb-4">Our Location</h3>
+            <div className="aspect-[21/9] rounded-lg overflow-hidden">
+              {/* Placeholder for Google Maps - Would integrate actual Google Maps in a real implementation */}
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                <p className="text-futurity-gray">Google Maps integration would be here</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="section bg-futurity-blue text-white">
+        <div className="container-tight text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-on-scroll">Ready to Transform Your Digital Presence?</h2>
+          <p className="text-xl mb-8 text-white/90 animate-on-scroll stagger-delay-1">
+            Let's collaborate to create exceptional digital experiences that drive results.
+          </p>
+        </div>
+      </section>
+    </Layout>
+  );
+};
+
+// Helper components
+interface ContactInfoItemProps {
+  icon: React.ReactNode;
+  title: string;
+  content: string;
+  href?: string;
+}
+
+const ContactInfoItem = ({ icon, title, content, href }: ContactInfoItemProps) => {
+  return (
+    <div className="flex items-start">
+      <div className="h-12 w-12 rounded-full bg-futurity-orange/10 flex items-center justify-center text-futurity-orange mr-4">
+        {icon}
+      </div>
+      <div>
+        <h3 className="font-semibold text-lg">{title}</h3>
+        {href ? (
+          <a href={href} className="text-futurity-gray hover:text-futurity-orange transition-colors">
+            {content}
+          </a>
+        ) : (
+          <p className="text-futurity-gray">{content}</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const SocialButton = ({ name }: { name: string }) => {
+  return (
+    <a 
+      href="#" 
+      className="h-10 w-10 rounded-full bg-futurity-blue flex items-center justify-center text-white hover:bg-futurity-orange transition-colors"
+      aria-label={name}
+    >
+      {/* Placeholder for actual social icons */}
+      <span className="text-sm">{name.charAt(0)}</span>
+    </a>
+  );
+};
+
+export default Contact;
