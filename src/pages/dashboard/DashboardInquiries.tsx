@@ -53,7 +53,7 @@ const DashboardInquiries = () => {
       name: 'Emily Brown',
       email: 'emily@example.com',
       subject: 'Brand Strategy Consultation',
-      message: 'We're looking to refresh our brand identity and would like to schedule a consultation...',
+      message: 'We\'re looking to refresh our brand identity and would like to schedule a consultation...',
       status: 'Archived',
       date: '2025-04-21'
     },
@@ -62,7 +62,7 @@ const DashboardInquiries = () => {
       name: 'Michael Wilson',
       email: 'michael@example.com',
       subject: 'Digital Marketing Campaign',
-      message: 'We're launching a new product next month and need help with a digital marketing campaign...',
+      message: 'We\'re launching a new product next month and need help with a digital marketing campaign...',
       status: 'New',
       date: '2025-04-20'
     }
