@@ -13,14 +13,16 @@ interface BlogPostHeaderProps {
 const BlogPostHeader = ({ post }: BlogPostHeaderProps) => {
   return (
     <div className="mb-8">
-      <div className="mb-4">
-        <Link 
-          to={`/blog/category/${post.category.slug}`}
-          className="text-futurity-orange hover:underline font-medium"
-        >
-          {post.category.name}
-        </Link>
-      </div>
+      {post.category && (
+        <div className="mb-4">
+          <Link 
+            to={`/blog/category/${post.category.slug}`}
+            className="text-futurity-orange hover:underline font-medium"
+          >
+            {post.category.name}
+          </Link>
+        </div>
+      )}
       
       <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">{post.title}</h1>
       
@@ -38,18 +40,20 @@ const BlogPostHeader = ({ post }: BlogPostHeaderProps) => {
           <span>{formatDate(post.publishedDate)}</span>
         </div>
         
-        <div className="flex items-center">
-          <TagIcon className="h-4 w-4 mr-1" />
-          <div className="flex flex-wrap gap-1">
-            {post.tags.map(tag => (
-              <Link key={tag.id} to={`/blog/tag/${tag.slug}`}>
-                <Badge variant="outline" className="hover:bg-futurity-gray">
-                  {tag.name}
-                </Badge>
-              </Link>
-            ))}
+        {post.tags && post.tags.length > 0 && (
+          <div className="flex items-center">
+            <TagIcon className="h-4 w-4 mr-1" />
+            <div className="flex flex-wrap gap-1">
+              {post.tags.map(tag => tag && (
+                <Link key={tag.id} to={`/blog/tag/${tag.slug}`}>
+                  <Badge variant="outline" className="hover:bg-futurity-gray">
+                    {tag.name}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       
       <div className="w-full aspect-[2/1] overflow-hidden rounded-lg mb-8">

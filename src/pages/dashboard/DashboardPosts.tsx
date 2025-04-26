@@ -1,72 +1,63 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Edit, Plus, Search, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from '@/components/ui/use-toast';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
-
-interface Post {
-  id: string;
-  title: string;
-  author: string;
-  category: string;
-  status: 'Draft' | 'Published';
-  date: string;
-}
+import { blogPosts } from '@/data/blogData';
 
 const DashboardPosts = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [deletePostId, setDeletePostId] = useState<string | null>(null);
   
-  // Mock data - this would typically come from an API
-  const posts: Post[] = [
-    {
-      id: '1',
-      title: 'Top 10 Web Design Trends for 2025',
-      author: 'Jane Smith',
-      category: 'Design',
-      status: 'Published',
-      date: '2025-04-15'
-    },
-    {
-      id: '2',
-      title: 'How to Optimize Your Website for SEO',
-      author: 'John Doe',
-      category: 'Marketing',
-      status: 'Published',
-      date: '2025-04-10'
-    },
-    {
-      id: '3',
-      title: 'The Future of AI in Web Development',
-      author: 'Sarah Johnson',
-      category: 'Technology',
-      status: 'Draft',
-      date: '2025-04-05'
-    },
-    {
-      id: '4',
-      title: 'Building Accessible Websites: A Complete Guide',
-      author: 'Michael Brown',
-      category: 'Development',
-      status: 'Published',
-      date: '2025-03-28'
-    },
-    {
-      id: '5',
-      title: 'Mobile-First Design: Best Practices',
-      author: 'Emily Chen',
-      category: 'Design',
-      status: 'Draft',
-      date: '2025-03-20'
+  const handleCreatePost = () => {
+    navigate('/dashboard/posts/new');
+  };
+  
+  const handleEditPost = (id: string) => {
+    navigate(`/dashboard/posts/edit/${id}`);
+  };
+  
+  const handleDeletePost = () => {
+    if (deletePostId) {
+      // Find the index of the post to delete
+      const index = blogPosts.findIndex(post => post.id === deletePostId);
+      
+      if (index !== -1) {
+        // Remove the post from the array
+        blogPosts.splice(index, 1);
+        
+        toast({
+          title: "Post deleted",
+          description: "The blog post has been deleted successfully.",
+        });
+        
+        // Reset the deletePostId
+        setDeletePostId(null);
+      }
     }
-  ];
-
-  const filteredPosts = posts.filter(post => 
+  };
+  
+  const filteredPosts = blogPosts.filter(post => 
     post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.category.toLowerCase().includes(searchTerm.toLowerCase())
+    post.author.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -82,7 +73,7 @@ const DashboardPosts = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button>
+        <Button onClick={handleCreatePost}>
           <Plus className="mr-2 h-4 w-4" /> New Post
         </Button>
       </div>
@@ -102,30 +93,57 @@ const DashboardPosts = () => {
           <TableBody>
             {filteredPosts.map((post) => (
               <TableRow key={post.id}>
-                <TableCell className="font-medium">{post.title}</TableCell>
-                <TableCell className="hidden md:table-cell">{post.author}</TableCell>
-                <TableCell className="hidden md:table-cell">{post.category}</TableCell>
+                <TableCell className="font-medium">
+                  <Link to={`/blog/${post.slug}`} className="hover:text-futurity-blue">
+                    {post.title}
+                  </Link>
+                </TableCell>
+                <TableCell className="hidden md:table-cell">{post.author.name}</TableCell>
+                <TableCell className="hidden md:table-cell">{post.category.name}</TableCell>
                 <TableCell className="hidden md:table-cell">
                   <span 
-                    className={`px-2 py-1 rounded-full text-xs ${
-                      post.status === 'Published' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-amber-100 text-amber-800'
-                    }`}
+                    className={`px-2 py-1 rounded-full text-xs bg-green-100 text-green-800`}
                   >
-                    {post.status}
+                    Published
                   </span>
                 </TableCell>
-                <TableCell>{post.date}</TableCell>
+                <TableCell>{post.publishedDate}</TableCell>
                 <TableCell className="text-right">
-                  <Button variant="ghost" size="sm">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => handleEditPost(post.id)}
+                  >
                     <Edit className="h-4 w-4" />
                     <span className="sr-only">Edit</span>
                   </Button>
-                  <Button variant="ghost" size="sm">
-                    <Trash className="h-4 w-4" />
-                    <span className="sr-only">Delete</span>
-                  </Button>
+                  
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => setDeletePostId(post.id)}
+                      >
+                        <Trash className="h-4 w-4" />
+                        <span className="sr-only">Delete</span>
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Blog Post</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete "{post.title}"? This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeletePost}>
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </TableCell>
               </TableRow>
             ))}

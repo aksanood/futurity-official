@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -24,6 +23,10 @@ import BlogPost from "./pages/BlogPost";
 import BlogCategory from "./pages/BlogCategory";
 import BlogTag from "./pages/BlogTag";
 
+// Add the new route imports 
+import BlogPostForm from './pages/dashboard/BlogPostForm';
+import PortfolioItemForm from './pages/dashboard/PortfolioItemForm';
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -48,7 +51,11 @@ const App = () => (
           {/* Dashboard Routes */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/posts" element={<DashboardPosts />} />
+          <Route path="/dashboard/posts/new" element={<BlogPostForm />} />
+          <Route path="/dashboard/posts/edit/:id" element={<BlogPostForm />} />
           <Route path="/dashboard/portfolio" element={<DashboardPortfolio />} />
+          <Route path="/dashboard/portfolio/new" element={<PortfolioItemForm />} />
+          <Route path="/dashboard/portfolio/edit/:id" element={<PortfolioItemForm />} />
           <Route path="/dashboard/inquiries" element={<DashboardInquiries />} />
           <Route path="/dashboard/analytics" element={<DashboardAnalytics />} />
           
