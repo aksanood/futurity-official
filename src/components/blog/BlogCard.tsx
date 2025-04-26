@@ -49,19 +49,23 @@ const BlogCard = ({ post, variant = 'default' }: BlogCardProps) => {
         <p className="text-gray-600 mb-4 flex-grow">{post.excerpt}</p>
         
         <div className="mt-auto flex flex-wrap gap-2">
-          <Link to={`/blog/category/${post.category.slug}`}>
-            <Badge variant="outline" className="bg-futurity-gray-light text-futurity-blue hover:bg-futurity-gray">
-              {post.category.name}
-            </Badge>
-          </Link>
-          
-          {post.tags.slice(0, 2).map(tag => (
-            <Link key={tag.id} to={`/blog/tag/${tag.slug}`}>
-              <Badge variant="outline" className="hover:bg-futurity-gray">
-                {tag.name}
+          {post.category && (
+            <Link to={`/blog/category/${post.category.slug}`}>
+              <Badge variant="outline" className="bg-futurity-gray-light text-futurity-blue hover:bg-futurity-gray">
+                {post.category.name}
               </Badge>
             </Link>
-          ))}
+          )}
+          
+          {post.tags && post.tags.length > 0 && 
+            post.tags.slice(0, 2).map(tag => tag && (
+              <Link key={tag.id} to={`/blog/tag/${tag.slug}`}>
+                <Badge variant="outline" className="hover:bg-futurity-gray">
+                  {tag.name}
+                </Badge>
+              </Link>
+            ))
+          }
         </div>
       </div>
     </div>
