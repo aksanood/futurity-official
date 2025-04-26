@@ -75,6 +75,9 @@ const NavLinks = () => {
       <Link to="/portfolio" className="font-medium hover:text-futurity-orange transition-colors">
         Portfolio
       </Link>
+      <Link to="/blog" className="font-medium hover:text-futurity-orange transition-colors">
+        Blog
+      </Link>
     </>
   );
 };
@@ -109,6 +112,13 @@ const NavLinksMobile = ({ toggleMenu }: { toggleMenu: () => void }) => {
         onClick={toggleMenu}
       >
         Portfolio
+      </Link>
+      <Link 
+        to="/blog" 
+        className="font-medium py-2 hover:text-futurity-orange transition-colors"
+        onClick={toggleMenu}
+      >
+        Blog
       </Link>
     </>
   );

@@ -18,6 +18,12 @@ import DashboardPortfolio from "./pages/dashboard/DashboardPortfolio";
 import DashboardInquiries from "./pages/dashboard/DashboardInquiries";
 import DashboardAnalytics from "./pages/dashboard/DashboardAnalytics";
 
+// Blog Pages
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import BlogCategory from "./pages/BlogCategory";
+import BlogTag from "./pages/BlogTag";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -32,6 +38,12 @@ const App = () => (
           <Route path="/services" element={<Services />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/contact" element={<Contact />} />
+          
+          {/* Blog Routes */}
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/blog/category/:slug" element={<BlogCategory />} />
+          <Route path="/blog/tag/:slug" element={<BlogTag />} />
           
           {/* Dashboard Routes */}
           <Route path="/dashboard" element={<Dashboard />} />
