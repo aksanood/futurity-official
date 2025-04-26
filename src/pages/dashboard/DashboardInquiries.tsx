@@ -35,7 +35,7 @@ const DashboardInquiries = () => {
       name: 'Jane Smith',
       email: 'jane@example.com',
       subject: 'SEO Services',
-      message: 'Hi, I'm interested in improving the search engine ranking for my company website...',
+      message: 'Hi, I\'m interested in improving the search engine ranking for my company website...',
       status: 'Replied',
       date: '2025-04-23'
     },
