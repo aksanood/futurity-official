@@ -1,0 +1,152 @@
+
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { 
+  LayoutDashboard, 
+  FileText, 
+  Image, 
+  MessageSquare, 
+  BarChart,
+  Menu,
+  X
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import SectionHeading from '@/components/ui/section-heading';
+
+interface DashboardLayoutProps {
+  children: React.ReactNode;
+  title: string;
+  subtitle?: string;
+}
+
+const DashboardLayout = ({ children, title, subtitle }: DashboardLayoutProps) => {
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const location = useLocation();
+  
+  const navigationItems = [
+    {
+      title: 'Dashboard',
+      icon: LayoutDashboard,
+      href: '/dashboard',
+    },
+    {
+      title: 'Blog Posts',
+      icon: FileText,
+      href: '/dashboard/posts',
+    },
+    {
+      title: 'Portfolio',
+      icon: Image,
+      href: '/dashboard/portfolio',
+    },
+    {
+      title: 'Inquiries',
+      icon: MessageSquare,
+      href: '/dashboard/inquiries',
+    },
+    {
+      title: 'Analytics',
+      icon: BarChart,
+      href: '/dashboard/analytics',
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile Navigation */}
+      <div className="md:hidden bg-white border-b py-3 px-4 flex justify-between items-center">
+        <Link to="/dashboard" className="font-bold text-xl text-futurity-blue">
+          Futurity CMS
+        </Link>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => setMobileNavOpen(!mobileNavOpen)}
+        >
+          {mobileNavOpen ? <X size={24} /> : <Menu size={24} />}
+        </Button>
+      </div>
+
+      <div className="flex">
+        {/* Sidebar - Desktop */}
+        <aside className={`hidden md:block w-64 h-screen bg-white border-r fixed`}>
+          <div className="p-4 border-b">
+            <Link to="/dashboard" className="font-bold text-xl text-futurity-blue">
+              Futurity CMS
+            </Link>
+          </div>
+          <nav className="py-4">
+            <ul>
+              {navigationItems.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    to={item.href}
+                    className={cn(
+                      "flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 hover:text-futurity-blue",
+                      location.pathname === item.href && "bg-gray-100 text-futurity-blue border-r-4 border-futurity-orange"
+                    )}
+                  >
+                    <item.icon className="w-5 h-5 mr-3" />
+                    <span>{item.title}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
+
+        {/* Mobile Navigation Menu */}
+        {mobileNavOpen && (
+          <div className="md:hidden fixed inset-0 z-40 bg-white">
+            <div className="flex justify-between items-center p-4 border-b">
+              <Link to="/dashboard" className="font-bold text-xl text-futurity-blue">
+                Futurity CMS
+              </Link>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setMobileNavOpen(false)}
+              >
+                <X size={24} />
+              </Button>
+            </div>
+            <nav className="py-4">
+              <ul>
+                {navigationItems.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      to={item.href}
+                      className={cn(
+                        "flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100",
+                        location.pathname === item.href && "bg-gray-100 text-futurity-blue border-l-4 border-futurity-orange"
+                      )}
+                      onClick={() => setMobileNavOpen(false)}
+                    >
+                      <item.icon className="w-5 h-5 mr-3" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        )}
+
+        {/* Main Content */}
+        <main className="flex-1 md:ml-64 p-4 md:p-8">
+          <div className="max-w-7xl mx-auto">
+            <SectionHeading 
+              title={title} 
+              subtitle={subtitle}
+              className="mb-6"
+            />
+            {children}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default DashboardLayout;

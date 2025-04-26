@@ -12,6 +12,11 @@ import Services from "./pages/Services";
 import Portfolio from "./pages/Portfolio";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/dashboard/Dashboard";
+import DashboardPosts from "./pages/dashboard/DashboardPosts";
+import DashboardPortfolio from "./pages/dashboard/DashboardPortfolio";
+import DashboardInquiries from "./pages/dashboard/DashboardInquiries";
+import DashboardAnalytics from "./pages/dashboard/DashboardAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +32,14 @@ const App = () => (
           <Route path="/services" element={<Services />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/contact" element={<Contact />} />
+          
+          {/* Dashboard Routes */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/posts" element={<DashboardPosts />} />
+          <Route path="/dashboard/portfolio" element={<DashboardPortfolio />} />
+          <Route path="/dashboard/inquiries" element={<DashboardInquiries />} />
+          <Route path="/dashboard/analytics" element={<DashboardAnalytics />} />
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
