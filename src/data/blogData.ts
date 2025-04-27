@@ -1,4 +1,3 @@
-
 import { BlogPost, Author, Category, Tag } from "@/types/blog";
 
 const authors: Author[] = [
@@ -6,19 +5,37 @@ const authors: Author[] = [
     id: "1",
     name: "Sarah Johnson",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    bio: "Sarah is our Senior Digital Strategist with over 10 years of experience in digital marketing and SEO optimization."
+    bio: "Sarah is our Senior Digital Strategist with over 10 years of experience in digital marketing and SEO optimization.",
+    role: "Senior Digital Strategist",
+    social: {
+      twitter: "https://twitter.com/sarahjohnson",
+      linkedin: "https://linkedin.com/in/sarahjohnson",
+      github: "https://github.com/sarahjohnson"
+    }
   },
   {
     id: "2",
     name: "David Chen",
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    bio: "David leads our web development team, specializing in modern JavaScript frameworks and serverless architectures."
+    bio: "David leads our web development team, specializing in modern JavaScript frameworks and serverless architectures.",
+    role: "Lead Web Developer",
+    social: {
+      twitter: "https://twitter.com/davidchen",
+      linkedin: "https://linkedin.com/in/davidchen",
+      github: "https://github.com/davidchen"
+    }
   },
   {
     id: "3",
     name: "Michelle Rodriguez",
     avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    bio: "Michelle is our Head of Design with expertise in UI/UX principles and brand identity development."
+    bio: "Michelle is our Head of Design with expertise in UI/UX principles and brand identity development.",
+    role: "Head of Design",
+    social: {
+      twitter: "https://twitter.com/michellerodriguez",
+      linkedin: "https://linkedin.com/in/michellerodriguez",
+      github: "https://github.com/michellerodriguez"
+    }
   }
 ];
 
@@ -820,6 +837,10 @@ export const getPostsByCategory = (categorySlug: string) => {
 
 export const getPostsByTag = (tagSlug: string) => {
   return blogPosts.filter(post => post.tags.some(tag => tag.slug === tagSlug));
+};
+
+export const getPostsByAuthor = (authorId: string) => {
+  return blogPosts.filter(post => post.author.id === authorId);
 };
 
 export const getAllCategories = () => {
