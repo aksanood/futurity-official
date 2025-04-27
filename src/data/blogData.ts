@@ -1,3 +1,4 @@
+
 import { BlogPost, Author, Category, Tag } from "@/types/blog";
 
 const authors: Author[] = [
@@ -849,4 +850,8 @@ export const getAllCategories = () => {
 
 export const getAllTags = () => {
   return tags;
+};
+
+export const getAllAuthors = () => {
+  return authors;
 };

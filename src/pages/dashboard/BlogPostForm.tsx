@@ -14,7 +14,7 @@ const DashboardBlogPostForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Find the post if we're editing
-  const post = id ? blogPosts.find(p => p.id === id) : undefined;
+  const post = id ? blogPosts.find(p => p.id === id) : null;
   
   const handleSave = (postData: BlogPost) => {
     setIsSubmitting(true);
