@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,8 @@ const Index = () => {
   return (
     <Layout>
       {/* Hero Section - Updated with new design */}
-      <section className="hero-main">
+      <section className="hero-main min-h-[80vh] flex items-center">
+        
         <div 
           className="absolute inset-0 opacity-20"
           style={{
@@ -22,8 +22,8 @@ const Index = () => {
           }}
         ></div>
         <div className="absolute inset-0 bg-gradient-to-r from-futurity-blue to-futurity-blue/80"></div>
-        
-        <div className="container-wide grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 min-h-[90vh] py-32">
+
+        <div className="container-wide grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
           <div className="text-white">
             <h1 className="animate-on-scroll text-5xl md:text-6xl font-bold mb-6 leading-tight">
               Transform Your <span className="text-futurity-orange">Digital</span><br /> Presence
@@ -35,7 +35,12 @@ const Index = () => {
               <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white border-0">
                 <Link to="/contact">Get Started</Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-futurity-blue">
+              <Button 
+                asChild 
+                size="lg" 
+                variant="outline" 
+                className="border-white text-futurity-blue bg-white hover:bg-gray-100 hover:text-futurity-blue/80"
+              >
                 <Link to="/portfolio">View Our Work</Link>
               </Button>
             </div>

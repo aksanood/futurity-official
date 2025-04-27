@@ -26,6 +26,8 @@ import BlogTag from "./pages/BlogTag";
 // Add the new route imports 
 import BlogPostForm from './pages/dashboard/BlogPostForm';
 import PortfolioItemForm from './pages/dashboard/PortfolioItemForm';
+import AuthorPage from "./pages/AuthorPage";
+import Reviews from "./pages/Reviews";
 
 const queryClient = new QueryClient();
 
@@ -59,7 +61,11 @@ const App = () => (
           <Route path="/dashboard/inquiries" element={<DashboardInquiries />} />
           <Route path="/dashboard/analytics" element={<DashboardAnalytics />} />
           
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          {/* Add new routes */}
+          <Route path="/author/:id" element={<AuthorPage />} />
+          <Route path="/reviews" element={<Reviews />} />
+          
+          {/* Keep catch-all route at the end */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

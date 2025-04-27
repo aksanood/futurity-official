@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
@@ -6,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 
-// Portfolio item type
 interface PortfolioItem {
   id: string;
   title: string;
@@ -17,7 +15,6 @@ interface PortfolioItem {
   results: string[];
 }
 
-// Sample portfolio data
 const portfolioItems: PortfolioItem[] = [
   {
     id: 'ecommerce-platform',
@@ -75,7 +72,6 @@ const portfolioItems: PortfolioItem[] = [
   }
 ];
 
-// Categories for filtering
 const categories = [
   { id: 'all', name: 'All' },
   { id: 'web', name: 'Web Development' },
@@ -88,19 +84,16 @@ const Portfolio = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [visibleItems, setVisibleItems] = useState(6);
 
-  // Filter items based on active category
   const filteredItems = activeFilter === 'all' 
     ? portfolioItems 
     : portfolioItems.filter(item => item.tags.includes(activeFilter));
 
-  // Load more items
   const loadMore = () => {
     setVisibleItems(prev => prev + 3);
   };
 
   return (
     <Layout>
-      {/* Hero Section */}
       <section className="hero-secondary">
         <div className="container-wide">
           <div className="max-w-3xl">
@@ -111,7 +104,6 @@ const Portfolio = () => {
           </div>
         </div>
         
-        {/* Wave effect at bottom */}
         <div className="hero-wave">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 180" fill="white">
             <path d="M0,128L80,117.3C160,107,320,85,480,90.7C640,96,800,128,960,133.3C1120,139,1280,117,1360,106.7L1440,96L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
@@ -119,7 +111,6 @@ const Portfolio = () => {
         </div>
       </section>
 
-      {/* Portfolio Gallery */}
       <section className="section">
         <div className="container-wide">
           <SectionHeading 
@@ -128,21 +119,23 @@ const Portfolio = () => {
             center
           />
 
-          {/* Filter Buttons */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             {categories.map(category => (
               <Button
                 key={category.id}
-                variant="ghost"
+                variant={activeFilter === category.id ? "default" : "outline"}
                 onClick={() => setActiveFilter(category.id)}
-                className={`portfolio-filter-btn animate-on-scroll ${activeFilter === category.id ? 'active' : ''}`}
+                className={`portfolio-filter-btn animate-on-scroll ${
+                  activeFilter === category.id 
+                    ? 'bg-futurity-blue text-white hover:bg-futurity-blue/90' 
+                    : 'text-futurity-blue hover:text-futurity-blue/80'
+                }`}
               >
                 {category.name}
               </Button>
             ))}
           </div>
 
-          {/* Portfolio Grid - New Design */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredItems.slice(0, visibleItems).map((item, index) => (
               <div key={item.id} className={`portfolio-card animate-on-scroll ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}>
@@ -162,7 +155,6 @@ const Portfolio = () => {
                   <h3 className="text-xl md:text-2xl font-bold mb-2 text-futurity-blue">{item.title}</h3>
                   <p className="text-gray-600 mb-4">{item.description}</p>
                   
-                  {/* Results */}
                   <div className="mb-5">
                     {item.results.map((result, idx) => (
                       <div key={idx} className="flex items-center mb-2">
@@ -172,7 +164,6 @@ const Portfolio = () => {
                     ))}
                   </div>
                   
-                  {/* View Case Study Button */}
                   <Link to={`/portfolio/${item.id}`} className="inline-flex items-center text-futurity-blue font-medium hover:text-futurity-orange">
                     View Case Study 
                     <ExternalLink size={16} className="ml-1" />
@@ -182,7 +173,6 @@ const Portfolio = () => {
             ))}
           </div>
 
-          {/* Load More Button */}
           {visibleItems < filteredItems.length && (
             <div className="text-center mt-12">
               <Button onClick={loadMore} variant="outline" className="border-futurity-blue text-futurity-blue">
@@ -193,7 +183,6 @@ const Portfolio = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="section bg-futurity-blue text-white">
         <div className="container-tight text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-on-scroll">Let's Create Something Amazing Together</h2>

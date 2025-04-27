@@ -1,4 +1,3 @@
-
 export interface BlogPost {
   id: string;
   title: string;
@@ -18,6 +17,12 @@ export interface Author {
   name: string;
   avatar: string;
   bio: string;
+  role: string;
+  social?: {
+    twitter?: string;
+    linkedin?: string;
+    github?: string;
+  };
 }
 
 export interface Category {
