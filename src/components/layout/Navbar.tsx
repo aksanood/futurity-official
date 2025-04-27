@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -83,6 +82,9 @@ const NavLinks = ({ scrolled = false }: { scrolled?: boolean }) => {
       <Link to="/portfolio" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         Portfolio
       </Link>
+      <Link to="/reviews" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
+        Customer Review
+      </Link>
       <Link to="/blog" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         Blog
       </Link>
@@ -123,6 +125,13 @@ const NavLinksMobile = ({ toggleMenu }: { toggleMenu: () => void }) => {
         onClick={toggleMenu}
       >
         Portfolio
+      </Link>
+      <Link 
+        to="/reviews" 
+        className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors"
+        onClick={toggleMenu}
+      >
+        Customer Review
       </Link>
       <Link 
         to="/blog" 
