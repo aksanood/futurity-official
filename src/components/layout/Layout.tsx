@@ -36,18 +36,26 @@ const Layout = ({ children }: LayoutProps) => {
 
     // Make adjacent sections have alternating backgrounds
     const applySectionAlternateBackgrounds = () => {
-      const sections = document.querySelectorAll('section');
-      sections.forEach((section, index) => {
-        // Skip sections that already have a specific background (like bg-futurity-blue)
+      const sections = document.querySelectorAll('section.section');
+      let lastApplied = false;
+      
+      sections.forEach((section) => {
+        // Skip sections that already have a specific background
         if (section.classList.contains('bg-futurity-blue') || 
             section.classList.contains('hero-main') || 
             section.classList.contains('hero-secondary')) {
           return;
         }
         
-        // Apply alternate background to even sections
-        if (index % 2 === 1) {
+        // Clear existing section-alternate class first
+        section.classList.remove('section-alternate');
+        
+        // Apply alternate background to every other section
+        if (!lastApplied) {
           section.classList.add('section-alternate');
+          lastApplied = true;
+        } else {
+          lastApplied = false;
         }
       });
     };

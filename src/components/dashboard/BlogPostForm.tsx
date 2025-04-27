@@ -1,388 +1,394 @@
-
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Editor } from '@tinymce/tinymce-react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { generateId, slugify, calculateReadTime } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
+import { BlogPost } from '@/types/blog';
+import DashboardLayout from '@/components/dashboard/DashboardLayout';
+import { getAllAuthors, getAllCategories, getAllTags } from '@/data/blogData';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage 
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import RichTextEditor from './RichTextEditor';
-import { getAllCategories, getAllTags } from '@/data/blogData';
-import { BlogPost, Author, Category, Tag } from '@/types/blog';
+  FormMessage,
+} from "@/components/ui/form"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Calendar } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { format } from 'date-fns'
+import { Calendar as CalendarIcon } from "lucide-react"
+import { DatePicker } from "@/components/ui/date-picker"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/command"
+import { PopoverClose } from '@radix-ui/react-popover';
+import { Checkbox } from "@/components/ui/checkbox"
 
-const authors = [
-  {
-    id: "1",
-    name: "Sarah Johnson",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    bio: "Sarah is our Senior Digital Strategist with over 10 years of experience in digital marketing and SEO optimization."
-  },
-  {
-    id: "2",
-    name: "David Chen",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    bio: "David leads our web development team, specializing in modern JavaScript frameworks and serverless architectures."
-  },
-  {
-    id: "3",
-    name: "Michelle Rodriguez",
-    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    bio: "Michelle is our Head of Design with expertise in UI/UX principles and brand identity development."
-  }
-];
-
-const formSchema = z.object({
-  title: z.string().min(5, 'Title must be at least 5 characters'),
-  slug: z.string().min(5, 'Slug must be at least 5 characters'),
-  excerpt: z.string().min(20, 'Excerpt must be at least 20 characters'),
-  content: z.string().min(50, 'Content must be at least 50 characters'),
-  featuredImage: z.string().url('Must be a valid URL'),
-  categoryId: z.string(),
-  tagIds: z.array(z.string()).min(1, 'Select at least one tag'),
-  authorId: z.string(),
-  publishedDate: z.string(),
-  readTime: z.number().min(1).max(60)
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
-interface BlogPostFormProps {
-  post?: BlogPost;
-  onSave: (post: BlogPost) => void;
+interface Tag {
+  id: string;
+  name: string;
 }
 
-const BlogPostForm = ({ post, onSave }: BlogPostFormProps) => {
+const blogPostSchema = Yup.object().shape({
+  title: Yup.string().required('Title is required'),
+  excerpt: Yup.string().required('Excerpt is required'),
+  content: Yup.string().required('Content is required'),
+  authorId: Yup.string().required('Author is required'),
+  categoryId: Yup.string().required('Category is required'),
+});
+
+const BlogPostForm = () => {
   const navigate = useNavigate();
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  
-  const categories = getAllCategories();
-  const tags = getAllTags();
-  
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: post ? {
-      title: post.title,
-      slug: post.slug,
-      excerpt: post.excerpt,
-      content: post.content,
-      featuredImage: post.featuredImage,
-      categoryId: post.category.id,
-      tagIds: post.tags.map(tag => tag.id),
-      authorId: post.author.id,
-      publishedDate: post.publishedDate,
-      readTime: post.readTime
-    } : {
-      title: '',
-      slug: '',
-      excerpt: '',
-      content: '',
-      featuredImage: '',
-      categoryId: '',
-      tagIds: [],
-      authorId: '',
-      publishedDate: new Date().toISOString().split('T')[0],
-      readTime: 5
-    }
-  });
+  const { id: currentPostId } = useParams();
+  const [featured, setFeatured] = useState('');
+  const [isNewTagDialogOpen, setIsNewTagDialogOpen] = useState(false);
+  const [newTagName, setNewTagName] = useState('');
+  const [allTags, setAllTags] = useState(getAllTags());
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const [date, setDate] = React.useState<Date | undefined>(new Date())
+
+  const post = currentPostId ? (({ ...getPostById(currentPostId), publishedDate: new Date(getPostById(currentPostId)?.publishedDate || Date.now()) }) ) : null;
 
   useEffect(() => {
     if (post) {
-      setSelectedTags(post.tags.map(tag => tag.id));
+      formik.setValues({
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content,
+        authorId: post.author.id,
+        categoryId: post.category.id,
+      });
+      setFeatured(post.featuredImage);
+      setSelectedTags(post.tags);
+      setDate(new Date(post.publishedDate));
     }
   }, [post]);
-  
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
-  };
-  
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const title = e.target.value;
-    form.setValue('title', title);
-    
-    // Only auto-generate slug if it's empty or matches the previous auto-generated slug
-    const currentSlug = form.getValues('slug');
-    const previousTitle = post?.title || '';
-    const previousSlug = generateSlug(previousTitle);
-    
-    if (!currentSlug || currentSlug === previousSlug) {
-      form.setValue('slug', generateSlug(title));
+
+  const formik = useFormik({
+    initialValues: {
+      title: '',
+      excerpt: '',
+      content: '',
+      authorId: '',
+      categoryId: '',
+    },
+    validationSchema: blogPostSchema,
+    onSubmit: async (values) => {
+      const { title, excerpt, content, authorId, categoryId } = values;
+      const author = getAllAuthors().find((author) => author.id === authorId);
+      const category = getAllCategories().find((category) => category.id === categoryId);
+
+      if (!author || !category) {
+        alert('Author or Category not found');
+        return;
+      }
+
+      const newPost: BlogPost = {
+        id: currentPostId || generateId(),
+        title,
+        slug: slugify(title),
+        excerpt,
+        content,
+        featuredImage: featured || 'https://via.placeholder.com/1200x630',
+        author: {
+          id: author.id,
+          name: author.name,
+          avatar: author.avatar || 'https://via.placeholder.com/100',
+          bio: author.bio || '',
+          role: 'Writer', // Add the required role property with default value
+        },
+        category: {
+          id: category.id,
+          name: category.name,
+          slug: slugify(category.name),
+        },
+        tags: selectedTags.map((tag) => ({
+          id: tag.id,
+          name: tag.name,
+          slug: slugify(tag.name),
+        })),
+        publishedDate: date?.toISOString() || new Date().toISOString(),
+        readTime: calculateReadTime(content),
+      };
+
+      try {
+        savePost(newPost);
+        navigate('/dashboard/posts');
+      } catch (error) {
+        console.error('Error saving post:', error);
+        alert('Failed to save post');
+      }
+    },
+  });
+
+  const handleFeaturedImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFeatured(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
-  
-  const handleTagToggle = (tagId: string) => {
-    setSelectedTags(prev => {
-      const newTags = prev.includes(tagId)
-        ? prev.filter(id => id !== tagId)
-        : [...prev, tagId];
-      
-      form.setValue('tagIds', newTags);
-      return newTags;
-    });
+
+  const handleCreateNewTag = () => {
+    if (newTagName.trim() !== '') {
+      const newTag = { id: generateId(), name: newTagName.trim() };
+      setAllTags([...allTags, newTag]);
+      setSelectedTags([...selectedTags, newTag]);
+      setNewTagName('');
+      setIsNewTagDialogOpen(false);
+    }
   };
-  
-  const onSubmit = (values: FormValues) => {
-    const selectedCategory = categories.find(c => c.id === values.categoryId);
-    const selectedAuthor = authors.find(a => a.id === values.authorId);
-    const selectedTagsData = tags.filter(tag => values.tagIds.includes(tag.id));
-    
-    if (!selectedCategory || !selectedAuthor) return;
-    
-    const postData: BlogPost = {
-      id: post?.id || String(Date.now()),
-      title: values.title,
-      slug: values.slug,
-      excerpt: values.excerpt,
-      content: values.content,
-      featuredImage: values.featuredImage,
-      category: selectedCategory,
-      author: selectedAuthor,
-      tags: selectedTagsData,
-      publishedDate: values.publishedDate,
-      readTime: values.readTime
-    };
-    
-    onSave(postData);
+
+  const handleTagSelection = (tag: Tag) => {
+    if (selectedTags.find((selectedTag) => selectedTag.id === tag.id)) {
+      setSelectedTags(selectedTags.filter((selectedTag) => selectedTag.id !== tag.id));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="Enter post title" 
-                  {...field} 
-                  onChange={handleTitleChange}
+    <DashboardLayout title={currentPostId ? "Edit Post" : "New Post"} subtitle={currentPostId ? "Edit your post" : "Create a new blog post"}>
+      <Form {...formik}>
+        <form onSubmit={formik.handleSubmit} className="space-y-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Post Details</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="title">Title</Label>
+                <Input id="title" {...formik.getFieldProps('title')} />
+                {formik.touched.title && formik.errors.title ? (
+                  <div className="text-red-500">{formik.errors.title}</div>
+                ) : null}
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="excerpt">Excerpt</Label>
+                <Textarea id="excerpt" {...formik.getFieldProps('excerpt')} />
+                {formik.touched.excerpt && formik.errors.excerpt ? (
+                  <div className="text-red-500">{formik.errors.excerpt}</div>
+                ) : null}
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="content">Content</Label>
+                <Editor
+                  apiKey="YOUR_API_KEY"
+                  textareaName="content"
+                  onEditorChange={(content) => formik.setFieldValue('content', content)}
+                  initialValue={formik.values.content}
+                  init={{
+                    height: 500,
+                    menubar: true,
+                    plugins: [
+                      'advlist autolink lists link image charmap print preview anchor',
+                      'searchreplace visualblocks code fullscreen',
+                      'insertdatetime media table paste code help wordcount'
+                    ],
+                    toolbar:
+                      'undo redo | formatselect | ' +
+                      'bold italic backcolor | alignleft aligncenter ' +
+                      'alignright alignjustify | bullist numlist outdent indent | ' +
+                      'removeformat | help'
+                  }}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Slug</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="Enter post slug" 
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="excerpt"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Excerpt</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Enter a short summary of the post" 
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="featuredImage"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Featured Image URL</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="Enter the URL of the featured image" 
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="categoryId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <Select 
-                value={field.value} 
-                onValueChange={field.onChange}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {categories.map(category => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="authorId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Author</FormLabel>
-              <Select 
-                value={field.value} 
-                onValueChange={field.onChange}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select an author" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {authors.map(author => (
-                    <SelectItem key={author.id} value={author.id}>
-                      {author.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="tagIds"
-          render={() => (
-            <FormItem>
-              <FormLabel>Tags</FormLabel>
+                {formik.touched.content && formik.errors.content ? (
+                  <div className="text-red-500">{formik.errors.content}</div>
+                ) : null}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Category & Author</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="categoryId">Category</Label>
+                  <Select onValueChange={value => formik.setFieldValue('categoryId', value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a category" defaultValue={post?.category.id} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getAllCategories().map((category) => (
+                        <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {formik.touched.categoryId && formik.errors.categoryId ? (
+                    <div className="text-red-500">{formik.errors.categoryId}</div>
+                  ) : null}
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="authorId">Author</Label>
+                  <Select onValueChange={value => formik.setFieldValue('authorId', value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select an author" defaultValue={post?.author.id} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getAllAuthors().map((author) => (
+                        <SelectItem key={author.id} value={author.id}>{author.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {formik.touched.authorId && formik.errors.authorId ? (
+                    <div className="text-red-500">{formik.errors.authorId}</div>
+                  ) : null}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Featured Image</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              {featured && (
+                <div className="mb-4">
+                  <img src={featured} alt="Featured" className="max-h-48 rounded-md object-cover" />
+                </div>
+              )}
+              <Input type="file" accept="image/*" onChange={handleFeaturedImageChange} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Tags</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
               <div className="flex flex-wrap gap-2">
-                {tags.map(tag => (
-                  <Button
-                    key={tag.id}
-                    type="button"
-                    variant={selectedTags.includes(tag.id) ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleTagToggle(tag.id)}
-                  >
-                    {tag.name}
-                  </Button>
+                {allTags.map((tag) => (
+                  <div key={tag.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`tag-${tag.id}`}
+                      checked={!!selectedTags.find((selectedTag) => selectedTag.id === tag.id)}
+                      onCheckedChange={() => handleTagSelection(tag)}
+                    />
+                    <Label htmlFor={`tag-${tag.id}`}>{tag.name}</Label>
+                  </div>
                 ))}
               </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="publishedDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Publication Date</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="date"
-                    {...field}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">Create New Tag</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Create New Tag</DialogTitle>
+                    <DialogDescription>
+                      Add a new tag to the list.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="name" className="text-right">
+                        Name
+                      </Label>
+                      <Input id="name" value={newTagName} onChange={(e) => setNewTagName(e.target.value)} className="col-span-3" />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button type="button" variant="secondary">Cancel</Button>
+                    </DialogClose>
+                    <Button type="button" onClick={handleCreateNewTag}>Create</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Publish Date</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-[240px] justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <DatePicker
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
-            name="readTime"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Read Time (minutes)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number"
-                    min="1"
-                    max="60"
-                    {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        
-        <FormField
-          control={form.control}
-          name="content"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Content</FormLabel>
-              <FormControl>
-                <RichTextEditor 
-                  value={field.value} 
-                  onChange={field.onChange}
-                  className="min-h-[400px]"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <div className="flex justify-end gap-4">
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={() => navigate('/dashboard/posts')}
-          >
-            Cancel
-          </Button>
-          <Button type="submit">
-            {post ? 'Update' : 'Create'} Post
-          </Button>
-        </div>
-      </form>
-    </Form>
+                  <PopoverClose>Close</PopoverClose>
+                </PopoverContent>
+              </Popover>
+            </CardContent>
+          </Card>
+
+          <Button type="submit">{currentPostId ? 'Update Post' : 'Create Post'}</Button>
+        </form>
+      </Form>
+    </DashboardLayout>
   );
+};
+
+// Dummy functions to simulate data fetching and saving
+const getPostById = (id: string) => {
+  const posts = JSON.parse(localStorage.getItem('blogPosts') || '[]') as BlogPost[];
+  return posts.find(post => post.id === id);
+};
+
+const savePost = (post: BlogPost) => {
+  let posts = JSON.parse(localStorage.getItem('blogPosts') || '[]') as BlogPost[];
+  if (posts.find(p => p.id === post.id)) {
+    posts = posts.map(p => p.id === post.id ? post : p);
+  } else {
+    posts = [...posts, post];
+  }
+  localStorage.setItem('blogPosts', JSON.stringify(posts));
 };
 
 export default BlogPostForm;

@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
@@ -25,7 +24,6 @@ const BlogPost = () => {
       navigate('/blog');
     }
     
-    // Scroll to top when post changes
     window.scrollTo(0, 0);
   }, [post, navigate, slug]);
   
@@ -43,7 +41,6 @@ const BlogPost = () => {
           </div>
         </div>
         
-        {/* Wave effect at bottom */}
         <div className="hero-wave">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 180" fill="white">
             <path d="M0,128L80,117.3C160,107,320,85,480,90.7C640,96,800,128,960,133.3C1120,139,1280,117,1360,106.7L1440,96L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
@@ -58,7 +55,6 @@ const BlogPost = () => {
         </Link>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
           <div className="lg:col-span-2">
             <Card className="p-6 md:p-8">
               <BlogPostHeader post={post} />
@@ -67,7 +63,6 @@ const BlogPost = () => {
                 <ReactMarkdown>{post.content}</ReactMarkdown>
               </div>
               
-              {/* Share Buttons */}
               <div className="border-t border-gray-200 pt-6 mt-8">
                 <div className="flex flex-wrap items-center gap-4">
                   <span className="font-medium">Share this post:</span>
@@ -87,9 +82,7 @@ const BlogPost = () => {
             </Card>
           </div>
           
-          {/* Sidebar */}
           <div className="lg:col-span-1">
-            {/* Author Profile Card */}
             <Card className="p-6 mb-6 bg-futurity-gray-light border-0">
               <div className="flex flex-col items-center text-center">
                 <div className="w-24 h-24 bg-white rounded-full overflow-hidden mb-4">
@@ -110,8 +103,12 @@ const BlogPost = () => {
                 <p className="text-gray-700 mb-6">
                   {post.author.bio || `${post.author.name} is a seasoned writer with expertise in digital marketing, web design, and technology trends.`}
                 </p>
-                <Button variant="outline" className="border-futurity-blue text-futurity-blue">
-                  View Profile
+                <Button 
+                  variant="outline" 
+                  className="border-futurity-blue text-futurity-blue hover:bg-futurity-blue hover:text-white"
+                  asChild
+                >
+                  <Link to={`/author/${post.author.id}`}>View Profile</Link>
                 </Button>
               </div>
             </Card>
