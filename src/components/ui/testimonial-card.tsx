@@ -1,5 +1,6 @@
 
 import { cn } from "@/lib/utils";
+import { Star } from "lucide-react";
 
 interface TestimonialCardProps {
   quote: string;
@@ -7,6 +8,7 @@ interface TestimonialCardProps {
   position: string;
   company: string;
   image?: string;
+  rating?: number;
   className?: string;
 }
 
@@ -16,13 +18,26 @@ const TestimonialCard = ({
   position, 
   company, 
   image, 
+  rating = 5,
   className 
 }: TestimonialCardProps) => {
   return (
     <div className={cn(
-      "bg-white p-6 rounded-lg shadow-md flex flex-col", 
+      "testimonial-card", 
       className
     )}>
+      {/* Star Rating */}
+      <div className="star-rating">
+        {[...Array(5)].map((_, i) => (
+          <Star 
+            key={i} 
+            size={18}
+            fill={i < rating ? "#F97316" : "none"}
+            className={i < rating ? "text-futurity-orange" : "text-gray-300"}
+          />
+        ))}
+      </div>
+      
       <div className="mb-4">
         <svg className="h-8 w-8 text-futurity-orange opacity-70" fill="currentColor" viewBox="0 0 24 24">
           <path d="M14.017 21v-7.391C14.017 10.645 15.995 7.5 20 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6.001zm-8 0v-7.391C6.017 10.645 7.995 7.5 12 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6z" />

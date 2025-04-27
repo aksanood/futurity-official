@@ -27,22 +27,30 @@ const Navbar = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
   
   return (
-    <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md py-3' : 'bg-transparent py-5'}`}>
+    <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      scrolled ? 'bg-white shadow-md py-2' : 'bg-futurity-blue py-4'}`}>
       <div className="container-wide flex justify-between items-center">
         <Link to="/" className="flex items-center">
-          <span className="text-futurity-blue font-montserrat font-bold text-2xl">
-            Futurity<span className="text-futurity-orange">.</span>
+          <div className="text-orange-400 mr-1">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="8" height="8" rx="2" fill="currentColor"/>
+              <rect x="2" y="14" width="8" height="8" rx="2" fill="currentColor"/>
+              <rect x="14" y="2" width="8" height="8" rx="2" fill="currentColor"/>
+            </svg>
+          </div>
+          <span className={`font-montserrat font-bold text-2xl ${scrolled ? 'text-futurity-blue' : 'text-white'}`}>
+            FUturity<span className="text-futurity-orange">.</span>
           </span>
         </Link>
         
         <nav className="hidden md:flex items-center space-x-8">
-          <NavLinks />
-          <Button asChild variant="outline">
-            <Link to="/contact">Get in Touch</Link>
+          <NavLinks scrolled={scrolled} />
+          <Button asChild className="bg-futurity-orange hover:bg-futurity-orange/90 border-0">
+            <Link to="/contact">Get a Quote</Link>
           </Button>
         </nav>
         
-        <button className="md:hidden" onClick={toggleMenu}>
+        <button className={`md:hidden ${scrolled ? 'text-futurity-blue' : 'text-white'}`} onClick={toggleMenu}>
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
@@ -51,8 +59,8 @@ const Navbar = () => {
       <div className={`md:hidden ${isOpen ? 'block' : 'hidden'} bg-white w-full shadow-md`}>
         <div className="container py-4 flex flex-col space-y-4">
           <NavLinksMobile toggleMenu={toggleMenu} />
-          <Button asChild>
-            <Link to="/contact" onClick={toggleMenu}>Get in Touch</Link>
+          <Button asChild className="bg-futurity-orange hover:bg-futurity-orange/90 border-0">
+            <Link to="/contact" onClick={toggleMenu}>Get a Quote</Link>
           </Button>
         </div>
       </div>
@@ -60,23 +68,26 @@ const Navbar = () => {
   );
 };
 
-const NavLinks = () => {
+const NavLinks = ({ scrolled = false }: { scrolled?: boolean }) => {
   return (
     <>
-      <Link to="/" className="font-medium hover:text-futurity-orange transition-colors">
+      <Link to="/" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         Home
       </Link>
-      <Link to="/about" className="font-medium hover:text-futurity-orange transition-colors">
+      <Link to="/about" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         About
       </Link>
-      <Link to="/services" className="font-medium hover:text-futurity-orange transition-colors">
+      <Link to="/services" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         Services
       </Link>
-      <Link to="/portfolio" className="font-medium hover:text-futurity-orange transition-colors">
+      <Link to="/portfolio" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         Portfolio
       </Link>
-      <Link to="/blog" className="font-medium hover:text-futurity-orange transition-colors">
+      <Link to="/blog" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         Blog
+      </Link>
+      <Link to="/contact" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
+        Contact
       </Link>
     </>
   );
@@ -87,38 +98,45 @@ const NavLinksMobile = ({ toggleMenu }: { toggleMenu: () => void }) => {
     <>
       <Link 
         to="/" 
-        className="font-medium py-2 hover:text-futurity-orange transition-colors"
+        className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors"
         onClick={toggleMenu}
       >
         Home
       </Link>
       <Link 
         to="/about" 
-        className="font-medium py-2 hover:text-futurity-orange transition-colors"
+        className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors"
         onClick={toggleMenu}
       >
         About
       </Link>
       <Link 
         to="/services" 
-        className="font-medium py-2 hover:text-futurity-orange transition-colors"
+        className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors"
         onClick={toggleMenu}
       >
         Services
       </Link>
       <Link 
         to="/portfolio" 
-        className="font-medium py-2 hover:text-futurity-orange transition-colors"
+        className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors"
         onClick={toggleMenu}
       >
         Portfolio
       </Link>
       <Link 
         to="/blog" 
-        className="font-medium py-2 hover:text-futurity-orange transition-colors"
+        className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors"
         onClick={toggleMenu}
       >
         Blog
+      </Link>
+      <Link 
+        to="/contact" 
+        className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors"
+        onClick={toggleMenu}
+      >
+        Contact
       </Link>
     </>
   );

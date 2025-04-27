@@ -53,15 +53,15 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// Futurity custom colors
+				// Futurity custom colors - updated with new color scheme
 				futurity: {
 					blue: {
-						DEFAULT: '#1A1F2C',
-						light: '#3A4F7A'
+						DEFAULT: '#0A1840',
+						light: '#425089'
 					},
 					gray: {
 						DEFAULT: '#8E9196',
-						light: '#F1F0FB'
+						light: '#EDF1FC'
 					},
 					orange: {
 						DEFAULT: '#F97316',

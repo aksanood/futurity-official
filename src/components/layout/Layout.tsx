@@ -34,6 +34,26 @@ const Layout = ({ children }: LayoutProps) => {
     
     elements.forEach((el) => observer.observe(el));
 
+    // Make adjacent sections have alternating backgrounds
+    const applySectionAlternateBackgrounds = () => {
+      const sections = document.querySelectorAll('section');
+      sections.forEach((section, index) => {
+        // Skip sections that already have a specific background (like bg-futurity-blue)
+        if (section.classList.contains('bg-futurity-blue') || 
+            section.classList.contains('hero-main') || 
+            section.classList.contains('hero-secondary')) {
+          return;
+        }
+        
+        // Apply alternate background to even sections
+        if (index % 2 === 1) {
+          section.classList.add('section-alternate');
+        }
+      });
+    };
+    
+    applySectionAlternateBackgrounds();
+
     return () => {
       elements.forEach((el) => observer.unobserve(el));
     };

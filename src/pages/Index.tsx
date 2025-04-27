@@ -11,50 +11,68 @@ import { Layout as LayoutIcon, Smartphone, Palette, BarChart, FileSearch } from 
 const Index = () => {
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center bg-gradient-to-r from-futurity-blue to-futurity-blue-light overflow-hidden">
+      {/* Hero Section - Updated with new design */}
+      <section className="hero-main">
         <div 
           className="absolute inset-0 opacity-20"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80')",
+            backgroundImage: "url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80')",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         ></div>
-        <div className="absolute inset-0 bg-futurity-blue/60"></div>
-        <div className="container-tight relative z-10 text-center text-white">
-          <h1 className="animate-on-scroll text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-            We Craft <span className="text-futurity-orange">Digital</span> Experiences
-          </h1>
-          <p className="animate-on-scroll stagger-delay-1 text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white/90">
-            We're a full-service digital agency that helps ambitious brands achieve extraordinary results in the digital landscape.
-          </p>
-          <div className="animate-on-scroll stagger-delay-2 flex flex-col sm:flex-row justify-center gap-4 mt-8">
-            <Button asChild size="lg" className="text-base">
-              <Link to="/contact">Get Started</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="text-base">
-              <Link to="/portfolio">View Our Work</Link>
-            </Button>
+        <div className="absolute inset-0 bg-gradient-to-r from-futurity-blue to-futurity-blue/80"></div>
+        
+        <div className="container-wide grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 min-h-[90vh] py-32">
+          <div className="text-white">
+            <h1 className="animate-on-scroll text-5xl md:text-6xl font-bold mb-6 leading-tight">
+              Transform Your <span className="text-futurity-orange">Digital</span><br /> Presence
+            </h1>
+            <p className="animate-on-scroll stagger-delay-1 text-xl mb-8 max-w-2xl text-white/90">
+              We create cutting-edge digital experiences that elevate your brand, engage your audience, and drive measurable results.
+            </p>
+            <div className="animate-on-scroll stagger-delay-2 flex flex-col sm:flex-row gap-4 mt-8">
+              <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white border-0">
+                <Link to="/contact">Get Started</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-futurity-blue">
+                <Link to="/portfolio">View Our Work</Link>
+              </Button>
+            </div>
+            <div className="grid grid-cols-3 gap-8 mt-12">
+              <div>
+                <div className="text-4xl font-bold text-futurity-orange mb-2">200+</div>
+                <div className="text-white/80">Projects Completed</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-futurity-orange mb-2">95%</div>
+                <div className="text-white/80">Client Satisfaction</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-futurity-orange mb-2">10+</div>
+                <div className="text-white/80">Years Experience</div>
+              </div>
+            </div>
+          </div>
+          <div className="hidden lg:block">
+            <img 
+              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80"
+              alt="Team collaboration" 
+              className="rounded-lg shadow-xl max-w-full"
+            />
           </div>
         </div>
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-          <a 
-            href="#services" 
-            className="flex flex-col items-center text-white/80 hover:text-white transition-colors"
-          >
-            <span className="text-sm mb-2">Discover More</span>
-            <div className="w-8 h-8 border-2 border-white/60 rounded-full flex items-center justify-center">
-              <svg className="animate-bounce w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            </div>
-          </a>
+        
+        {/* Wave effect at bottom */}
+        <div className="hero-wave">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 180" fill="white">
+            <path d="M0,128L80,117.3C160,107,320,85,480,90.7C640,96,800,128,960,133.3C1120,139,1280,117,1360,106.7L1440,96L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
+          </svg>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section id="services" className="section bg-gray-50">
+      {/* Services Section - with alternating background */}
+      <section id="services" className="section">
         <div className="container-wide">
           <SectionHeading
             title="Our Services"
@@ -101,7 +119,7 @@ const Index = () => {
             <div className="animate-on-scroll stagger-delay-2 rounded-lg p-6 flex flex-col items-center justify-center text-center bg-futurity-orange/10">
               <h3 className="text-xl font-semibold mb-4">Need a Custom Solution?</h3>
               <p className="mb-6">Let's discuss how we can help you achieve your business goals.</p>
-              <Button asChild>
+              <Button asChild className="bg-futurity-orange text-white hover:bg-futurity-orange/90 border-0">
                 <Link to="/contact">Contact Us</Link>
               </Button>
             </div>
@@ -109,8 +127,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="section">
+      {/* About Section - alternating background */}
+      <section className="section section-alternate">
         <div className="container-wide grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="animate-on-scroll">
             <SectionHeading
@@ -121,10 +139,10 @@ const Index = () => {
               Founded in 2015, we've helped over 100 clients across various industries establish a strong digital presence and achieve their business objectives.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mt-8">
-              <Button asChild>
+              <Button asChild className="bg-futurity-orange text-white hover:bg-futurity-orange/90 border-0">
                 <Link to="/about">Learn More About Us</Link>
               </Button>
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" className="text-futurity-blue border-futurity-blue/30">
                 <Link to="/contact">Get in Touch</Link>
               </Button>
             </div>
@@ -142,7 +160,7 @@ const Index = () => {
       </section>
 
       {/* Portfolio Section */}
-      <section className="section bg-gray-50">
+      <section className="section">
         <div className="container-wide">
           <SectionHeading
             title="Our Recent Work"
@@ -175,15 +193,15 @@ const Index = () => {
           </div>
           
           <div className="text-center mt-12">
-            <Button asChild>
+            <Button asChild className="bg-futurity-orange text-white hover:bg-futurity-orange/90 border-0">
               <Link to="/portfolio">View All Projects</Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="section">
+      {/* Testimonials Section with star ratings */}
+      <section className="section section-alternate">
         <div className="container-wide">
           <SectionHeading
             title="What Our Clients Say"
@@ -197,6 +215,7 @@ const Index = () => {
               name="Sarah Johnson"
               position="Marketing Director"
               company="TechVision"
+              rating={5}
               className="animate-on-scroll"
             />
             <TestimonialCard
@@ -204,6 +223,7 @@ const Index = () => {
               name="Michael Chen"
               position="CEO"
               company="Eco Solutions"
+              rating={5}
               className="animate-on-scroll stagger-delay-1"
             />
             <TestimonialCard
@@ -211,6 +231,7 @@ const Index = () => {
               name="Emily Rodriguez"
               position="CMO"
               company="FinanceHub"
+              rating={4}
               className="animate-on-scroll stagger-delay-2"
             />
           </div>
@@ -218,14 +239,17 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="section bg-futurity-blue text-white">
-        <div className="container-tight text-center">
+      <section className="section bg-futurity-blue text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="h-full w-full bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+        </div>
+        <div className="container-tight text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 animate-on-scroll">Ready to Transform Your Digital Presence?</h2>
           <p className="text-xl mb-8 text-white/90 animate-on-scroll stagger-delay-1">
             Let's discuss how we can help you achieve your business goals with our digital expertise.
           </p>
           <div className="animate-on-scroll stagger-delay-2">
-            <Button asChild size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-futurity-blue">
+            <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white border-0">
               <Link to="/contact">Get Started Today</Link>
             </Button>
           </div>

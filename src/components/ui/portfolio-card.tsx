@@ -1,6 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { ExternalLink } from "lucide-react";
 
 interface PortfolioCardProps {
   image: string;
@@ -21,7 +22,7 @@ const PortfolioCard = ({
     <Link 
       to={href}
       className={cn(
-        "group block bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all",
+        "portfolio-card",
         className
       )}
     >
@@ -29,13 +30,19 @@ const PortfolioCard = ({
         <img 
           src={image} 
           alt={title} 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-futurity-blue/80 to-transparent opacity-0 group-hover:opacity-100 flex items-end p-6 transition-opacity">
-          <div className="text-white">
-            <h3 className="text-xl font-semibold mb-1">{title}</h3>
-            <p className="text-white/80">{category}</p>
-          </div>
+        <div className="absolute top-4 left-4">
+          <span className="bg-futurity-orange text-white text-sm font-medium px-2 py-1 rounded-md">
+            {category}
+          </span>
+        </div>
+      </div>
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-futurity-blue mb-2">{title}</h3>
+        <div className="flex items-center mt-4 text-futurity-blue font-medium">
+          <span>View Case Study</span>
+          <ExternalLink size={16} className="ml-1" />
         </div>
       </div>
     </Link>

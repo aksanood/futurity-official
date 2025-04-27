@@ -2,8 +2,9 @@
 import { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
-import PortfolioCard from '@/components/ui/portfolio-card';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import { ExternalLink } from 'lucide-react';
 
 // Portfolio item type
 interface PortfolioItem {
@@ -12,62 +13,75 @@ interface PortfolioItem {
   category: string;
   tags: string[];
   image: string;
+  description: string;
+  results: string[];
 }
 
 // Sample portfolio data
 const portfolioItems: PortfolioItem[] = [
   {
-    id: 'tech-vision',
-    title: 'TechVision Rebrand',
-    category: 'Web Design & Development',
-    tags: ['web', 'branding', 'ui-ux'],
-    image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80'
+    id: 'ecommerce-platform',
+    title: 'E-commerce Platform Redesign',
+    category: 'Web Development',
+    tags: ['web', 'ecommerce', 'ui-ux'],
+    image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80',
+    description: 'Complete redesign and development of an e-commerce platform, focusing on user experience and conversion optimization.',
+    results: ['40% increase in conversion rate', '25% reduction in cart abandonment']
   },
   {
-    id: 'eco-app',
-    title: 'Eco Mobile App',
-    category: 'Mobile Development',
-    tags: ['mobile', 'ui-ux'],
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80'
+    id: 'saas-marketing',
+    title: 'SaaS Marketing Campaign',
+    category: 'Digital Marketing',
+    tags: ['marketing', 'saas'],
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80',
+    description: 'Comprehensive digital marketing strategy for a SaaS product launch, including content marketing and paid advertising.',
+    results: ['150% increase in qualified leads', '200% ROI on ad spend']
   },
   {
-    id: 'finance-dashboard',
-    title: 'Finance Dashboard',
-    category: 'UI/UX & Development',
-    tags: ['web', 'ui-ux', 'dashboard'],
-    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80'
+    id: 'mobile-banking',
+    title: 'Mobile Banking App',
+    category: 'UX Design',
+    tags: ['mobile', 'ui-ux', 'finance'],
+    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+    description: 'User experience design for a mobile banking application, focusing on security and ease of use.',
+    results: ['95% user satisfaction rate', '30% increase in mobile transactions']
   },
   {
     id: 'health-app',
     title: 'Health & Wellness App',
     category: 'Mobile Development',
     tags: ['mobile', 'ui-ux', 'healthcare'],
-    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80'
+    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80',
+    description: 'Development of a comprehensive health and wellness mobile application with features for tracking fitness, nutrition, and mental wellbeing.',
+    results: ['100,000+ downloads in first month', '4.8/5 rating on app stores']
   },
   {
-    id: 'ecommerce-platform',
-    title: 'E-Commerce Platform',
-    category: 'Web Development',
-    tags: ['web', 'ecommerce'],
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80'
+    id: 'branding-tech',
+    title: 'Tech Startup Branding',
+    category: 'Branding',
+    tags: ['branding', 'design'],
+    image: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&q=80',
+    description: 'Complete brand identity development for a technology startup, including logo, color palette, typography, and brand guidelines.',
+    results: ['35% increase in brand recognition', 'Successfully secured Series A funding']
   },
   {
-    id: 'travel-guide',
+    id: 'travel-platform',
     title: 'Travel Guide Platform',
     category: 'Web & Mobile Development',
-    tags: ['web', 'mobile', 'ui-ux'],
-    image: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&q=80'
+    tags: ['web', 'mobile', 'travel'],
+    image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80',
+    description: 'Development of a cross-platform travel guide application that offers personalized recommendations and itineraries for travelers.',
+    results: ['50,000 active monthly users', '75% user retention rate']
   }
 ];
 
 // Categories for filtering
 const categories = [
   { id: 'all', name: 'All' },
-  { id: 'web', name: 'Web' },
+  { id: 'web', name: 'Web Development' },
   { id: 'mobile', name: 'Mobile' },
-  { id: 'ui-ux', name: 'UI/UX' },
-  { id: 'branding', name: 'Branding' },
-  { id: 'ecommerce', name: 'E-Commerce' }
+  { id: 'ui-ux', name: 'UX Design' },
+  { id: 'branding', name: 'Branding' }
 ];
 
 const Portfolio = () => {
@@ -87,14 +101,21 @@ const Portfolio = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-futurity-blue text-white">
+      <section className="hero-secondary">
         <div className="container-wide">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-on-scroll">Our Portfolio</h1>
             <p className="text-xl text-white/90 mb-8 animate-on-scroll stagger-delay-1">
-              Explore our latest work and see how we've helped our clients achieve their digital objectives.
+              Explore our latest work and see how we've helped businesses achieve their digital goals through innovative solutions and strategic thinking.
             </p>
           </div>
+        </div>
+        
+        {/* Wave effect at bottom */}
+        <div className="hero-wave">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 180" fill="white">
+            <path d="M0,128L80,117.3C160,107,320,85,480,90.7C640,96,800,128,960,133.3C1120,139,1280,117,1360,106.7L1440,96L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
+          </svg>
         </div>
       </section>
 
@@ -112,33 +133,59 @@ const Portfolio = () => {
             {categories.map(category => (
               <Button
                 key={category.id}
-                variant={activeFilter === category.id ? "default" : "outline"}
+                variant="ghost"
                 onClick={() => setActiveFilter(category.id)}
-                className="animate-on-scroll"
+                className={`portfolio-filter-btn animate-on-scroll ${activeFilter === category.id ? 'active' : ''}`}
               >
                 {category.name}
               </Button>
             ))}
           </div>
 
-          {/* Portfolio Grid */}
+          {/* Portfolio Grid - New Design */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredItems.slice(0, visibleItems).map((item, index) => (
-              <PortfolioCard
-                key={item.id}
-                image={item.image}
-                title={item.title}
-                category={item.category}
-                href={`/portfolio/${item.id}`}
-                className={`animate-on-scroll ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}
-              />
+              <div key={item.id} className={`portfolio-card animate-on-scroll ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}>
+                <div className="relative overflow-hidden aspect-[16/9]">
+                  <img 
+                    src={item.image} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-futurity-orange text-white text-sm font-medium px-2 py-1 rounded-md">
+                      {item.category}
+                    </span>
+                  </div>
+                </div>
+                <div className="portfolio-card-content">
+                  <h3 className="text-xl md:text-2xl font-bold mb-2 text-futurity-blue">{item.title}</h3>
+                  <p className="text-gray-600 mb-4">{item.description}</p>
+                  
+                  {/* Results */}
+                  <div className="mb-5">
+                    {item.results.map((result, idx) => (
+                      <div key={idx} className="flex items-center mb-2">
+                        <div className="h-2 w-2 rounded-full bg-futurity-orange mr-2"></div>
+                        <span className="text-sm text-gray-700">{result}</span>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* View Case Study Button */}
+                  <Link to={`/portfolio/${item.id}`} className="inline-flex items-center text-futurity-blue font-medium hover:text-futurity-orange">
+                    View Case Study 
+                    <ExternalLink size={16} className="ml-1" />
+                  </Link>
+                </div>
+              </div>
             ))}
           </div>
 
           {/* Load More Button */}
           {visibleItems < filteredItems.length && (
             <div className="text-center mt-12">
-              <Button onClick={loadMore} variant="outline" size="lg">
+              <Button onClick={loadMore} variant="outline" className="border-futurity-blue text-futurity-blue">
                 Load More Projects
               </Button>
             </div>
@@ -154,7 +201,7 @@ const Portfolio = () => {
             Ready to discuss your project? We'd love to hear about your ideas and help bring them to life.
           </p>
           <div className="animate-on-scroll stagger-delay-2">
-            <Button asChild size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-futurity-blue">
+            <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white border-0">
               <Link to="/contact">Start Your Project</Link>
             </Button>
           </div>
@@ -163,8 +210,5 @@ const Portfolio = () => {
     </Layout>
   );
 };
-
-// For React Router Link
-import { Link } from 'react-router-dom';
 
 export default Portfolio;

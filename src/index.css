@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
@@ -15,10 +16,10 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 222 70% 14%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 228 22% 95%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
@@ -83,22 +84,22 @@
   }
   
   .prose h2 {
-    @apply text-2xl md:text-3xl font-bold mb-4 mt-8;
+    @apply text-xl md:text-2xl font-bold mb-4 mt-8;
   }
   .prose h3 {
-    @apply text-xl md:text-2xl font-bold mb-3 mt-6;
-  }
-  .prose h4 {
     @apply text-lg md:text-xl font-bold mb-3 mt-6;
   }
+  .prose h4 {
+    @apply text-base md:text-lg font-bold mb-3 mt-6;
+  }
   .prose h5 {
-    @apply text-base md:text-lg font-bold mb-2 mt-4;
+    @apply text-base font-bold mb-2 mt-4;
   }
   .prose h6 {
-    @apply text-sm md:text-base font-bold mb-2 mt-4;
+    @apply text-sm font-bold mb-2 mt-4;
   }
   p {
-    @apply text-base md:text-lg leading-relaxed;
+    @apply text-base leading-relaxed;
   }
 }
 
@@ -111,6 +112,36 @@
   }
   .section {
     @apply py-12 md:py-16 lg:py-24;
+  }
+  .section-alternate {
+    @apply bg-futurity-gray-light;
+  }
+  
+  /* Portfolio card styles */
+  .portfolio-card {
+    @apply bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300;
+  }
+  .portfolio-card-content {
+    @apply p-6;
+  }
+  
+  /* Testimonial card with stars */
+  .testimonial-card {
+    @apply bg-white rounded-lg p-6 shadow-md;
+  }
+  .star-rating {
+    @apply flex space-x-1 mb-4;
+  }
+  
+  /* Hero styles */
+  .hero-main {
+    @apply bg-futurity-blue text-white py-20 md:py-32 relative overflow-hidden;
+  }
+  .hero-secondary {
+    @apply bg-futurity-blue text-white py-16 md:py-24 relative overflow-hidden;
+  }
+  .hero-wave {
+    @apply absolute bottom-0 left-0 right-0;
   }
 }
 
@@ -136,4 +167,13 @@
 
 .stagger-delay-3 {
   transition-delay: 0.3s;
+}
+
+/* Portfolio filter button fix */
+.portfolio-filter-btn {
+  @apply bg-white text-futurity-blue border border-futurity-blue/20 hover:bg-futurity-blue hover:text-white transition-colors;
+}
+
+.portfolio-filter-btn.active {
+  @apply bg-futurity-blue text-white;
 }
