@@ -10,6 +10,19 @@ interface CreateReviewDTO {
   featured_image?: string;
 }
 
+interface Review {
+  id: string;
+  name: string;
+  company: string;
+  position: string;
+  content: string;
+  rating: number;
+  featured_image?: string;
+  status: 'pending' | 'approved' | 'rejected';
+  created_at: string;
+  updated_at: string;
+}
+
 export const reviewsService = {
   createReview: async (review: CreateReviewDTO) => {
     const { data, error } = await supabase
@@ -19,7 +32,7 @@ export const reviewsService = {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as Review;
   },
 
   getPublicReviews: async () => {
@@ -30,7 +43,7 @@ export const reviewsService = {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data;
+    return data as Review[];
   },
 
   getAllReviews: async () => {
@@ -40,7 +53,7 @@ export const reviewsService = {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data;
+    return data as Review[];
   },
 
   updateReviewStatus: async (id: string, status: 'pending' | 'approved' | 'rejected') => {
@@ -52,6 +65,6 @@ export const reviewsService = {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as Review;
   }
 };

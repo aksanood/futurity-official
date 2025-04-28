@@ -10,6 +10,19 @@ interface CreateInquiryDTO {
   source: string;
 }
 
+interface Inquiry {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  message: string;
+  source: string;
+  status: 'new' | 'contacted' | 'resolved';
+  created_at: string;
+  updated_at: string;
+}
+
 export const inquiriesService = {
   createInquiry: async (inquiry: CreateInquiryDTO) => {
     const { data, error } = await supabase
@@ -19,7 +32,7 @@ export const inquiriesService = {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as Inquiry;
   },
 
   getAllInquiries: async () => {
@@ -29,7 +42,7 @@ export const inquiriesService = {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data;
+    return data as Inquiry[];
   },
 
   updateInquiryStatus: async (id: string, status: 'new' | 'contacted' | 'resolved') => {
@@ -41,6 +54,6 @@ export const inquiriesService = {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as Inquiry;
   }
 };

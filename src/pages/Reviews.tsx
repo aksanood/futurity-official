@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Layout from '@/components/layout/Layout';
@@ -8,6 +9,19 @@ import { Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import TestimonialCard from '@/components/ui/testimonial-card';
 import { reviewsService } from '@/services/reviewsService';
+
+interface Review {
+  id: string;
+  name: string;
+  company: string;
+  position: string;
+  content: string;
+  rating: number;
+  featured_image?: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
 
 const Reviews = () => {
   const { toast } = useToast();
@@ -21,7 +35,7 @@ const Reviews = () => {
     content: ''
   });
 
-  const { data: reviews } = useQuery({
+  const { data: reviews } = useQuery<Review[]>({
     queryKey: ['public-reviews'],
     queryFn: reviewsService.getPublicReviews
   });

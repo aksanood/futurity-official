@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +16,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import DashboardPosts from "./pages/dashboard/DashboardPosts";
 import DashboardPortfolio from "./pages/dashboard/DashboardPortfolio";
 import DashboardInquiries from "./pages/dashboard/DashboardInquiries";
+import DashboardReviews from "./pages/dashboard/DashboardReviews";
 import DashboardAnalytics from "./pages/dashboard/DashboardAnalytics";
 
 // Blog Pages

@@ -27,6 +27,17 @@ import { Check, Search, Star, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { reviewsService } from '@/services/reviewsService';
 
+interface Review {
+  id: string;
+  name: string;
+  company: string;
+  position: string;
+  content: string;
+  rating: number;
+  status: 'pending' | 'approved' | 'rejected';
+  created_at: string;
+}
+
 const DashboardReviews = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -37,7 +48,7 @@ const DashboardReviews = () => {
     queryFn: reviewsService.getAllReviews
   });
 
-  const handleStatusChange = async (id: string, status: 'approved' | 'rejected') => {
+  const handleStatusChange = async (id: string, status: 'pending' | 'approved' | 'rejected') => {
     try {
       await reviewsService.updateReviewStatus(id, status);
       await refetch();

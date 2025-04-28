@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Search, Trash, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,20 +25,23 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { useQuery } from '@tanstack/react-query';
 import { inquiriesService } from '@/services/inquiriesService';
+import { format } from 'date-fns';
 
 interface Inquiry {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   subject: string;
   message: string;
-  status: 'New' | 'Contacted' | 'Resolved';
-  date: string;
+  status: 'new' | 'contacted' | 'resolved';
   source: string;
+  created_at: string;
+  updated_at: string;
 }
 
 const DashboardInquiries = () => {
@@ -73,22 +77,11 @@ const DashboardInquiries = () => {
   const handleDeleteInquiry = () => {
     if (deleteInquiryId) {
       // In a real app, this would call an API endpoint
-      // const index = inquiries.findIndex(item => item.id === deleteInquiryId);
-      
-      // if (index !== -1) {
-      //   inquiries.splice(index, 1);
-        
-      //   toast({
-      //     title: "Inquiry deleted",
-      //     description: "The inquiry has been deleted successfully.",
-      //   });
-        
-      //   setDeleteInquiryId(null);
-      // }
-        toast({
-          title: "Not implemented",
-          description: "This functionality is not implemented yet.",
-        });
+      toast({
+        title: "Not implemented",
+        description: "This functionality is not implemented yet.",
+      });
+      setDeleteInquiryId(null);
     }
   };
   
@@ -98,9 +91,9 @@ const DashboardInquiries = () => {
   
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'New': return 'bg-blue-100 text-blue-800';
-      case 'Contacted': return 'bg-yellow-100 text-yellow-800';
-      case 'Resolved': return 'bg-green-100 text-green-800';
+      case 'new': return 'bg-blue-100 text-blue-800';
+      case 'contacted': return 'bg-yellow-100 text-yellow-800';
+      case 'resolved': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -136,23 +129,23 @@ const DashboardInquiries = () => {
             All
           </Button>
           <Button 
-            variant={statusFilter === 'New' ? 'default' : 'outline'}
+            variant={statusFilter === 'new' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setStatusFilter('New')}
+            onClick={() => setStatusFilter('new')}
           >
             New
           </Button>
           <Button 
-            variant={statusFilter === 'Contacted' ? 'default' : 'outline'}
+            variant={statusFilter === 'contacted' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setStatusFilter('Contacted')}
+            onClick={() => setStatusFilter('contacted')}
           >
             Contacted
           </Button>
           <Button 
-            variant={statusFilter === 'Resolved' ? 'default' : 'outline'}
+            variant={statusFilter === 'resolved' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setStatusFilter('Resolved')}
+            onClick={() => setStatusFilter('resolved')}
           >
             Resolved
           </Button>
@@ -172,7 +165,7 @@ const DashboardInquiries = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredInquiries?.map((inquiry: any) => (
+            {filteredInquiries?.map((inquiry) => (
               <TableRow key={inquiry.id}>
                 <TableCell>{inquiry.name}</TableCell>
                 <TableCell className="hidden md:table-cell">{inquiry.email}</TableCell>
@@ -189,7 +182,9 @@ const DashboardInquiries = () => {
                     {inquiry.status}
                   </span>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">{inquiry.date}</TableCell>
+                <TableCell className="hidden md:table-cell">
+                  {format(new Date(inquiry.created_at), 'MMM d, yyyy')}
+                </TableCell>
                 <TableCell className="text-right">
                   <Button 
                     variant="ghost" 
@@ -249,7 +244,8 @@ const DashboardInquiries = () => {
                 <span className="text-sm text-gray-500">Source:</span> {currentInquiry?.source}
               </div>
               <div>
-                <span className="text-sm text-gray-500">Date:</span> {currentInquiry?.date}
+                <span className="text-sm text-gray-500">Date:</span>{' '}
+                {currentInquiry && format(new Date(currentInquiry.created_at), 'MMM d, yyyy')}
               </div>
             </div>
             
@@ -263,21 +259,21 @@ const DashboardInquiries = () => {
               <span className="text-sm font-medium">Status:</span>
               <div className="mt-2 flex flex-wrap gap-2">
                 <Badge 
-                  variant={currentInquiry?.status === 'New' ? 'default' : 'outline'}
+                  variant={currentInquiry?.status === 'new' ? 'default' : 'outline'}
                   className="cursor-pointer"
                   onClick={() => currentInquiry && handleStatusChange(currentInquiry.id, 'new')}
                 >
                   New
                 </Badge>
                 <Badge 
-                  variant={currentInquiry?.status === 'Contacted' ? 'default' : 'outline'}
+                  variant={currentInquiry?.status === 'contacted' ? 'default' : 'outline'}
                   className="cursor-pointer"
                   onClick={() => currentInquiry && handleStatusChange(currentInquiry.id, 'contacted')}
                 >
                   Contacted
                 </Badge>
                 <Badge 
-                  variant={currentInquiry?.status === 'Resolved' ? 'default' : 'outline'}
+                  variant={currentInquiry?.status === 'resolved' ? 'default' : 'outline'}
                   className="cursor-pointer"
                   onClick={() => currentInquiry && handleStatusChange(currentInquiry.id, 'resolved')}
                 >
