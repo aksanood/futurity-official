@@ -1,19 +1,69 @@
-
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Star } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import TestimonialCard from '@/components/ui/testimonial-card';
+import { reviewsService } from '@/services/reviewsService';
 
 const Reviews = () => {
+  const { toast } = useToast();
   const [rating, setRating] = useState(5);
   const [hoveredRating, setHoveredRating] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    company: '',
+    position: '',
+    content: ''
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { data: reviews } = useQuery({
+    queryKey: ['public-reviews'],
+    queryFn: reviewsService.getPublicReviews
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
+    setIsSubmitting(true);
+    
+    try {
+      await reviewsService.createReview({
+        ...formData,
+        rating
+      });
+      
+      toast({
+        title: "Review Submitted!",
+        description: "Thank you for your review. It will be published after moderation.",
+      });
+      
+      // Reset form
+      setFormData({
+        name: '',
+        company: '',
+        position: '',
+        content: ''
+      });
+      setRating(5);
+      
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was a problem submitting your review. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -37,27 +87,52 @@ const Reviews = () => {
 
       <div className="container-wide py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Review Form */}
           <div>
             <h2 className="text-2xl font-bold mb-6">Share Your Experience</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium mb-2">Your Name</label>
-                <Input type="text" placeholder="John Doe" required />
+                <label htmlFor="name" className="block text-sm font-medium mb-2">
+                  Your Name <span className="text-futurity-orange">*</span>
+                </label>
+                <Input
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Company</label>
-                <Input type="text" placeholder="Company Name" required />
+                <label htmlFor="company" className="block text-sm font-medium mb-2">
+                  Company <span className="text-futurity-orange">*</span>
+                </label>
+                <Input
+                  id="company"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Your Position</label>
-                <Input type="text" placeholder="CEO" required />
+                <label htmlFor="position" className="block text-sm font-medium mb-2">
+                  Your Position <span className="text-futurity-orange">*</span>
+                </label>
+                <Input
+                  id="position"
+                  name="position"
+                  value={formData.position}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Rating</label>
+                <label className="block text-sm font-medium mb-2">
+                  Rating <span className="text-futurity-orange">*</span>
+                </label>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -79,38 +154,41 @@ const Reviews = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Your Review</label>
-                <Textarea 
-                  placeholder="Share your experience working with us..."
-                  className="min-h-[150px]"
+                <label htmlFor="content" className="block text-sm font-medium mb-2">
+                  Your Review <span className="text-futurity-orange">*</span>
+                </label>
+                <Textarea
+                  id="content"
+                  name="content"
+                  rows={5}
+                  value={formData.content}
+                  onChange={handleChange}
                   required
                 />
               </div>
               
-              <Button type="submit" className="w-full">
-                Submit Review
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Submitting...' : 'Submit Review'}
               </Button>
             </form>
           </div>
           
-          {/* Recent Reviews */}
           <div>
             <h2 className="text-2xl font-bold mb-6">Recent Reviews</h2>
             <div className="space-y-6">
-              <TestimonialCard
-                quote="Working with this team has been an absolute pleasure. They delivered beyond our expectations."
-                name="Sarah Johnson"
-                position="Marketing Director"
-                company="TechVision"
-                rating={5}
-              />
-              <TestimonialCard
-                quote="Exceptional service and amazing results. Would highly recommend!"
-                name="Michael Chen"
-                position="CEO"
-                company="Eco Solutions"
-                rating={5}
-              />
+              {reviews?.map((review) => (
+                <TestimonialCard
+                  key={review.id}
+                  quote={review.content}
+                  name={review.name}
+                  position={review.position}
+                  company={review.company}
+                  rating={review.rating}
+                />
+              ))}
+              {!reviews?.length && (
+                <p className="text-gray-500 text-center py-8">No reviews yet. Be the first to share your experience!</p>
+              )}
             </div>
           </div>
         </div>

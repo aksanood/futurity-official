@@ -82,8 +82,13 @@ const NavLinks = ({ scrolled = false }: { scrolled?: boolean }) => {
       <Link to="/portfolio" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         Portfolio
       </Link>
-      <Link to="/reviews" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
-        Customer Review
+      <Link 
+        to="/reviews" 
+        className={`font-medium transition-colors ${
+          scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'
+        }`}
+      >
+        Customer Reviews
       </Link>
       <Link to="/blog" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         Blog
@@ -131,7 +136,7 @@ const NavLinksMobile = ({ toggleMenu }: { toggleMenu: () => void }) => {
         className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors"
         onClick={toggleMenu}
       >
-        Customer Review
+        Customer Reviews
       </Link>
       <Link 
         to="/blog" 

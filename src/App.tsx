@@ -59,6 +59,7 @@ const App = () => (
           <Route path="/dashboard/portfolio/new" element={<PortfolioItemForm />} />
           <Route path="/dashboard/portfolio/edit/:id" element={<PortfolioItemForm />} />
           <Route path="/dashboard/inquiries" element={<DashboardInquiries />} />
+          <Route path="/dashboard/reviews" element={<DashboardReviews />} />
           <Route path="/dashboard/analytics" element={<DashboardAnalytics />} />
           
           {/* Add new routes */}

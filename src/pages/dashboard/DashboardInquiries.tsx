@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Search, Trash, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -27,6 +26,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useToast } from '@/components/ui/use-toast';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
+import { useQuery } from '@tanstack/react-query';
+import { inquiriesService } from '@/services/inquiriesService';
 
 interface Inquiry {
   id: string;
@@ -39,67 +40,32 @@ interface Inquiry {
   source: string;
 }
 
-// Mock data - would come from API/database in production
-const inquiries: Inquiry[] = [
-  {
-    id: '1',
-    name: 'John Smith',
-    email: 'john.smith@example.com',
-    subject: 'Website Redesign Inquiry',
-    message: 'We are looking to redesign our company website which currently has about 20 pages. We would like to modernize the design and make it mobile-friendly. Could you provide us with a quote and timeline for this project?',
-    status: 'New',
-    date: '2025-04-20',
-    source: 'Contact Page'
-  },
-  {
-    id: '2',
-    name: 'Sarah Johnson',
-    email: 'sarah.j@techinnovate.com',
-    subject: 'SEO Services',
-    message: 'Hi there, I\'m interested in your SEO services. Our website has been experiencing a drop in organic traffic over the past few months and we\'d like to explore solutions to address this issue.',
-    status: 'Contacted',
-    date: '2025-04-18',
-    source: 'Services Page'
-  },
-  {
-    id: '3',
-    name: 'Michael Brown',
-    email: 'mbrown@retailgroup.net',
-    subject: 'E-commerce Integration',
-    message: 'We\'re looking to add e-commerce functionality to our existing website. We have approximately 150 products and would need inventory management, payment processing, and integration with our CRM system.',
-    status: 'Resolved',
-    date: '2025-04-15',
-    source: 'Contact Page'
-  },
-  {
-    id: '4',
-    name: 'Emma Wilson',
-    email: 'ewilson@startupventures.co',
-    subject: 'App Development Quote',
-    message: 'I\'m the founder of a startup in the fitness industry, and we\'re looking to develop a mobile app for workout tracking. I\'d like to discuss the features, potential costs, and timeline for development.',
-    status: 'New',
-    date: '2025-04-12',
-    source: 'Portfolio Page'
-  }
-];
-
 const DashboardInquiries = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
   const [deleteInquiryId, setDeleteInquiryId] = useState<string | null>(null);
   const [currentInquiry, setCurrentInquiry] = useState<Inquiry | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
+
+  const { data: inquiries, refetch } = useQuery({
+    queryKey: ['inquiries'],
+    queryFn: inquiriesService.getAllInquiries
+  });
   
-  const handleStatusChange = (inquiryId: string, newStatus: 'New' | 'Contacted' | 'Resolved') => {
-    // In a real app, this would call an API endpoint
-    const index = inquiries.findIndex(item => item.id === inquiryId);
-    
-    if (index !== -1) {
-      inquiries[index].status = newStatus;
+  const handleStatusChange = async (inquiryId: string, newStatus: 'new' | 'contacted' | 'resolved') => {
+    try {
+      await inquiriesService.updateInquiryStatus(inquiryId, newStatus);
+      await refetch();
       
       toast({
         title: "Status updated",
         description: `Inquiry has been marked as ${newStatus.toLowerCase()}.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update inquiry status.",
+        variant: "destructive"
       });
     }
   };
@@ -107,18 +73,22 @@ const DashboardInquiries = () => {
   const handleDeleteInquiry = () => {
     if (deleteInquiryId) {
       // In a real app, this would call an API endpoint
-      const index = inquiries.findIndex(item => item.id === deleteInquiryId);
+      // const index = inquiries.findIndex(item => item.id === deleteInquiryId);
       
-      if (index !== -1) {
-        inquiries.splice(index, 1);
+      // if (index !== -1) {
+      //   inquiries.splice(index, 1);
         
+      //   toast({
+      //     title: "Inquiry deleted",
+      //     description: "The inquiry has been deleted successfully.",
+      //   });
+        
+      //   setDeleteInquiryId(null);
+      // }
         toast({
-          title: "Inquiry deleted",
-          description: "The inquiry has been deleted successfully.",
+          title: "Not implemented",
+          description: "This functionality is not implemented yet.",
         });
-        
-        setDeleteInquiryId(null);
-      }
     }
   };
   
@@ -136,7 +106,7 @@ const DashboardInquiries = () => {
   };
   
   const filteredInquiries = inquiries
-    .filter(inquiry => 
+    ?.filter(inquiry => 
       (inquiry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
        inquiry.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
        inquiry.subject.toLowerCase().includes(searchTerm.toLowerCase())) &&
@@ -202,7 +172,7 @@ const DashboardInquiries = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredInquiries.map((inquiry) => (
+            {filteredInquiries?.map((inquiry: any) => (
               <TableRow key={inquiry.id}>
                 <TableCell>{inquiry.name}</TableCell>
                 <TableCell className="hidden md:table-cell">{inquiry.email}</TableCell>
@@ -295,21 +265,21 @@ const DashboardInquiries = () => {
                 <Badge 
                   variant={currentInquiry?.status === 'New' ? 'default' : 'outline'}
                   className="cursor-pointer"
-                  onClick={() => currentInquiry && handleStatusChange(currentInquiry.id, 'New')}
+                  onClick={() => currentInquiry && handleStatusChange(currentInquiry.id, 'new')}
                 >
                   New
                 </Badge>
                 <Badge 
                   variant={currentInquiry?.status === 'Contacted' ? 'default' : 'outline'}
                   className="cursor-pointer"
-                  onClick={() => currentInquiry && handleStatusChange(currentInquiry.id, 'Contacted')}
+                  onClick={() => currentInquiry && handleStatusChange(currentInquiry.id, 'contacted')}
                 >
                   Contacted
                 </Badge>
                 <Badge 
                   variant={currentInquiry?.status === 'Resolved' ? 'default' : 'outline'}
                   className="cursor-pointer"
-                  onClick={() => currentInquiry && handleStatusChange(currentInquiry.id, 'Resolved')}
+                  onClick={() => currentInquiry && handleStatusChange(currentInquiry.id, 'resolved')}
                 >
                   Resolved
                 </Badge>

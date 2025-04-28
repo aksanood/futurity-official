@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -6,8 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { inquiriesService } from '@/services/inquiriesService';
 
-// Form state type
 interface FormState {
   name: string;
   email: string;
@@ -32,17 +31,21 @@ const Contact = () => {
     setFormState(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      await inquiriesService.createInquiry({
+        ...formState,
+        source: 'Contact Page'
+      });
+      
       toast({
         title: "Message Sent!",
         description: "Thank you for your message. We'll respond within 24 hours.",
       });
+      
       setFormState({
         name: '',
         email: '',
@@ -50,7 +53,15 @@ const Contact = () => {
         subject: '',
         message: ''
       });
-    }, 1500);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was a problem sending your message. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -229,7 +240,6 @@ const Contact = () => {
   );
 };
 
-// Helper components
 interface ContactInfoItemProps {
   icon: React.ReactNode;
   title: string;
