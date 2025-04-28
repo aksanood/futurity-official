@@ -1,5 +1,8 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
+
+type InquiryRow = Database["public"]["Tables"]["inquiries"]["Row"];
 
 interface CreateInquiryDTO {
   name: string;
@@ -10,18 +13,7 @@ interface CreateInquiryDTO {
   source: string;
 }
 
-interface Inquiry {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  subject: string;
-  message: string;
-  source: string;
-  status: 'new' | 'contacted' | 'resolved';
-  created_at: string;
-  updated_at: string;
-}
+export type Inquiry = InquiryRow;
 
 export const inquiriesService = {
   createInquiry: async (inquiry: CreateInquiryDTO) => {
@@ -35,20 +27,20 @@ export const inquiriesService = {
       console.error('Error creating inquiry:', error);
       throw error;
     }
-    return data as Inquiry;
+    return data;
   },
 
   getAllInquiries: async () => {
     const { data, error } = await supabase
       .from('inquiries')
-      .select('*')
+      .select()
       .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching inquiries:', error);
       throw error;
     }
-    return data as Inquiry[];
+    return data;
   },
 
   updateInquiryStatus: async (id: string, status: 'new' | 'contacted' | 'resolved') => {
@@ -63,6 +55,6 @@ export const inquiriesService = {
       console.error('Error updating inquiry status:', error);
       throw error;
     }
-    return data as Inquiry;
+    return data;
   }
 };

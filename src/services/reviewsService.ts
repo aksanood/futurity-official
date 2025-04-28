@@ -1,5 +1,8 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
+
+type ReviewRow = Database["public"]["Tables"]["reviews"]["Row"];
 
 interface CreateReviewDTO {
   name: string;
@@ -10,18 +13,7 @@ interface CreateReviewDTO {
   featured_image?: string;
 }
 
-interface Review {
-  id: string;
-  name: string;
-  company: string;
-  position: string;
-  content: string;
-  rating: number;
-  featured_image?: string;
-  status: 'pending' | 'approved' | 'rejected';
-  created_at: string;
-  updated_at: string;
-}
+export type Review = ReviewRow;
 
 export const reviewsService = {
   createReview: async (review: CreateReviewDTO) => {
@@ -35,13 +27,13 @@ export const reviewsService = {
       console.error('Error creating review:', error);
       throw error;
     }
-    return data as Review;
+    return data;
   },
 
   getPublicReviews: async () => {
     const { data, error } = await supabase
       .from('reviews')
-      .select('*')
+      .select()
       .eq('status', 'approved')
       .order('created_at', { ascending: false });
 
@@ -49,20 +41,20 @@ export const reviewsService = {
       console.error('Error fetching public reviews:', error);
       throw error;
     }
-    return data as Review[];
+    return data;
   },
 
   getAllReviews: async () => {
     const { data, error } = await supabase
       .from('reviews')
-      .select('*')
+      .select()
       .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching all reviews:', error);
       throw error;
     }
-    return data as Review[];
+    return data;
   },
 
   updateReviewStatus: async (id: string, status: 'pending' | 'approved' | 'rejected') => {
@@ -77,6 +69,6 @@ export const reviewsService = {
       console.error('Error updating review status:', error);
       throw error;
     }
-    return data as Review;
+    return data;
   }
 };
