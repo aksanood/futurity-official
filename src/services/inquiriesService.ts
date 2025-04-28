@@ -31,7 +31,10 @@ export const inquiriesService = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error creating inquiry:', error);
+      throw error;
+    }
     return data as Inquiry;
   },
 
@@ -41,7 +44,10 @@ export const inquiriesService = {
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching inquiries:', error);
+      throw error;
+    }
     return data as Inquiry[];
   },
 
@@ -53,7 +59,10 @@ export const inquiriesService = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error updating inquiry status:', error);
+      throw error;
+    }
     return data as Inquiry;
   }
 };

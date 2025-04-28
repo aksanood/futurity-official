@@ -31,7 +31,10 @@ export const reviewsService = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error creating review:', error);
+      throw error;
+    }
     return data as Review;
   },
 
@@ -42,7 +45,10 @@ export const reviewsService = {
       .eq('status', 'approved')
       .order('created_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching public reviews:', error);
+      throw error;
+    }
     return data as Review[];
   },
 
@@ -52,7 +58,10 @@ export const reviewsService = {
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching all reviews:', error);
+      throw error;
+    }
     return data as Review[];
   },
 
@@ -64,7 +73,10 @@ export const reviewsService = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error updating review status:', error);
+      throw error;
+    }
     return data as Review;
   }
 };
