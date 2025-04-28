@@ -28,21 +28,22 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from '@/hooks/use-toast';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { useQuery } from '@tanstack/react-query';
-import { inquiriesService } from '@/services/inquiriesService';
+import { Inquiry, inquiriesService } from '@/services/inquiriesService';
 import { format } from 'date-fns';
 
-interface Inquiry {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  subject: string;
-  message: string;
-  status: 'new' | 'contacted' | 'resolved';
-  source: string;
-  created_at: string;
-  updated_at: string;
-}
+// We'll use the type directly from inquiriesService.ts instead
+// interface Inquiry {
+//   id: string;
+//   name: string;
+//   email: string;
+//   phone?: string;
+//   subject: string;
+//   message: string;
+//   status: 'new' | 'contacted' | 'resolved';
+//   source: string;
+//   created_at: string;
+//   updated_at: string;
+// }
 
 const DashboardInquiries = () => {
   const [searchTerm, setSearchTerm] = useState('');

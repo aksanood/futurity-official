@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
 
 type ReviewRow = Database["public"]["Tables"]["reviews"]["Row"];
+type ReviewStatus = 'pending' | 'approved' | 'rejected';
 
 interface CreateReviewDTO {
   name: string;
@@ -13,7 +14,10 @@ interface CreateReviewDTO {
   featured_image?: string;
 }
 
-export type Review = ReviewRow;
+// Extending the Supabase type to ensure our expected status types
+export interface Review extends Omit<ReviewRow, 'status'> {
+  status: ReviewStatus;
+}
 
 export const reviewsService = {
   createReview: async (review: CreateReviewDTO) => {
@@ -27,7 +31,7 @@ export const reviewsService = {
       console.error('Error creating review:', error);
       throw error;
     }
-    return data;
+    return data as Review;
   },
 
   getPublicReviews: async () => {
@@ -41,7 +45,7 @@ export const reviewsService = {
       console.error('Error fetching public reviews:', error);
       throw error;
     }
-    return data;
+    return data as Review[];
   },
 
   getAllReviews: async () => {
@@ -54,10 +58,10 @@ export const reviewsService = {
       console.error('Error fetching all reviews:', error);
       throw error;
     }
-    return data;
+    return data as Review[];
   },
 
-  updateReviewStatus: async (id: string, status: 'pending' | 'approved' | 'rejected') => {
+  updateReviewStatus: async (id: string, status: ReviewStatus) => {
     const { data, error } = await supabase
       .from('reviews')
       .update({ status })
@@ -69,6 +73,6 @@ export const reviewsService = {
       console.error('Error updating review status:', error);
       throw error;
     }
-    return data;
+    return data as Review;
   }
 };
