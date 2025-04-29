@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react';
@@ -205,7 +204,7 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({ post, onSave }) => {
           <div className="grid gap-2">
             <Label htmlFor="content">Content</Label>
             <Editor
-              apiKey="YOUR_API_KEY"
+              apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
               textareaName="content"
               onEditorChange={(content) => formik.setFieldValue('content', content)}
               initialValue={formik.values.content}

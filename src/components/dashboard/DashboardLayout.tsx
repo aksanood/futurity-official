@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -8,7 +7,8 @@ import {
   MessageSquare, 
   BarChart,
   Menu,
-  X
+  X,
+  Star
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -44,6 +44,11 @@ const DashboardLayout = ({ children, title, subtitle }: DashboardLayoutProps) =>
       title: 'Inquiries',
       icon: MessageSquare,
       href: '/dashboard/inquiries',
+    },
+    {
+      title: 'Reviews',
+      icon: Star,
+      href: '/dashboard/reviews',
     },
     {
       title: 'Analytics',
