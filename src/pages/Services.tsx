@@ -1,10 +1,10 @@
-
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import ServiceCard from '@/components/ui/service-card';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Accordion } from '@/components/ui/accordion';
+import AccordionServiceItem from '@/components/ui/accordion-service-item';
 import { 
   CheckCircle, 
   LayoutDashboard, 
@@ -130,7 +130,7 @@ const Services = () => {
             />
             
             <ServiceCard 
-              icon={<Robot />}
+              icon={<Bot />}
               title="AI Development"
               description="Custom AI solutions that automate processes, generate insights, and create personalized experiences."
               href="#ai-development"
