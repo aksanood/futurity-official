@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +21,15 @@ import DashboardPortfolio from "./pages/dashboard/DashboardPortfolio";
 import DashboardInquiries from "./pages/dashboard/DashboardInquiries";
 import DashboardReviews from "./pages/dashboard/DashboardReviews";
 import DashboardAnalytics from "./pages/dashboard/DashboardAnalytics";
+
+// Service Pages
+import WebDesignPage from "./pages/services/WebDesign";
+import WebDevelopmentPage from "./pages/services/WebDevelopment";
+import UiUxDesignPage from "./pages/services/UiUxDesign";
+import DigitalMarketingPage from "./pages/services/DigitalMarketing";
+import BrandingServicesPage from "./pages/services/BrandingServices"; 
+import ContentWritingPage from "./pages/services/ContentWriting";
+import AiDevelopmentPage from "./pages/services/AiDevelopment";
 
 // Blog Pages
 import Blog from "./pages/Blog";
@@ -48,6 +58,15 @@ const App = () => (
             <Route path="/services" element={<Services />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/contact" element={<Contact />} />
+            
+            {/* Service Detail Pages */}
+            <Route path="/services/web-design" element={<WebDesignPage />} />
+            <Route path="/services/web-development" element={<WebDevelopmentPage />} />
+            <Route path="/services/ui-ux-design" element={<UiUxDesignPage />} />
+            <Route path="/services/digital-marketing" element={<DigitalMarketingPage />} />
+            <Route path="/services/branding-services" element={<BrandingServicesPage />} />
+            <Route path="/services/content-writing" element={<ContentWritingPage />} />
+            <Route path="/services/ai-development" element={<AiDevelopmentPage />} />
             
             {/* Blog Routes */}
             <Route path="/blog" element={<Blog />} />
