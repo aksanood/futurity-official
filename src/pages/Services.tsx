@@ -1,4 +1,3 @@
-
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
@@ -20,7 +19,7 @@ import {
   Book,
   FileText,
   Edit,
-  Robot,
+  Bot,
   Image,
   Cpu
 } from 'lucide-react';
@@ -466,7 +465,7 @@ const Services = () => {
                 />
                 
                 <AccordionServiceItem 
-                  icon={<Robot size={18} />} 
+                  icon={<Bot size={18} />} 
                   title="AI Agents" 
                   content="We create AI agents that can perform tasks, make decisions, and interact with users in a natural way."
                 />
