@@ -384,6 +384,45 @@ const Services = () => {
         </div>
       </section>
 
+      {/* Web Design Service */}
+      <section id="web-design" className="section bg-gray-50">
+        <div className="container-wide">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="animate-on-scroll">
+              <h2 className="text-3xl font-bold mb-4">Web Design</h2>
+              <p className="text-lg mb-6 text-futurity-gray">
+                Our web design services focus on creating visually stunning websites that captivate your audience and drive conversions.
+              </p>
+              
+              <div className="space-y-3 mt-6 mb-8">
+                <BenefitItem text="Custom website design" />
+                <BenefitItem text="Responsive designs for all devices" />
+                <BenefitItem text="User experience focused designs" />
+                <BenefitItem text="Brand-aligned visual elements" />
+                <BenefitItem text="SEO-friendly architecture" />
+                <BenefitItem text="Conversion-optimized layouts" />
+              </div>
+              
+              <Button asChild>
+                <Link to="/services/web-design">Learn More</Link>
+              </Button>
+            </div>
+            
+            <div className="animate-on-scroll stagger-delay-1">
+              <div className="relative">
+                <div className="absolute -top-4 -left-4 w-32 h-32 bg-futurity-orange/10 rounded-lg z-0"></div>
+                <img 
+                  src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&q=80"
+                  alt="Web Design" 
+                  className="rounded-lg shadow-lg relative z-10 w-full"
+                />
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-futurity-blue/10 rounded-lg z-0"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="section bg-futurity-blue text-white">
         <div className="container-tight text-center">
@@ -430,30 +469,6 @@ const ServiceIconCard = ({
       )}
       <h3 className={`font-semibold ${titleOnly ? 'text-futurity-orange' : ''}`}>{title}</h3>
     </div>
-  );
-};
-
-const AccordionServiceItem = ({ 
-  icon, 
-  title, 
-  content 
-}: { 
-  icon: React.ReactNode;
-  title: string;
-  content: string;
-}) => {
-  return (
-    <AccordionItem value={title.toLowerCase().replace(/\s+/g, '-')}>
-      <AccordionTrigger className="hover:no-underline">
-        <div className="flex items-center gap-2 text-left">
-          <span className="text-futurity-orange">{icon}</span>
-          <span>{title}</span>
-        </div>
-      </AccordionTrigger>
-      <AccordionContent>
-        <p className="pl-8">{content}</p>
-      </AccordionContent>
-    </AccordionItem>
   );
 };
 
