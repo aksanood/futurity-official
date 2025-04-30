@@ -1,3 +1,4 @@
+
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
@@ -76,7 +77,7 @@ const Services = () => {
                 title="Content Writing"
               />
               <ServiceIconCard
-                icon={<Robot size={28} />}
+                icon={<Bot size={28} />}
                 title="AI Development"
               />
               <ServiceIconCard
