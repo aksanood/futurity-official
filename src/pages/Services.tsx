@@ -1,3 +1,4 @@
+
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
@@ -579,30 +580,6 @@ const ServiceIconCard = ({
       )}
       <h3 className={`font-semibold ${titleOnly ? 'text-futurity-orange' : ''}`}>{title}</h3>
     </div>
-  );
-};
-
-const AccordionServiceItem = ({ 
-  icon, 
-  title, 
-  content 
-}: { 
-  icon: React.ReactNode;
-  title: string;
-  content: string;
-}) => {
-  return (
-    <AccordionItem value={title.toLowerCase().replace(/\s+/g, '-')}>
-      <AccordionTrigger className="hover:no-underline">
-        <div className="flex items-center gap-2 text-left">
-          <span className="text-futurity-orange">{icon}</span>
-          <span>{title}</span>
-        </div>
-      </AccordionTrigger>
-      <AccordionContent>
-        <p className="pl-8">{content}</p>
-      </AccordionContent>
-    </AccordionItem>
   );
 };
 
