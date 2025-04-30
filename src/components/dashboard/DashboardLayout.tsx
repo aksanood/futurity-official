@@ -1,5 +1,6 @@
+
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   FileText, 
@@ -8,11 +9,14 @@ import {
   BarChart,
   Menu,
   X,
-  Star
+  Star,
+  LogOut
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import SectionHeading from '@/components/ui/section-heading';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -23,6 +27,9 @@ interface DashboardLayoutProps {
 const DashboardLayout = ({ children, title, subtitle }: DashboardLayoutProps) => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const location = useLocation();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   
   const navigationItems = [
     {
@@ -57,6 +64,15 @@ const DashboardLayout = ({ children, title, subtitle }: DashboardLayoutProps) =>
     },
   ];
 
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out",
+    });
+    navigate('/admin-login');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Navigation */}
@@ -81,7 +97,7 @@ const DashboardLayout = ({ children, title, subtitle }: DashboardLayoutProps) =>
               Futurity CMS
             </Link>
           </div>
-          <nav className="py-4">
+          <nav className="py-4 flex flex-col h-[calc(100%-70px)]">
             <ul>
               {navigationItems.map((item) => (
                 <li key={item.href}>
@@ -98,6 +114,18 @@ const DashboardLayout = ({ children, title, subtitle }: DashboardLayoutProps) =>
                 </li>
               ))}
             </ul>
+            
+            {/* Logout button at the bottom */}
+            <div className="mt-auto border-t pt-4 px-4">
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start text-gray-600 hover:text-red-600 hover:bg-red-50"
+                onClick={handleLogout}
+              >
+                <LogOut className="w-5 h-5 mr-3" />
+                <span>Logout</span>
+              </Button>
+            </div>
           </nav>
         </aside>
 
@@ -116,7 +144,7 @@ const DashboardLayout = ({ children, title, subtitle }: DashboardLayoutProps) =>
                 <X size={24} />
               </Button>
             </div>
-            <nav className="py-4">
+            <nav className="py-4 flex flex-col h-[calc(100%-70px)]">
               <ul>
                 {navigationItems.map((item) => (
                   <li key={item.href}>
@@ -134,6 +162,18 @@ const DashboardLayout = ({ children, title, subtitle }: DashboardLayoutProps) =>
                   </li>
                 ))}
               </ul>
+              
+              {/* Logout button at the bottom */}
+              <div className="mt-auto border-t pt-4 px-4">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start text-gray-600 hover:text-red-600 hover:bg-red-50"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="w-5 h-5 mr-3" />
+                  <span>Logout</span>
+                </Button>
+              </div>
             </nav>
           </div>
         )}
