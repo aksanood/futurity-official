@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, MapPin } from 'lucide-react';
@@ -14,14 +13,11 @@ const Footer = () => {
           {/* Company Info */}
           <div className="flex flex-col space-y-4">
             <Link to="/" className="flex items-center">
-              <div className="text-orange-400 mr-1">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="2" y="2" width="8" height="8" rx="2" fill="currentColor"/>
-                  <rect x="2" y="14" width="8" height="8" rx="2" fill="currentColor"/>
-                  <rect x="14" y="2" width="8" height="8" rx="2" fill="currentColor"/>
-                </svg>
-              </div>
-              <span className="text-white font-montserrat font-bold text-2xl">FUturity</span>
+              <img
+                src="/Futurity_Logo_Dark_Background.svg"
+                alt="Futurity Logo"
+                className="h-8 w-auto mr-2"
+              />
             </Link>
             <p className="text-white/80 max-w-xs">
               We create digital experiences that matter. Transforming businesses through innovative design and technology.

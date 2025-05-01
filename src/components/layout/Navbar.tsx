@@ -30,16 +30,12 @@ const Navbar = () => {
       scrolled ? 'bg-white shadow-md py-2' : 'bg-futurity-blue py-4'}`}>
       <div className="container-wide flex justify-between items-center">
         <Link to="/" className="flex items-center">
-          <div className="text-orange-400 mr-1">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="2" y="2" width="8" height="8" rx="2" fill="currentColor"/>
-              <rect x="2" y="14" width="8" height="8" rx="2" fill="currentColor"/>
-              <rect x="14" y="2" width="8" height="8" rx="2" fill="currentColor"/>
-            </svg>
-          </div>
-          <span className={`font-montserrat font-bold text-2xl ${scrolled ? 'text-futurity-blue' : 'text-white'}`}>
-            FUturity<span className="text-futurity-orange">.</span>
-          </span>
+          <img
+            src={scrolled ? "/Futurity_Logo_Light_Background.svg" : "/Futurity_Logo_Dark_Background.svg"}
+            alt="Futurity Logo"
+            className="h-8 w-auto mr-2"
+            style={{ maxHeight: scrolled ? 30 : 32 }}
+          />
         </Link>
         
         <nav className="hidden md:flex items-center space-x-8">
