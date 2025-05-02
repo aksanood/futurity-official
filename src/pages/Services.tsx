@@ -7,24 +7,16 @@ import ServiceCard from '@/components/ui/service-card';
 import { 
   CheckCircle, 
   LayoutDashboard, 
-  PenTool, 
   Palette, 
   Users, 
   Compass, 
   MessageSquare,
-  TrendingUp,
-  Mail,
-  Megaphone,
-  BarChart2,
-  Book,
+  Bot,
   FileText,
   Edit,
-  Bot,
-  Image,
-  Cpu,
+  Code,
   Globe,
-  Smartphone,
-  Code
+  Image
 } from 'lucide-react';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Accordion } from '@/components/ui/accordion';
@@ -63,59 +55,92 @@ const Services = () => {
                 <BenefitItem text="Transparent communication throughout the process" />
               </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 animate-on-scroll stagger-delay-1">
-              <ServiceIconCard
-                icon={<Globe size={28} />}
-                title="Web Development"
-                description="Custom websites and web applications"
-                link="web-development"
-              />
-              <ServiceIconCard
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-on-scroll stagger-delay-1">
+              <ServiceCard
                 icon={<Image size={28} />}
                 title="Web Design"
-                description="Beautiful, responsive designs"
-                link="web-design"
+                description="Beautiful, responsive designs that captivate your audience and drive conversions"
+                href="#web-design"
               />
-              <ServiceIconCard
+              <ServiceCard
+                icon={<Globe size={28} />}
+                title="Web Development"
+                description="Custom websites and web applications built with modern technologies"
+                href="#web-development"
+              />
+              <ServiceCard
                 icon={<LayoutDashboard size={28} />}
                 title="UX/UI Design"
-                description="Intuitive user experiences"
-                link="ui-ux-design"
+                description="User-centered design that creates intuitive and engaging experiences"
+                href="#ux-ui-design"
               />
-              <ServiceIconCard
+              <ServiceCard
                 icon={<Compass size={28} />}
                 title="Branding"
-                description="Memorable brand identities"
-                link="branding-services"
+                description="Distinctive brand identities that help you stand out in the market"
+                href="#branding"
               />
-              <ServiceIconCard
-                icon={<TrendingUp size={28} />}
-                title="Digital Marketing"
-                description="Results-driven strategies"
-                link="digital-marketing"
-              />
-              <ServiceIconCard
+              <ServiceCard
                 icon={<FileText size={28} />}
                 title="Content Writing"
-                description="Engaging copy that converts"
-                link="content-writing"
+                description="Compelling copy that engages your audience and drives action"
+                href="#content-writing"
               />
-              <ServiceIconCard
+              <ServiceCard
                 icon={<Bot size={28} />}
                 title="AI Development"
-                description="Custom AI solutions"
-                link="ai-development"
+                description="Intelligent solutions that automate processes and enhance user experiences"
+                href="#ai-development"
               />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Web Development Section */}
-      <section id="web-development" className="section bg-gray-50">
+      {/* Web Design Service */}
+      <section id="web-design" className="section bg-gray-50">
         <div className="container-wide">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="animate-on-scroll">
+              <h2 className="text-3xl font-bold mb-4">Web Design</h2>
+              <p className="text-lg mb-6 text-futurity-gray">
+                Our web design services focus on creating visually stunning websites that captivate your audience and drive conversions.
+              </p>
+              
+              <div className="space-y-3 mt-6 mb-8">
+                <BenefitItem text="Custom website design" />
+                <BenefitItem text="Responsive designs for all devices" />
+                <BenefitItem text="User experience focused designs" />
+                <BenefitItem text="Brand-aligned visual elements" />
+                <BenefitItem text="SEO-friendly architecture" />
+                <BenefitItem text="Conversion-optimized layouts" />
+              </div>
+              
+              <Button asChild>
+                <Link to="/services/web-design">Learn More</Link>
+              </Button>
+            </div>
+            
+            <div className="animate-on-scroll stagger-delay-1">
+              <div className="relative">
+                <div className="absolute -top-4 -left-4 w-32 h-32 bg-futurity-orange/10 rounded-lg z-0"></div>
+                <img 
+                  src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&q=80"
+                  alt="Web Design" 
+                  className="rounded-lg shadow-lg relative z-10 w-full"
+                />
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-futurity-blue/10 rounded-lg z-0"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Web Development Section */}
+      <section id="web-development" className="section">
+        <div className="container-wide">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center lg:flex-row-reverse">
+            <div className="lg:order-2 animate-on-scroll">
               <h2 className="text-3xl font-bold mb-4">Web Development</h2>
               <p className="text-lg mb-6 text-futurity-gray">
                 We build responsive, scalable websites and web applications that deliver exceptional user experiences.
@@ -135,15 +160,15 @@ const Services = () => {
               </Button>
             </div>
             
-            <div className="animate-on-scroll stagger-delay-1">
+            <div className="lg:order-1 animate-on-scroll stagger-delay-1">
               <div className="relative">
-                <div className="absolute -top-4 -left-4 w-32 h-32 bg-futurity-orange/10 rounded-lg z-0"></div>
+                <div className="absolute -top-4 -right-4 w-32 h-32 bg-futurity-orange/10 rounded-lg z-0"></div>
                 <img 
                   src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80"
                   alt="Web Development" 
                   className="rounded-lg shadow-lg relative z-10 w-full"
                 />
-                <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-futurity-blue/10 rounded-lg z-0"></div>
+                <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-futurity-blue/10 rounded-lg z-0"></div>
               </div>
             </div>
           </div>
@@ -151,10 +176,10 @@ const Services = () => {
       </section>
 
       {/* UX/UI Design Section */}
-      <section id="ux-ui-design" className="section">
+      <section id="ux-ui-design" className="section bg-gray-50">
         <div className="container-wide">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center lg:flex-row-reverse">
-            <div className="lg:order-2 animate-on-scroll">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="animate-on-scroll">
               <h2 className="text-3xl font-bold mb-4">UX/UI Design</h2>
               <p className="text-lg mb-6 text-futurity-gray">
                 Our user experience and interface design services focus on creating intuitive, engaging digital experiences that put your users first.
@@ -174,51 +199,12 @@ const Services = () => {
               </Button>
             </div>
             
-            <div className="lg:order-1 animate-on-scroll stagger-delay-1">
-              <div className="relative">
-                <div className="absolute -top-4 -right-4 w-32 h-32 bg-futurity-orange/10 rounded-lg z-0"></div>
-                <img 
-                  src="https://images.unsplash.com/photo-1587440871875-191322ee64b0?auto=format&fit=crop&q=80"
-                  alt="UX/UI Design" 
-                  className="rounded-lg shadow-lg relative z-10 w-full"
-                />
-                <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-futurity-blue/10 rounded-lg z-0"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Digital Marketing Section */}
-      <section id="digital-marketing" className="section bg-gray-50">
-        <div className="container-wide">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="animate-on-scroll">
-              <h2 className="text-3xl font-bold mb-4">Digital Marketing</h2>
-              <p className="text-lg mb-6 text-futurity-gray">
-                Our digital marketing strategies help you reach your target audience, generate leads, and grow your business in the online space.
-              </p>
-              
-              <div className="space-y-3 mt-6 mb-8">
-                <BenefitItem text="Search engine optimization (SEO)" />
-                <BenefitItem text="Social media marketing" />
-                <BenefitItem text="Pay-per-click advertising" />
-                <BenefitItem text="Email marketing campaigns" />
-                <BenefitItem text="Content marketing strategy" />
-                <BenefitItem text="Analytics and reporting" />
-              </div>
-              
-              <Button asChild>
-                <Link to="/services/digital-marketing">Learn More</Link>
-              </Button>
-            </div>
-            
             <div className="animate-on-scroll stagger-delay-1">
               <div className="relative">
                 <div className="absolute -top-4 -left-4 w-32 h-32 bg-futurity-orange/10 rounded-lg z-0"></div>
                 <img 
-                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80"
-                  alt="Digital Marketing" 
+                  src="https://images.unsplash.com/photo-1587440871875-191322ee64b0?auto=format&fit=crop&q=80"
+                  alt="UX/UI Design" 
                   className="rounded-lg shadow-lg relative z-10 w-full"
                 />
                 <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-futurity-blue/10 rounded-lg z-0"></div>
@@ -345,45 +331,6 @@ const Services = () => {
         </div>
       </section>
 
-      {/* Web Design Service */}
-      <section id="web-design" className="section bg-gray-50">
-        <div className="container-wide">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="animate-on-scroll">
-              <h2 className="text-3xl font-bold mb-4">Web Design</h2>
-              <p className="text-lg mb-6 text-futurity-gray">
-                Our web design services focus on creating visually stunning websites that captivate your audience and drive conversions.
-              </p>
-              
-              <div className="space-y-3 mt-6 mb-8">
-                <BenefitItem text="Custom website design" />
-                <BenefitItem text="Responsive designs for all devices" />
-                <BenefitItem text="User experience focused designs" />
-                <BenefitItem text="Brand-aligned visual elements" />
-                <BenefitItem text="SEO-friendly architecture" />
-                <BenefitItem text="Conversion-optimized layouts" />
-              </div>
-              
-              <Button asChild>
-                <Link to="/services/web-design">Learn More</Link>
-              </Button>
-            </div>
-            
-            <div className="animate-on-scroll stagger-delay-1">
-              <div className="relative">
-                <div className="absolute -top-4 -left-4 w-32 h-32 bg-futurity-orange/10 rounded-lg z-0"></div>
-                <img 
-                  src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&q=80"
-                  alt="Web Design" 
-                  className="rounded-lg shadow-lg relative z-10 w-full"
-                />
-                <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-futurity-blue/10 rounded-lg z-0"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="section bg-futurity-blue text-white">
         <div className="container-tight text-center">
@@ -438,7 +385,7 @@ const ServiceIconCard = ({
   );
 
   return link ? (
-    <a href={`#${link}`} className="block h-full">
+    <a href={`${link}`} className="block h-full">
       {content}
     </a>
   ) : (
