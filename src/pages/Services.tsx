@@ -63,89 +63,50 @@ const Services = () => {
                 <BenefitItem text="Transparent communication throughout the process" />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4 animate-on-scroll stagger-delay-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 animate-on-scroll stagger-delay-1">
+              <ServiceIconCard
+                icon={<Globe size={28} />}
+                title="Web Development"
+                description="Custom websites and web applications"
+                link="web-development"
+              />
+              <ServiceIconCard
+                icon={<Image size={28} />}
+                title="Web Design"
+                description="Beautiful, responsive designs"
+                link="web-design"
+              />
               <ServiceIconCard
                 icon={<LayoutDashboard size={28} />}
                 title="UX/UI Design"
+                description="Intuitive user experiences"
+                link="ui-ux-design"
               />
               <ServiceIconCard
                 icon={<Compass size={28} />}
                 title="Branding"
+                description="Memorable brand identities"
+                link="branding-services"
               />
               <ServiceIconCard
                 icon={<TrendingUp size={28} />}
                 title="Digital Marketing"
+                description="Results-driven strategies"
+                link="digital-marketing"
               />
               <ServiceIconCard
                 icon={<FileText size={28} />}
                 title="Content Writing"
+                description="Engaging copy that converts"
+                link="content-writing"
               />
               <ServiceIconCard
                 icon={<Bot size={28} />}
                 title="AI Development"
-              />
-              <ServiceIconCard
-                title="And More"
-                titleOnly
+                description="Custom AI solutions"
+                link="ai-development"
               />
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Services Categories */}
-      <section className="section">
-        <div className="container-wide">
-          <div className="text-center mb-12">
-            <SectionHeading 
-              title="Our Service Categories" 
-              subtitle="Explore our comprehensive range of digital services designed to elevate your business."
-              center
-            />
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <ServiceCard 
-              icon={<LayoutDashboard />}
-              title="UX/UI Design"
-              description="User-centered design that balances aesthetics with functionality to create intuitive digital experiences."
-              href="/services/ui-ux-design"
-            />
-            
-            <ServiceCard 
-              icon={<Compass />}
-              title="Branding"
-              description="Develop a unique and memorable brand identity that resonates with your target audience and sets you apart."
-              href="/services/branding-services"
-            />
-            
-            <ServiceCard 
-              icon={<TrendingUp />}
-              title="Digital Marketing"
-              description="Strategic marketing campaigns that connect your brand with your target audience and drive conversions."
-              href="/services/digital-marketing"
-            />
-            
-            <ServiceCard 
-              icon={<FileText />}
-              title="Content Writing"
-              description="Compelling content that engages your audience, establishes authority, and drives action."
-              href="/services/content-writing"
-            />
-            
-            <ServiceCard 
-              icon={<Bot />}
-              title="AI Development"
-              description="Custom AI solutions that automate processes, generate insights, and create personalized experiences."
-              href="/services/ai-development"
-            />
-            
-            <ServiceCard 
-              icon={<Globe />}
-              title="Web Development"
-              description="We build responsive, scalable websites and web applications that deliver exceptional user experiences."
-              href="/services/web-development"
-            />
           </div>
         </div>
       </section>
@@ -453,22 +414,35 @@ const BenefitItem = ({ text }: { text: string }) => {
 
 const ServiceIconCard = ({ 
   icon, 
-  title, 
+  title,
+  description,
+  link,
   titleOnly = false 
 }: { 
   icon?: React.ReactNode;
   title: string;
+  description?: string;
+  link?: string;
   titleOnly?: boolean;
 }) => {
-  return (
-    <div className={`rounded-lg p-4 flex flex-col items-center justify-center text-center ${titleOnly ? 'bg-futurity-orange/10' : 'bg-white shadow-sm border border-gray-100'}`}>
+  const content = (
+    <div className={`rounded-lg p-4 flex flex-col items-center justify-center text-center h-full transition-all ${titleOnly ? 'bg-futurity-orange/10' : 'bg-white shadow-sm border border-gray-100 hover:shadow-md hover:border-futurity-orange'}`}>
       {!titleOnly && icon && (
-        <div className="h-16 w-16 rounded-full bg-futurity-orange/10 flex items-center justify-center mb-4 text-futurity-orange">
+        <div className="h-14 w-14 rounded-full bg-futurity-orange/10 flex items-center justify-center mb-3 text-futurity-orange">
           {icon}
         </div>
       )}
-      <h3 className={`font-semibold ${titleOnly ? 'text-futurity-orange' : ''}`}>{title}</h3>
+      <h3 className={`font-semibold mb-2 ${titleOnly ? 'text-futurity-orange' : ''}`}>{title}</h3>
+      {description && <p className="text-sm text-futurity-gray">{description}</p>}
     </div>
+  );
+
+  return link ? (
+    <a href={`#${link}`} className="block h-full">
+      {content}
+    </a>
+  ) : (
+    content
   );
 };
 
