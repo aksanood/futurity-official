@@ -21,6 +21,7 @@ import DashboardPortfolio from "./pages/dashboard/DashboardPortfolio";
 import DashboardInquiries from "./pages/dashboard/DashboardInquiries";
 import DashboardReviews from "./pages/dashboard/DashboardReviews";
 import DashboardAnalytics from "./pages/dashboard/DashboardAnalytics";
+import DashboardStyleGuide from "./pages/dashboard/DashboardStyleGuide";
 
 // Service Pages
 import WebDesignPage from "./pages/services/WebDesign";
@@ -126,6 +127,11 @@ const App = () => (
             <Route path="/dashboard/analytics" element={
               <ProtectedRoute>
                 <DashboardAnalytics />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/style-guide" element={
+              <ProtectedRoute>
+                <DashboardStyleGuide />
               </ProtectedRoute>
             } />
             
