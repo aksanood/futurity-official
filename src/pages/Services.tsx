@@ -22,6 +22,14 @@ import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/
 import { Accordion } from '@/components/ui/accordion';
 
 const Services = () => {
+  // Function to handle smooth scrolling
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <Layout>
       {/* Hero Section */}
@@ -55,42 +63,42 @@ const Services = () => {
                 <BenefitItem text="Transparent communication throughout the process" />
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-on-scroll stagger-delay-1">
+            <div className="grid grid-cols-3 gap-4 animate-on-scroll stagger-delay-1">
               <ServiceCard
                 icon={<Image size={28} />}
                 title="Web Design"
-                description="Beautiful, responsive designs that captivate your audience and drive conversions"
-                href="#web-design"
+                description="Beautiful, responsive designs that captivate your audience"
+                onClick={() => scrollToSection('web-design')}
               />
               <ServiceCard
                 icon={<Globe size={28} />}
                 title="Web Development"
                 description="Custom websites and web applications built with modern technologies"
-                href="#web-development"
+                onClick={() => scrollToSection('web-development')}
               />
               <ServiceCard
                 icon={<LayoutDashboard size={28} />}
                 title="UX/UI Design"
-                description="User-centered design that creates intuitive and engaging experiences"
-                href="#ux-ui-design"
+                description="User-centered design that creates intuitive experiences"
+                onClick={() => scrollToSection('ux-ui-design')}
               />
               <ServiceCard
                 icon={<Compass size={28} />}
                 title="Branding"
-                description="Distinctive brand identities that help you stand out in the market"
-                href="#branding"
+                description="Distinctive brand identities that help you stand out"
+                onClick={() => scrollToSection('branding')}
               />
               <ServiceCard
                 icon={<FileText size={28} />}
                 title="Content Writing"
                 description="Compelling copy that engages your audience and drives action"
-                href="#content-writing"
+                onClick={() => scrollToSection('content-writing')}
               />
               <ServiceCard
                 icon={<Bot size={28} />}
                 title="AI Development"
-                description="Intelligent solutions that automate processes and enhance user experiences"
-                href="#ai-development"
+                description="Intelligent solutions that automate processes and enhance experiences"
+                onClick={() => scrollToSection('ai-development')}
               />
             </div>
           </div>
