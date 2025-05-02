@@ -25,16 +25,16 @@ const ServiceCard = ({
       <button 
         onClick={onClick}
         className={cn(
-          "group block text-left bg-white rounded-lg p-6 shadow-sm border border-gray-100 transition-all hover:shadow-md hover:border-futurity-orange hover:-translate-y-1 w-full",
+          "group block text-center bg-white rounded-lg p-6 shadow-sm border border-gray-100 transition-all hover:shadow-md hover:border-futurity-orange hover:-translate-y-1 w-full",
           className
         )}
       >
-        <div className="h-16 w-16 rounded-full bg-futurity-orange/10 flex items-center justify-center mb-6 text-futurity-orange group-hover:bg-futurity-orange group-hover:text-white transition-all">
+        <div className="h-16 w-16 rounded-full bg-futurity-orange/10 flex items-center justify-center mb-6 text-futurity-orange group-hover:bg-futurity-orange group-hover:text-white transition-all mx-auto">
           {icon}
         </div>
         <h3 className="text-xl font-semibold mb-3 group-hover:text-futurity-orange transition-colors">{title}</h3>
-        <p className="text-futurity-gray text-base">{description}</p>
-        <div className="mt-4 font-medium text-futurity-blue flex items-center">
+        <p className="text-futurity-gray text-base truncate">{description}</p>
+        <div className="mt-4 font-medium text-futurity-blue flex items-center justify-center">
           Learn more
           <svg 
             className="ml-1 h-4 w-4 transform group-hover:translate-x-1 transition-transform" 
@@ -55,16 +55,16 @@ const ServiceCard = ({
       <Link 
         to={href}
         className={cn(
-          "group block bg-white rounded-lg p-6 shadow-sm border border-gray-100 transition-all hover:shadow-md hover:border-futurity-orange hover:-translate-y-1",
+          "group block text-center bg-white rounded-lg p-6 shadow-sm border border-gray-100 transition-all hover:shadow-md hover:border-futurity-orange hover:-translate-y-1",
           className
         )}
       >
-        <div className="h-16 w-16 rounded-full bg-futurity-orange/10 flex items-center justify-center mb-6 text-futurity-orange group-hover:bg-futurity-orange group-hover:text-white transition-all">
+        <div className="h-16 w-16 rounded-full bg-futurity-orange/10 flex items-center justify-center mb-6 text-futurity-orange group-hover:bg-futurity-orange group-hover:text-white transition-all mx-auto">
           {icon}
         </div>
         <h3 className="text-xl font-semibold mb-3 group-hover:text-futurity-orange transition-colors">{title}</h3>
-        <p className="text-futurity-gray text-base">{description}</p>
-        <div className="mt-4 font-medium text-futurity-blue flex items-center">
+        <p className="text-futurity-gray text-base truncate">{description}</p>
+        <div className="mt-4 font-medium text-futurity-blue flex items-center justify-center">
           Learn more
           <svg 
             className="ml-1 h-4 w-4 transform group-hover:translate-x-1 transition-transform" 
@@ -84,15 +84,15 @@ const ServiceCard = ({
   return (
     <div 
       className={cn(
-        "group block bg-white rounded-lg p-6 shadow-sm border border-gray-100",
+        "group block text-center bg-white rounded-lg p-6 shadow-sm border border-gray-100",
         className
       )}
     >
-      <div className="h-16 w-16 rounded-full bg-futurity-orange/10 flex items-center justify-center mb-6 text-futurity-orange">
+      <div className="h-16 w-16 rounded-full bg-futurity-orange/10 flex items-center justify-center mb-6 text-futurity-orange mx-auto">
         {icon}
       </div>
       <h3 className="text-xl font-semibold mb-3">{title}</h3>
-      <p className="text-futurity-gray text-base">{description}</p>
+      <p className="text-futurity-gray text-base truncate">{description}</p>
     </div>
   );
 };

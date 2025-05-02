@@ -67,37 +67,37 @@ const Services = () => {
               <ServiceCard
                 icon={<Image size={28} />}
                 title="Web Design"
-                description="Beautiful, responsive designs that captivate your audience"
+                description="Beautiful, responsive websites that captivate your audience"
                 onClick={() => scrollToSection('web-design')}
               />
               <ServiceCard
                 icon={<Globe size={28} />}
                 title="Web Development"
-                description="Custom websites and web applications built with modern technologies"
+                description="Custom web applications built with modern technologies"
                 onClick={() => scrollToSection('web-development')}
               />
               <ServiceCard
                 icon={<LayoutDashboard size={28} />}
                 title="UX/UI Design"
-                description="User-centered design that creates intuitive experiences"
+                description="User-centered design for intuitive digital experiences"
                 onClick={() => scrollToSection('ux-ui-design')}
               />
               <ServiceCard
                 icon={<Compass size={28} />}
                 title="Branding"
-                description="Distinctive brand identities that help you stand out"
+                description="Distinctive brand identities that make you stand out"
                 onClick={() => scrollToSection('branding')}
               />
               <ServiceCard
                 icon={<FileText size={28} />}
                 title="Content Writing"
-                description="Compelling copy that engages your audience and drives action"
+                description="Compelling copy that engages and drives action"
                 onClick={() => scrollToSection('content-writing')}
               />
               <ServiceCard
                 icon={<Bot size={28} />}
                 title="AI Development"
-                description="Intelligent solutions that automate processes and enhance experiences"
+                description="Intelligent solutions that enhance user experiences"
                 onClick={() => scrollToSection('ai-development')}
               />
             </div>
