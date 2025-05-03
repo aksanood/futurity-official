@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
@@ -123,19 +122,16 @@ const Portfolio = () => {
             {categories.map(category => (
               <Button
                 key={category.id}
-                variant={activeFilter === category.id ? "default" : "outline"}
                 onClick={() => setActiveFilter(category.id)}
-                className={`portfolio-filter-btn animate-on-scroll ${
-                  activeFilter === category.id 
-                    ? 'bg-futurity-blue text-white hover:bg-futurity-blue/90' 
-                    : 'text-futurity-blue hover:text-futurity-blue/80'
-                }`}
+                className={`portfolio-filter-btn ${activeFilter === category.id ? 'active' : ''}`}
+                variant="outline"
               >
                 {category.name}
               </Button>
             ))}
           </div>
 
+          {/* Portfolio items grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredItems.slice(0, visibleItems).map((item, index) => (
               <div key={item.id} className={`portfolio-card animate-on-scroll ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}>
@@ -183,6 +179,7 @@ const Portfolio = () => {
         </div>
       </section>
 
+      {/* CTA section */}
       <section className="section bg-futurity-blue text-white">
         <div className="container-tight text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-on-scroll">Let's Create Something Amazing Together</h2>
