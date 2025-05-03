@@ -1,4 +1,3 @@
-
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
@@ -70,62 +69,8 @@ const WebDevelopmentPage = () => {
         </div>
       </section>
 
-      {/* Package Comparison Section */}
-      <section className="section bg-gray-50">
-        <div className="container-wide">
-          <div className="text-center mb-12">
-            <SectionHeading
-              title="Web Development Packages"
-              subtitle="Choose the package that best suits your business needs"
-              center
-            />
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <PriceCard 
-              title="Bronze Package" 
-              price="499" 
-              features={[
-                "4 Page Website",
-                "Domain Name & Hosting",
-                "Unlimited Email Addresses",
-                "10 Images",
-                "Technical Support"
-              ]}
-              variant="primary"
-            />
-            
-            <PriceCard 
-              title="Silver Package" 
-              price="799" 
-              features={[
-                "7 Page Website",
-                "Domain Name & Hosting",
-                "Unlimited Email Addresses",
-                "20 Images",
-                "Basic SEO"
-              ]}
-              variant="secondary"
-            />
-            
-            <PriceCard 
-              title="Gold Package" 
-              price="999" 
-              features={[
-                "10 Page Website",
-                "Domain Name & Hosting",
-                "Unlimited Email Addresses",
-                "30 Images",
-                "Basic SEO"
-              ]}
-              variant="primary"
-            />
-          </div>
-        </div>
-      </section>
-
       {/* CMS & E-Commerce Section */}
-      <section className="section">
+      <section className="section bg-gray-50">
         <div className="container-wide">
           <div className="text-center mb-12">
             <SectionHeading
