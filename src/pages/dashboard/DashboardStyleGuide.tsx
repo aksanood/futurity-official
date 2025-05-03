@@ -1,11 +1,13 @@
 
-import { Copy } from "lucide-react";
+import { Copy, Image as ImageIcon, Globe, LayoutDashboard, Compass, FileText, Bot, CheckCircle, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "@/components/ui/use-toast";
+import ServiceCard from "@/components/ui/service-card";
+import SectionHeading from "@/components/ui/section-heading";
 
 const DashboardStyleGuide = () => {
   const copyToClipboard = (text: string) => {
@@ -624,7 +626,7 @@ const DashboardStyleGuide = () => {
               <h3 className="text-lg font-medium mb-4">Icon Usage Examples</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 {[
-                  { icon: <Image size={24} />, name: "Image" },
+                  { icon: <ImageIcon size={24} />, name: "Image" },
                   { icon: <Globe size={24} />, name: "Globe" },
                   { icon: <LayoutDashboard size={24} />, name: "LayoutDashboard" },
                   { icon: <Compass size={24} />, name: "Compass" },
@@ -654,30 +656,30 @@ const DashboardStyleGuide = () => {
               <div className="border rounded-md p-6">
                 <div className="flex flex-wrap items-end gap-8 mb-4">
                   <div className="flex flex-col items-center">
-                    <Image size={16} />
+                    <ImageIcon size={16} />
                     <span className="text-xs mt-2">size=16</span>
                   </div>
                   <div className="flex flex-col items-center">
-                    <Image size={20} />
+                    <ImageIcon size={20} />
                     <span className="text-xs mt-2">size=20</span>
                   </div>
                   <div className="flex flex-col items-center">
-                    <Image size={24} />
+                    <ImageIcon size={24} />
                     <span className="text-xs mt-2">size=24</span>
                   </div>
                   <div className="flex flex-col items-center">
-                    <Image size={32} />
+                    <ImageIcon size={32} />
                     <span className="text-xs mt-2">size=32</span>
                   </div>
                   <div className="flex flex-col items-center">
-                    <Image size={48} />
+                    <ImageIcon size={48} />
                     <span className="text-xs mt-2">size=48</span>
                   </div>
                 </div>
                 <Button 
                   size="sm" 
                   variant="outline" 
-                  onClick={() => copyToClipboard('<Image size={24} />')}
+                  onClick={() => copyToClipboard('<ImageIcon size={24} />')}
                   className="flex items-center gap-1 text-xs mt-2"
                 >
                   <Copy size={14} /> Copy Icon Example
