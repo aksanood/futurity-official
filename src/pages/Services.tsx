@@ -63,7 +63,7 @@ const Services = () => {
                 <BenefitItem text="Transparent communication throughout the process" />
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-4 animate-on-scroll stagger-delay-1">
+            <div className="grid grid-cols-2 gap-6 animate-on-scroll stagger-delay-1">
               <ServiceCard
                 icon={<Image size={28} />}
                 title="Web Design"
