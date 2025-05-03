@@ -10,7 +10,8 @@ import {
   Menu,
   X,
   Star,
-  LogOut
+  LogOut,
+  Palette
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -61,6 +62,11 @@ const DashboardLayout = ({ children, title, subtitle }: DashboardLayoutProps) =>
       title: 'Analytics',
       icon: BarChart,
       href: '/dashboard/analytics',
+    },
+    {
+      title: 'Style Guide',
+      icon: Palette,
+      href: '/dashboard/style-guide',
     },
   ];
 
