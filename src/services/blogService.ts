@@ -1,6 +1,48 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { BlogPost, Author, Category, Tag } from '@/types/blog';
+
+// Helper function to parse author's social data
+const parseSocialData = (socialData: any): Author['social'] => {
+  if (!socialData) return undefined;
+  
+  // If it's already an object with the right structure, return it
+  if (typeof socialData === 'object' && !Array.isArray(socialData)) {
+    return {
+      twitter: socialData.twitter as string | undefined,
+      linkedin: socialData.linkedin as string | undefined,
+      github: socialData.github as string | undefined
+    };
+  }
+  
+  // If it's a JSON string, try to parse it
+  if (typeof socialData === 'string') {
+    try {
+      const parsed = JSON.parse(socialData);
+      return {
+        twitter: parsed.twitter,
+        linkedin: parsed.linkedin,
+        github: parsed.github
+      };
+    } catch (e) {
+      console.error('Error parsing social data:', e);
+      return undefined;
+    }
+  }
+  
+  return undefined;
+};
+
+// Helper function to convert database author to application Author type
+const convertDbAuthorToAppAuthor = (dbAuthor: any): Author => {
+  return {
+    id: dbAuthor.id,
+    name: dbAuthor.name,
+    avatar: dbAuthor.avatar || '',
+    bio: dbAuthor.bio || '',
+    role: dbAuthor.role || '',
+    social: parseSocialData(dbAuthor.social)
+  };
+};
 
 // Blog Posts
 export async function getBlogPosts() {
@@ -18,11 +60,19 @@ export async function getBlogPosts() {
     throw error;
   }
 
-  // Get tags for each post
+  // Process authors correctly and get tags for each post
   const postsWithTags = await Promise.all(
     (data || []).map(async (post) => {
       const tags = await getTagsByPostId(post.id);
-      return { ...post, tags };
+      
+      // Convert author data to match our application's Author type
+      const processedAuthor = post.author ? convertDbAuthorToAppAuthor(post.author) : undefined;
+      
+      return { 
+        ...post, 
+        tags,
+        author: processedAuthor
+      } as BlogPost;
     })
   );
 
@@ -45,10 +95,18 @@ export async function getBlogPostBySlug(slug: string) {
     return null;
   }
 
-  // Get tags for the post
+  // Get tags for the post and process author data
   if (data) {
     const tags = await getTagsByPostId(data.id);
-    return { ...data, tags };
+    
+    // Convert author data to match our application's Author type
+    const processedAuthor = data.author ? convertDbAuthorToAppAuthor(data.author) : undefined;
+    
+    return { 
+      ...data, 
+      tags,
+      author: processedAuthor
+    } as BlogPost;
   }
 
   return null;
@@ -70,10 +128,18 @@ export async function getBlogPostById(id: string) {
     return null;
   }
 
-  // Get tags for the post
+  // Get tags for the post and process author data
   if (data) {
     const tags = await getTagsByPostId(data.id);
-    return { ...data, tags };
+    
+    // Convert author data to match our application's Author type
+    const processedAuthor = data.author ? convertDbAuthorToAppAuthor(data.author) : undefined;
+    
+    return { 
+      ...data, 
+      tags,
+      author: processedAuthor
+    } as BlogPost;
   }
 
   return null;
@@ -176,7 +242,10 @@ export async function getAuthors() {
     throw error;
   }
 
-  return data || [];
+  // Convert all authors to match our application's Author type
+  const processedAuthors = (data || []).map(author => convertDbAuthorToAppAuthor(author));
+  
+  return processedAuthors;
 }
 
 export async function getAuthorById(id: string) {
@@ -191,7 +260,7 @@ export async function getAuthorById(id: string) {
     return null;
   }
 
-  return data;
+  return data ? convertDbAuthorToAppAuthor(data) : null;
 }
 
 export async function createAuthor(author: Omit<Author, 'id' | 'created_at' | 'updated_at'>) {

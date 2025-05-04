@@ -10,6 +10,18 @@ import {
 import { BlogPost, Author, Category, Tag } from '@/types/blog';
 import { slugify } from '@/lib/utils';
 
+// Helper function to ensure Author object has correct social format
+const ensureCorrectAuthorFormat = (author: any): Author => {
+  return {
+    id: author.id,
+    name: author.name,
+    avatar: author.avatar || '',
+    bio: author.bio || '',
+    role: author.role || '',
+    social: typeof author.social === 'object' ? author.social : {}
+  };
+};
+
 // Mock data for initial page load and fallback
 const mockAuthors: Author[] = [
   {

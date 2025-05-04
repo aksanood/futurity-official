@@ -49,7 +49,7 @@ const convertDatabaseAuthor = (dbAuthor: any): Author => {
   try {
     if (dbAuthor.social && typeof dbAuthor.social === 'object') {
       social = dbAuthor.social as Author['social'];
-    } else if (typeof dbAuthor.social === 'string') {
+    } else if (typeof dbAuthor.social === 'string' && dbAuthor.social.trim() !== '') {
       social = JSON.parse(dbAuthor.social);
     }
   } catch (e) {
@@ -130,10 +130,7 @@ const BlogPostForm = ({ post, onSave, isSubmitting = false }: BlogPostFormProps)
           getTags(),
         ]);
         
-        // Convert database authors to our Author type
-        const convertedAuthors = authorsData.map(convertDatabaseAuthor);
-        
-        setAuthors(convertedAuthors);
+        setAuthors(authorsData);
         setCategories(categoriesData);
         setAllTags(tagsData);
         
