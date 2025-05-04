@@ -6,28 +6,47 @@ import BlogLayout from '@/components/blog/BlogLayout';
 import BlogCard from '@/components/blog/BlogCard';
 import { getPostsByCategory, getAllCategories, getAllTags, getRecentPosts } from '@/data/blogData';
 import BlogSidebar from '@/components/blog/BlogSidebar';
-import { BlogPost } from '@/types/blog';
+import { BlogPost, Category, Tag } from '@/types/blog';
 
 const BlogCategory = () => {
   const { slug } = useParams<{ slug: string }>();
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [recentPosts, setRecentPosts] = useState<BlogPost[]>([]);
   const [categoryName, setCategoryName] = useState('');
-  
-  const categories = getAllCategories();
-  const category = categories.find(cat => cat.slug === slug);
-  const tags = getAllTags();
-  const recentPosts = getRecentPosts(3);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    if (slug) {
-      const categoryPosts = getPostsByCategory(slug);
-      setPosts(categoryPosts);
-      
-      if (category) {
-        setCategoryName(category.name);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const categoriesData = await getAllCategories();
+        const tagsData = await getAllTags();
+        const recentPostsData = await getRecentPosts(3);
+        
+        setCategories(categoriesData);
+        setTags(tagsData);
+        setRecentPosts(recentPostsData);
+        
+        if (slug) {
+          const categoryPosts = await getPostsByCategory(slug);
+          setPosts(categoryPosts);
+          
+          const category = categoriesData.find(cat => cat.slug === slug);
+          if (category) {
+            setCategoryName(category.name);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
       }
-    }
-  }, [slug, category]);
+    };
+    
+    fetchData();
+  }, [slug]);
   
   return (
     <BlogLayout
@@ -42,7 +61,11 @@ const BlogCategory = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Posts */}
         <div className="lg:col-span-2">
-          {posts.length > 0 ? (
+          {loading ? (
+            <div className="text-center py-12">
+              <p>Loading posts...</p>
+            </div>
+          ) : posts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {posts.map(post => (
                 <BlogCard key={post.id} post={post} />

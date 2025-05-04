@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+
+import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,23 +10,65 @@ import BlogAuthor from '@/components/blog/BlogAuthor';
 import BlogSidebar from '@/components/blog/BlogSidebar';
 import { getPostBySlug, getRecentPosts, getAllCategories, getAllTags } from '@/data/blogData';
 import ReactMarkdown from 'react-markdown';
+import { BlogPost as BlogPostType, Category, Tag } from '@/types/blog';
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   
-  const post = getPostBySlug(slug || '');
-  const recentPosts = getRecentPosts(3).filter(recentPost => recentPost.slug !== slug);
-  const categories = getAllCategories();
-  const tags = getAllTags();
+  const [post, setPost] = useState<BlogPostType | null>(null);
+  const [recentPosts, setRecentPosts] = useState<BlogPostType[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    if (!post) {
-      navigate('/blog');
-    }
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        if (slug) {
+          const postData = await getPostBySlug(slug);
+          if (!postData) {
+            navigate('/blog');
+            return;
+          }
+          
+          setPost(postData);
+          
+          const [recentPostsData, categoriesData, tagsData] = await Promise.all([
+            getRecentPosts(3),
+            getAllCategories(),
+            getAllTags()
+          ]);
+          
+          setRecentPosts(recentPostsData.filter(recentPost => recentPost.slug !== slug));
+          setCategories(categoriesData);
+          setTags(tagsData);
+        }
+      } catch (error) {
+        console.error('Error fetching post data:', error);
+        navigate('/blog');
+      } finally {
+        setLoading(false);
+      }
+    };
     
+    fetchData();
     window.scrollTo(0, 0);
-  }, [post, navigate, slug]);
+  }, [slug, navigate]);
+  
+  if (loading) {
+    return (
+      <Layout>
+        <div className="container-wide py-12">
+          <div className="text-center py-12">
+            <p>Loading post...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
   
   if (!post) {
     return null;
@@ -83,35 +126,37 @@ const BlogPost = () => {
           </div>
           
           <div className="lg:col-span-1">
-            <Card className="p-6 mb-6 bg-futurity-gray-light border-0">
-              <div className="flex flex-col items-center text-center">
-                <div className="w-24 h-24 bg-white rounded-full overflow-hidden mb-4">
-                  {post.author.avatar ? (
-                    <img 
-                      src={post.author.avatar} 
-                      alt={post.author.name}
-                      className="w-full h-full object-cover" 
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-futurity-blue text-white flex items-center justify-center text-3xl font-bold">
-                      {post.author.name.charAt(0)}
-                    </div>
-                  )}
+            {post.author && (
+              <Card className="p-6 mb-6 bg-futurity-gray-light border-0">
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-24 h-24 bg-white rounded-full overflow-hidden mb-4">
+                    {post.author.avatar ? (
+                      <img 
+                        src={post.author.avatar} 
+                        alt={post.author.name}
+                        className="w-full h-full object-cover" 
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-futurity-blue text-white flex items-center justify-center text-3xl font-bold">
+                        {post.author.name.charAt(0)}
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="text-2xl font-bold text-futurity-blue mb-1">{post.author.name}</h3>
+                  <p className="text-gray-600 mb-4">{post.author.role || 'Content Writer'}</p>
+                  <p className="text-gray-700 mb-6">
+                    {post.author.bio || `${post.author.name} is a seasoned writer with expertise in digital marketing, web design, and technology trends.`}
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    className="border-futurity-blue text-futurity-blue hover:bg-futurity-blue hover:text-white"
+                    asChild
+                  >
+                    <Link to={`/author/${post.author.id}`}>View Profile</Link>
+                  </Button>
                 </div>
-                <h3 className="text-2xl font-bold text-futurity-blue mb-1">{post.author.name}</h3>
-                <p className="text-gray-600 mb-4">{post.author.role || 'Content Writer'}</p>
-                <p className="text-gray-700 mb-6">
-                  {post.author.bio || `${post.author.name} is a seasoned writer with expertise in digital marketing, web design, and technology trends.`}
-                </p>
-                <Button 
-                  variant="outline" 
-                  className="border-futurity-blue text-futurity-blue hover:bg-futurity-blue hover:text-white"
-                  asChild
-                >
-                  <Link to={`/author/${post.author.id}`}>View Profile</Link>
-                </Button>
-              </div>
-            </Card>
+              </Card>
+            )}
             
             <BlogSidebar 
               categories={categories} 

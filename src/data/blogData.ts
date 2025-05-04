@@ -1,10 +1,11 @@
+
 import { 
-  getBlogPosts, 
-  getBlogPostBySlug, 
-  getAuthors, 
-  getCategories,
-  getTags,
-  getAuthorById
+  getBlogPosts as fetchBlogPosts, 
+  getBlogPostBySlug as fetchBlogPostBySlug, 
+  getAuthors as fetchAuthors, 
+  getCategories as fetchCategories,
+  getTags as fetchTags,
+  getAuthorById as fetchAuthorById
 } from '@/services/blogService';
 import { BlogPost, Author, Category, Tag } from '@/types/blog';
 import { slugify } from '@/lib/utils';
@@ -71,9 +72,9 @@ const mockBlogPosts: BlogPost[] = [
   // Add more mock posts if needed
 ];
 
-export async function getAllPosts() {
+export async function getAllPosts(): Promise<BlogPost[]> {
   try {
-    const posts = await getBlogPosts();
+    const posts = await fetchBlogPosts();
     return posts.length > 0 ? posts : mockBlogPosts;
   } catch (error) {
     console.error('Error fetching blog posts, using mock data:', error);
@@ -81,9 +82,9 @@ export async function getAllPosts() {
   }
 }
 
-export async function getPostBySlug(slug: string) {
+export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
   try {
-    const post = await getBlogPostBySlug(slug);
+    const post = await fetchBlogPostBySlug(slug);
     if (post) return post;
     
     return mockBlogPosts.find(post => post.slug === slug);
@@ -93,9 +94,9 @@ export async function getPostBySlug(slug: string) {
   }
 }
 
-export async function getRecentPosts(limit = 5) {
+export async function getRecentPosts(limit = 5): Promise<BlogPost[]> {
   try {
-    const posts = await getBlogPosts();
+    const posts = await fetchBlogPosts();
     if (posts.length > 0) {
       return posts.slice(0, limit);
     }
@@ -107,9 +108,9 @@ export async function getRecentPosts(limit = 5) {
   }
 }
 
-export async function getPostsByCategory(categorySlug: string) {
+export async function getPostsByCategory(categorySlug: string): Promise<BlogPost[]> {
   try {
-    const posts = await getBlogPosts();
+    const posts = await fetchBlogPosts();
     if (posts.length > 0) {
       return posts.filter(post => post.category?.slug === categorySlug);
     }
@@ -121,9 +122,9 @@ export async function getPostsByCategory(categorySlug: string) {
   }
 }
 
-export async function getPostsByTag(tagSlug: string) {
+export async function getPostsByTag(tagSlug: string): Promise<BlogPost[]> {
   try {
-    const posts = await getBlogPosts();
+    const posts = await fetchBlogPosts();
     if (posts.length > 0) {
       return posts.filter(post => post.tags?.some(tag => tag.slug === tagSlug));
     }
@@ -135,9 +136,9 @@ export async function getPostsByTag(tagSlug: string) {
   }
 }
 
-export async function getPostsByAuthor(authorId: string) {
+export async function getPostsByAuthor(authorId: string): Promise<BlogPost[]> {
   try {
-    const posts = await getBlogPosts();
+    const posts = await fetchBlogPosts();
     if (posts.length > 0) {
       return posts.filter(post => post.author_id === authorId);
     }
@@ -149,9 +150,9 @@ export async function getPostsByAuthor(authorId: string) {
   }
 }
 
-export async function getAllCategories() {
+export async function getAllCategories(): Promise<Category[]> {
   try {
-    const categories = await getCategories();
+    const categories = await fetchCategories();
     return categories.length > 0 ? categories : mockCategories;
   } catch (error) {
     console.error('Error fetching categories, using mock data:', error);
@@ -159,9 +160,9 @@ export async function getAllCategories() {
   }
 }
 
-export async function getAllTags() {
+export async function getAllTags(): Promise<Tag[]> {
   try {
-    const tags = await getTags();
+    const tags = await fetchTags();
     return tags.length > 0 ? tags : mockTags;
   } catch (error) {
     console.error('Error fetching tags, using mock data:', error);
@@ -169,9 +170,9 @@ export async function getAllTags() {
   }
 }
 
-export async function getAllAuthors() {
+export async function getAllAuthors(): Promise<Author[]> {
   try {
-    const authors = await getAuthors();
+    const authors = await fetchAuthors();
     return authors.length > 0 ? authors : mockAuthors;
   } catch (error) {
     console.error('Error fetching authors, using mock data:', error);
@@ -179,9 +180,9 @@ export async function getAllAuthors() {
   }
 }
 
-export async function getAuthorByIdAsync(id: string) {
+export async function getAuthorByIdAsync(id: string): Promise<Author | undefined> {
   try {
-    const author = await getAuthorById(id);
+    const author = await fetchAuthorById(id);
     if (author) return author;
     
     return mockAuthors.find(author => author.id === id);

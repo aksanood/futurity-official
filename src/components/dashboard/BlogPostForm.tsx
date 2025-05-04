@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react';
@@ -39,6 +38,33 @@ import {
 import { DatePicker } from "@/components/ui/date-picker";
 import { BlogPost, Author, Tag, Category } from '@/types/blog';
 import { getAuthors, getCategories, getTags, createTag } from '@/services/blogService';
+
+// Define a type for the JsonValue that can be returned from the database
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+
+// Create a helper function to convert database author to our type
+const convertDatabaseAuthor = (dbAuthor: any): Author => {
+  let social: Author['social'] = {};
+  
+  try {
+    if (dbAuthor.social && typeof dbAuthor.social === 'object') {
+      social = dbAuthor.social as Author['social'];
+    } else if (typeof dbAuthor.social === 'string') {
+      social = JSON.parse(dbAuthor.social);
+    }
+  } catch (e) {
+    console.error('Error parsing author social data:', e);
+  }
+  
+  return {
+    id: dbAuthor.id,
+    name: dbAuthor.name,
+    avatar: dbAuthor.avatar || '',
+    bio: dbAuthor.bio || '',
+    role: dbAuthor.role || '',
+    social
+  };
+};
 
 const blogPostSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -104,7 +130,10 @@ const BlogPostForm = ({ post, onSave, isSubmitting = false }: BlogPostFormProps)
           getTags(),
         ]);
         
-        setAuthors(authorsData);
+        // Convert database authors to our Author type
+        const convertedAuthors = authorsData.map(convertDatabaseAuthor);
+        
+        setAuthors(convertedAuthors);
         setCategories(categoriesData);
         setAllTags(tagsData);
         

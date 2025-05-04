@@ -7,28 +7,46 @@ import BlogSidebar from '@/components/blog/BlogSidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
-import { BlogPost } from '@/types/blog';
+import { BlogPost, Category, Tag } from '@/types/blog';
 import { getAllPosts, getRecentPosts, getAllCategories, getAllTags } from '@/data/blogData';
 
 const POSTS_PER_PAGE = 8;
 
 const Blog = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [recentPostsList, setRecentPostsList] = useState<BlogPost[]>([]);
+  const [categoriesList, setCategoriesList] = useState<Category[]>([]);
+  const [tagsList, setTagsList] = useState<Tag[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [currentPage, setCurrentPage] = useState(1);
-  
-  const allPosts = getAllPosts();
-  const recentPosts = getRecentPosts(4);
-  const categories = getAllCategories();
-  const tags = getAllTags();
+  const [loading, setLoading] = useState(true);
   
   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
   const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
   const currentPosts = posts.slice(startIndex, startIndex + POSTS_PER_PAGE);
   
   useEffect(() => {
-    setPosts(allPosts);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const allPostsData = await getAllPosts();
+        const recentPostsData = await getRecentPosts(4);
+        const categoriesData = await getAllCategories();
+        const tagsData = await getAllTags();
+        
+        setPosts(allPostsData);
+        setRecentPostsList(recentPostsData);
+        setCategoriesList(categoriesData);
+        setTagsList(tagsData);
+      } catch (error) {
+        console.error('Error fetching blog data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
   }, []);
   
   const handleSearch = (term: string) => {
@@ -36,16 +54,18 @@ const Blog = () => {
     setCurrentPage(1);
     
     if (!term.trim()) {
-      setPosts(allPosts);
+      getAllPosts().then(setPosts);
       return;
     }
     
-    const filteredPosts = allPosts.filter(post => {
-      const searchContent = `${post.title} ${post.excerpt} ${post.content} ${post.category.name} ${post.tags.map(tag => tag.name).join(' ')}`.toLowerCase();
-      return searchContent.includes(term.toLowerCase());
+    getAllPosts().then(allPosts => {
+      const filteredPosts = allPosts.filter(post => {
+        const searchContent = `${post.title} ${post.excerpt} ${post.content} ${post.category?.name || ''} ${post.tags?.map(tag => tag?.name).join(' ') || ''}`.toLowerCase();
+        return searchContent.includes(term.toLowerCase());
+      });
+      
+      setPosts(filteredPosts);
     });
-    
-    setPosts(filteredPosts);
   };
 
   const handlePageChange = (page: number) => {
@@ -56,9 +76,9 @@ const Blog = () => {
   return (
     <BlogLayout>
       {/* Featured Post */}
-      {allPosts.length > 0 && (
+      {posts.length > 0 && (
         <div className="mb-12">
-          <BlogCard post={allPosts[0]} variant="featured" />
+          <BlogCard post={posts[0]} variant="featured" />
         </div>
       )}
       
@@ -127,21 +147,27 @@ const Blog = () => {
             </div>
           )}
           
-          <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-2' : 'grid-cols-1'}`}>
-            {currentPosts.length > 0 ? (
-              currentPosts.map(post => (
-                <BlogCard 
-                  key={post.id} 
-                  post={post} 
-                />
-              ))
-            ) : (
-              <div className="col-span-full text-center py-8">
-                <h3 className="text-xl font-bold mb-2">No posts found</h3>
-                <p className="text-gray-600">Try adjusting your search term or browse all categories.</p>
-              </div>
-            )}
-          </div>
+          {loading ? (
+            <div className="text-center py-12">
+              <p>Loading posts...</p>
+            </div>
+          ) : (
+            <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-2' : 'grid-cols-1'}`}>
+              {currentPosts.length > 0 ? (
+                currentPosts.map(post => (
+                  <BlogCard 
+                    key={post.id} 
+                    post={post} 
+                  />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-8">
+                  <h3 className="text-xl font-bold mb-2">No posts found</h3>
+                  <p className="text-gray-600">Try adjusting your search term or browse all categories.</p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Pagination */}
           {totalPages > 1 && (
@@ -181,9 +207,9 @@ const Blog = () => {
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <BlogSidebar 
-            categories={categories} 
-            tags={tags} 
-            recentPosts={recentPosts}
+            categories={categoriesList} 
+            tags={tagsList} 
+            recentPosts={recentPostsList}
             onSearch={handleSearch}
           />
         </div>

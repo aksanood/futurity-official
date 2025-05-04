@@ -1,19 +1,65 @@
 
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
-import { BlogPost as BlogPostType, Author } from '@/types/blog';
+import { BlogPost, Author } from '@/types/blog';
 import BlogCard from '@/components/blog/BlogCard';
-import { getPostsByAuthor } from '@/data/blogData';
+import { getPostsByAuthor, getAuthorByIdAsync } from '@/data/blogData';
 import { Card } from '@/components/ui/card';
 import { Twitter, Linkedin, Github } from 'lucide-react';
 
 const AuthorPage = () => {
-  const { id } = useParams();
-  const authorPosts = getPostsByAuthor(id || '');
-  const author = authorPosts[0]?.author;
+  const { id } = useParams<{ id: string }>();
+  const [authorPosts, setAuthorPosts] = useState<BlogPost[]>([]);
+  const [author, setAuthor] = useState<Author | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        if (id) {
+          const [posts, authorData] = await Promise.all([
+            getPostsByAuthor(id),
+            getAuthorByIdAsync(id)
+          ]);
+          
+          setAuthorPosts(posts);
+          setAuthor(authorData || null);
+        }
+      } catch (error) {
+        console.error('Error fetching author data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="container py-12">
+          <div className="text-center">
+            <p>Loading author profile...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!author) {
-    return <div>Author not found</div>;
+    return (
+      <Layout>
+        <div className="container py-12">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4">Author not found</h2>
+            <p>Sorry, the author you are looking for does not exist.</p>
+          </div>
+        </div>
+      </Layout>
+    );
   }
 
   return (
@@ -37,11 +83,18 @@ const AuthorPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <h2 className="text-2xl font-bold mb-8">Articles by {author.name}</h2>
-            <div className="grid gap-8">
-              {authorPosts.map((post: BlogPostType) => (
-                <BlogCard key={post.id} post={post} />
-              ))}
-            </div>
+            {authorPosts.length > 0 ? (
+              <div className="grid gap-8">
+                {authorPosts.map((post: BlogPost) => (
+                  <BlogCard key={post.id} post={post} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <h3 className="text-xl font-bold mb-2">No posts found</h3>
+                <p className="text-gray-600">This author hasn't published any posts yet.</p>
+              </div>
+            )}
           </div>
           
           <div className="lg:col-span-1">

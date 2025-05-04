@@ -1,6 +1,7 @@
 
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { format, parseISO } from "date-fns"
  
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -25,4 +26,13 @@ export function calculateReadTime(content: string) {
 
 export function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substring(2);
+}
+
+export function formatDate(dateString: string) {
+  try {
+    return format(parseISO(dateString), 'MMMM d, yyyy');
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return dateString;
+  }
 }

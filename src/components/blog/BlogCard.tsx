@@ -25,7 +25,7 @@ const BlogCard = ({ post, variant = 'default' }: BlogCardProps) => {
         }`}
       >
         <img 
-          src={post.featuredImage} 
+          src={post.featured_image} 
           alt={post.title} 
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -34,21 +34,21 @@ const BlogCard = ({ post, variant = 'default' }: BlogCardProps) => {
       <div className={`flex flex-col p-5 ${isFeatured ? 'md:w-1/2' : ''}`}>
         <div className="mb-3 flex items-center space-x-3">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={post.author.avatar} alt={post.author.name} />
-            <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={post.author?.avatar} alt={post.author?.name} />
+            <AvatarFallback>{post.author?.name?.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="text-sm">
-            <span className="font-medium text-futurity-blue">{post.author.name}</span>
+            <span className="font-medium text-futurity-blue">{post.author?.name}</span>
           </div>
         </div>
 
         <div className="mb-2 flex items-center space-x-2 text-sm text-gray-500">
           <span className="flex items-center">
             <Calendar className="mr-1 h-4 w-4" />
-            {formatDate(post.publishedDate)}
+            {formatDate(post.published_date)}
           </span>
           <span>•</span>
-          <span>{post.readTime} min read</span>
+          <span>{post.read_time} min read</span>
         </div>
         
         <Link to={`/blog/${post.slug}`}>

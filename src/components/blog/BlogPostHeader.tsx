@@ -29,15 +29,15 @@ const BlogPostHeader = ({ post }: BlogPostHeaderProps) => {
       <div className="flex items-center flex-wrap gap-4 text-gray-600 mb-6">
         <div className="flex items-center gap-2">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={post.author.avatar} alt={post.author.name} />
-            <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={post.author?.avatar} alt={post.author?.name} />
+            <AvatarFallback>{post.author?.name?.charAt(0)}</AvatarFallback>
           </Avatar>
-          <span className="font-medium">{post.author.name}</span>
+          <span className="font-medium">{post.author?.name}</span>
         </div>
         
         <div className="flex items-center">
           <Calendar className="h-4 w-4 mr-1" />
-          <span>{formatDate(post.publishedDate)}</span>
+          <span>{formatDate(post.published_date)}</span>
         </div>
         
         {post.tags && post.tags.length > 0 && (
@@ -58,7 +58,7 @@ const BlogPostHeader = ({ post }: BlogPostHeaderProps) => {
       
       <div className="w-full aspect-[2/1] overflow-hidden rounded-lg mb-8">
         <img 
-          src={post.featuredImage} 
+          src={post.featured_image} 
           alt={post.title} 
           className="w-full h-full object-cover"
         />

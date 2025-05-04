@@ -78,7 +78,7 @@ const BlogSidebar = ({ categories, tags, recentPosts, onSearch }: BlogSidebarPro
               <div key={post.id} className="flex items-start space-x-3">
                 <Link to={`/blog/${post.slug}`} className="flex-shrink-0 w-16 h-16 overflow-hidden rounded">
                   <img 
-                    src={post.featuredImage} 
+                    src={post.featured_image} 
                     alt={post.title} 
                     className="h-full w-full object-cover"
                   />
@@ -87,7 +87,7 @@ const BlogSidebar = ({ categories, tags, recentPosts, onSearch }: BlogSidebarPro
                   <Link to={`/blog/${post.slug}`} className="font-medium hover:text-futurity-orange transition-colors line-clamp-2">
                     {post.title}
                   </Link>
-                  <p className="text-sm text-gray-500 mt-1">{formatDate(post.publishedDate)}</p>
+                  <p className="text-sm text-gray-500 mt-1">{formatDate(post.published_date)}</p>
                 </div>
               </div>
             ))}
