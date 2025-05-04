@@ -1,78 +1,66 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import PortfolioItemForm from '@/components/dashboard/PortfolioItemForm';
 import { useToast } from '@/components/ui/use-toast';
-
-// Mock data - would come from API/database in production
-const portfolioItems = [
-  {
-    id: '1',
-    title: 'Eco Solutions Website Redesign',
-    slug: 'eco-solutions-website-redesign',
-    client: 'Eco Solutions Inc.',
-    category: 'Web Design',
-    description: 'Complete redesign of an environmental consulting firm website.',
-    challenge: '<p>The client needed a modern website that would better showcase their services while improving user experience and conversion rates.</p>',
-    solution: '<p>We delivered a responsive website with improved navigation, clear service offerings, and impactful case studies.</p>',
-    results: '<p>The new website increased user engagement by 65% and lead generation by 43% within the first three months.</p>',
-    imageUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12',
-    gallery: [
-      'https://images.unsplash.com/photo-1581094794329-c8112a89af12',
-      'https://images.unsplash.com/photo-1460925895917-afdab827c52f'
-    ],
-    featured: true,
-    date: '2025-03-15'
-  },
-  {
-    id: '2',
-    title: 'TechStart Mobile App',
-    slug: 'techstart-mobile-app',
-    client: 'TechStart',
-    category: 'Mobile Development',
-    description: 'Cross-platform mobile application for a tech startup incubator.',
-    challenge: '<p>Create a platform for startup founders to connect with mentors and resources.</p>',
-    solution: '<p>Built a React Native app with mentor matching, event scheduling, and resource library.</p>',
-    results: '<p>The app has been downloaded by 3,000+ users and facilitated 500+ mentor connections.</p>',
-    imageUrl: 'https://images.unsplash.com/photo-1551650975-87deedd944c3',
-    gallery: [
-      'https://images.unsplash.com/photo-1551650975-87deedd944c3',
-      'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c'
-    ],
-    featured: true,
-    date: '2025-02-22'
-  }
-];
+import { PortfolioItem } from '@/types/portfolio';
+import { getPortfolioItemById, createPortfolioItem, updatePortfolioItem } from '@/services/portfolioService';
 
 const DashboardPortfolioItemForm = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [item, setItem] = useState<PortfolioItem | undefined>(undefined);
+  const [loading, setLoading] = useState(!!id);
   
-  // Find the item if we're editing
-  const item = id ? portfolioItems.find(p => p.id === id) : undefined;
+  useEffect(() => {
+    const fetchItem = async () => {
+      if (id) {
+        try {
+          const data = await getPortfolioItemById(id);
+          if (data) {
+            setItem(data);
+          } else {
+            toast({
+              title: 'Error',
+              description: 'Portfolio item not found',
+              variant: 'destructive',
+            });
+            navigate('/dashboard/portfolio');
+          }
+        } catch (error) {
+          console.error('Error fetching portfolio item:', error);
+          toast({
+            title: 'Error',
+            description: 'Failed to load portfolio item',
+            variant: 'destructive',
+          });
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchItem();
+  }, [id, navigate, toast]);
   
-  const handleSave = (itemData: any) => {
+  const handleSave = async (itemData: PortfolioItem) => {
     setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
       if (id) {
-        // Update existing item
-        const index = portfolioItems.findIndex(p => p.id === id);
-        if (index !== -1) {
-          portfolioItems[index] = itemData;
-        }
+        // Update existing portfolio item
+        await updatePortfolioItem(id, itemData);
         
         toast({
           title: "Project updated",
           description: "The portfolio project has been updated successfully.",
         });
       } else {
-        // Add new item
-        portfolioItems.unshift(itemData);
+        // Create new portfolio item
+        await createPortfolioItem(itemData);
         
         toast({
           title: "Project created",
@@ -80,22 +68,43 @@ const DashboardPortfolioItemForm = () => {
         });
       }
       
-      setIsSubmitting(false);
       navigate('/dashboard/portfolio');
-    }, 800);
+    } catch (error) {
+      console.error('Error saving portfolio item:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to save portfolio item. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
-  const title = item ? 'Edit Portfolio Project' : 'Create Portfolio Project';
-  const subtitle = item 
+  const title = id ? 'Edit Portfolio Project' : 'Create Portfolio Project';
+  const subtitle = id && item 
     ? `Editing "${item.title}"` 
     : 'Create a new portfolio project to showcase your work';
+  
+  if (loading) {
+    return (
+      <DashboardLayout title="Loading..." subtitle="Please wait">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-center">
+            <p>Loading project data...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
   
   return (
     <DashboardLayout title={title} subtitle={subtitle}>
       <div className="bg-white shadow-sm rounded-lg p-6">
         <PortfolioItemForm 
           item={item} 
-          onSave={handleSave} 
+          onSave={handleSave}
+          isSubmitting={isSubmitting}
         />
       </div>
     </DashboardLayout>

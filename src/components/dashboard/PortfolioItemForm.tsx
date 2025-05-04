@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Form,
@@ -13,27 +13,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import RichTextEditor from './RichTextEditor';
-
-// Portfolio item interface
-interface PortfolioItem {
-  id: string;
-  title: string;
-  slug: string;
-  client: string;
-  category: string;
-  description: string;
-  challenge: string;
-  solution: string;
-  results: string;
-  imageUrl: string;
-  gallery: string[];
-  featured: boolean;
-  date: string;
-}
+import { PortfolioItem } from '@/types/portfolio';
 
 const formSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
@@ -44,7 +29,7 @@ const formSchema = z.object({
   challenge: z.string().min(20, 'Challenge section must be at least 20 characters'),
   solution: z.string().min(20, 'Solution section must be at least 20 characters'),
   results: z.string().min(20, 'Results section must be at least 20 characters'),
-  imageUrl: z.string().url('Must be a valid URL'),
+  image_url: z.string().url('Must be a valid URL'),
   gallery: z.array(z.string().url('Must be a valid URL')),
   featured: z.boolean(),
   date: z.string()
@@ -55,9 +40,10 @@ type FormValues = z.infer<typeof formSchema>;
 interface PortfolioItemFormProps {
   item?: PortfolioItem;
   onSave: (item: PortfolioItem) => void;
+  isSubmitting?: boolean;
 }
 
-const PortfolioItemForm = ({ item, onSave }: PortfolioItemFormProps) => {
+const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItemFormProps) => {
   const navigate = useNavigate();
   const [galleryUrls, setGalleryUrls] = useState<string[]>(item?.gallery || ['']);
   
@@ -72,7 +58,7 @@ const PortfolioItemForm = ({ item, onSave }: PortfolioItemFormProps) => {
       challenge: item.challenge,
       solution: item.solution,
       results: item.results,
-      imageUrl: item.imageUrl,
+      image_url: item.image_url,
       gallery: item.gallery,
       featured: item.featured,
       date: item.date
@@ -85,7 +71,7 @@ const PortfolioItemForm = ({ item, onSave }: PortfolioItemFormProps) => {
       challenge: '',
       solution: '',
       results: '',
-      imageUrl: '',
+      image_url: '',
       gallery: [''],
       featured: false,
       date: new Date().toISOString().split('T')[0]
@@ -149,7 +135,7 @@ const PortfolioItemForm = ({ item, onSave }: PortfolioItemFormProps) => {
       challenge: values.challenge,
       solution: values.solution,
       results: values.results,
-      imageUrl: values.imageUrl,
+      image_url: values.image_url,
       gallery: filteredGallery,
       featured: values.featured,
       date: values.date
@@ -234,7 +220,7 @@ const PortfolioItemForm = ({ item, onSave }: PortfolioItemFormProps) => {
         
         <FormField
           control={form.control}
-          name="imageUrl"
+          name="image_url"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Main Image URL</FormLabel>
@@ -398,11 +384,19 @@ const PortfolioItemForm = ({ item, onSave }: PortfolioItemFormProps) => {
             type="button" 
             variant="outline" 
             onClick={() => navigate('/dashboard/portfolio')}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
-          <Button type="submit">
-            {item ? 'Update' : 'Create'} Project
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {item ? 'Updating...' : 'Creating...'}
+              </>
+            ) : (
+              <>{item ? 'Update' : 'Create'} Project</>
+            )}
           </Button>
         </div>
       </form>

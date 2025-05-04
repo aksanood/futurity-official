@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Edit, Plus, Search, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,61 +18,36 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from '@/components/ui/use-toast';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
-
-// Mock data - would come from API/database in production
-const portfolioItems = [
-  {
-    id: '1',
-    title: 'Eco Solutions Website Redesign',
-    slug: 'eco-solutions-website-redesign',
-    client: 'Eco Solutions Inc.',
-    category: 'Web Design',
-    featured: true,
-    date: '2025-03-15'
-  },
-  {
-    id: '2',
-    title: 'TechStart Mobile App',
-    slug: 'techstart-mobile-app',
-    client: 'TechStart',
-    category: 'Mobile Development',
-    featured: true,
-    date: '2025-02-22'
-  },
-  {
-    id: '3',
-    title: 'Global Finance Brand Identity',
-    slug: 'global-finance-brand-identity',
-    client: 'Global Finance',
-    category: 'Branding',
-    featured: false,
-    date: '2025-01-18'
-  },
-  {
-    id: '4',
-    title: 'HealthPlus Patient Portal',
-    slug: 'healthplus-patient-portal',
-    client: 'HealthPlus',
-    category: 'Web Development',
-    featured: false,
-    date: '2024-12-10'
-  },
-  {
-    id: '5',
-    title: 'Luxury Real Estate Marketing Campaign',
-    slug: 'luxury-real-estate-marketing-campaign',
-    client: 'Elite Properties',
-    category: 'Digital Marketing',
-    featured: true,
-    date: '2024-11-05'
-  }
-];
+import { PortfolioItem } from '@/types/portfolio';
+import { getPortfolioItems, deletePortfolioItem } from '@/services/portfolioService';
 
 const DashboardPortfolio = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
   const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const fetchPortfolioItems = async () => {
+      try {
+        const data = await getPortfolioItems();
+        setPortfolioItems(data);
+      } catch (error) {
+        console.error('Error fetching portfolio items:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load portfolio items. Please try again later.',
+          variant: 'destructive',
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPortfolioItems();
+  }, [toast]);
   
   const handleCreateItem = () => {
     navigate('/dashboard/portfolio/new');
@@ -82,13 +57,12 @@ const DashboardPortfolio = () => {
     navigate(`/dashboard/portfolio/edit/${id}`);
   };
   
-  const handleDeleteItem = () => {
+  const handleDeleteItem = async () => {
     if (deleteItemId) {
-      // In a real app, this would call an API endpoint
-      const index = portfolioItems.findIndex(item => item.id === deleteItemId);
-      
-      if (index !== -1) {
-        portfolioItems.splice(index, 1);
+      try {
+        await deletePortfolioItem(deleteItemId);
+        
+        setPortfolioItems(items => items.filter(item => item.id !== deleteItemId));
         
         toast({
           title: "Project deleted",
@@ -96,6 +70,13 @@ const DashboardPortfolio = () => {
         });
         
         setDeleteItemId(null);
+      } catch (error) {
+        console.error('Error deleting project:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to delete project. Please try again later.',
+          variant: 'destructive',
+        });
       }
     }
   };
@@ -137,66 +118,80 @@ const DashboardPortfolio = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredItems.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">
-                  <Link to={`/portfolio/${item.slug}`} className="hover:text-futurity-blue">
-                    {item.title}
-                  </Link>
-                </TableCell>
-                <TableCell className="hidden md:table-cell">{item.client}</TableCell>
-                <TableCell className="hidden md:table-cell">{item.category}</TableCell>
-                <TableCell className="hidden md:table-cell">
-                  {item.featured ? (
-                    <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                      Featured
-                    </span>
-                  ) : (
-                    <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
-                      Standard
-                    </span>
-                  )}
-                </TableCell>
-                <TableCell>{item.date}</TableCell>
-                <TableCell className="text-right">
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => handleEditItem(item.id)}
-                  >
-                    <Edit className="h-4 w-4" />
-                    <span className="sr-only">Edit</span>
-                  </Button>
-                  
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => setDeleteItemId(item.id)}
-                      >
-                        <Trash className="h-4 w-4" />
-                        <span className="sr-only">Delete</span>
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Portfolio Project</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Are you sure you want to delete "{item.title}"? This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteItem}>
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-10">
+                  Loading portfolio items...
                 </TableCell>
               </TableRow>
-            ))}
+            ) : filteredItems.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-10">
+                  No portfolio items found.
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredItems.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="font-medium">
+                    <Link to={`/portfolio/${item.slug}`} className="hover:text-futurity-blue">
+                      {item.title}
+                    </Link>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">{item.client}</TableCell>
+                  <TableCell className="hidden md:table-cell">{item.category}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {item.featured ? (
+                      <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                        Featured
+                      </span>
+                    ) : (
+                      <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
+                        Standard
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell>{item.date}</TableCell>
+                  <TableCell className="text-right">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => handleEditItem(item.id)}
+                    >
+                      <Edit className="h-4 w-4" />
+                      <span className="sr-only">Edit</span>
+                    </Button>
+                    
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => setDeleteItemId(item.id)}
+                        >
+                          <Trash className="h-4 w-4" />
+                          <span className="sr-only">Delete</span>
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Portfolio Project</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete "{item.title}"? This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleDeleteItem}>
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
