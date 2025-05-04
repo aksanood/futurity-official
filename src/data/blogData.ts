@@ -12,13 +12,27 @@ import { slugify } from '@/lib/utils';
 
 // Helper function to ensure Author object has correct social format
 const ensureCorrectAuthorFormat = (author: any): Author => {
+  let social = author.social;
+  
+  // Handle potential JSON string format for social
+  if (typeof author.social === 'string') {
+    try {
+      social = JSON.parse(author.social);
+    } catch (e) {
+      social = {};
+      console.error('Error parsing author social data:', e);
+    }
+  } else if (author.social === null || typeof author.social !== 'object') {
+    social = {};
+  }
+  
   return {
     id: author.id,
     name: author.name,
     avatar: author.avatar || '',
     bio: author.bio || '',
     role: author.role || '',
-    social: typeof author.social === 'object' ? author.social : {}
+    social: social as { twitter?: string; linkedin?: string; github?: string }
   };
 };
 
@@ -87,7 +101,19 @@ const mockBlogPosts: BlogPost[] = [
 export async function getAllPosts(): Promise<BlogPost[]> {
   try {
     const posts = await fetchBlogPosts();
-    return posts.length > 0 ? posts : mockBlogPosts;
+    
+    // Ensure each post has correctly formatted author social data
+    const formattedPosts = posts.map(post => {
+      if (post.author) {
+        return {
+          ...post,
+          author: ensureCorrectAuthorFormat(post.author)
+        };
+      }
+      return post;
+    });
+    
+    return formattedPosts.length > 0 ? formattedPosts : mockBlogPosts;
   } catch (error) {
     console.error('Error fetching blog posts, using mock data:', error);
     return mockBlogPosts;
@@ -97,7 +123,13 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
   try {
     const post = await fetchBlogPostBySlug(slug);
-    if (post) return post;
+    if (post) {
+      // Ensure author has correctly formatted social data
+      if (post.author) {
+        post.author = ensureCorrectAuthorFormat(post.author);
+      }
+      return post;
+    }
     
     return mockBlogPosts.find(post => post.slug === slug);
   } catch (error) {
@@ -109,8 +141,18 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | undefined>
 export async function getRecentPosts(limit = 5): Promise<BlogPost[]> {
   try {
     const posts = await fetchBlogPosts();
-    if (posts.length > 0) {
-      return posts.slice(0, limit);
+    const formattedPosts = posts.map(post => {
+      if (post.author) {
+        return {
+          ...post,
+          author: ensureCorrectAuthorFormat(post.author)
+        };
+      }
+      return post;
+    });
+    
+    if (formattedPosts.length > 0) {
+      return formattedPosts.slice(0, limit);
     }
     
     return mockBlogPosts.slice(0, limit);
@@ -123,8 +165,18 @@ export async function getRecentPosts(limit = 5): Promise<BlogPost[]> {
 export async function getPostsByCategory(categorySlug: string): Promise<BlogPost[]> {
   try {
     const posts = await fetchBlogPosts();
-    if (posts.length > 0) {
-      return posts.filter(post => post.category?.slug === categorySlug);
+    const formattedPosts = posts.map(post => {
+      if (post.author) {
+        return {
+          ...post,
+          author: ensureCorrectAuthorFormat(post.author)
+        };
+      }
+      return post;
+    });
+    
+    if (formattedPosts.length > 0) {
+      return formattedPosts.filter(post => post.category?.slug === categorySlug);
     }
     
     return mockBlogPosts.filter(post => post.category?.slug === categorySlug);
@@ -137,8 +189,18 @@ export async function getPostsByCategory(categorySlug: string): Promise<BlogPost
 export async function getPostsByTag(tagSlug: string): Promise<BlogPost[]> {
   try {
     const posts = await fetchBlogPosts();
-    if (posts.length > 0) {
-      return posts.filter(post => post.tags?.some(tag => tag.slug === tagSlug));
+    const formattedPosts = posts.map(post => {
+      if (post.author) {
+        return {
+          ...post,
+          author: ensureCorrectAuthorFormat(post.author)
+        };
+      }
+      return post;
+    });
+    
+    if (formattedPosts.length > 0) {
+      return formattedPosts.filter(post => post.tags?.some(tag => tag.slug === tagSlug));
     }
     
     return mockBlogPosts.filter(post => post.tags?.some(tag => tag.slug === tagSlug));
@@ -151,8 +213,18 @@ export async function getPostsByTag(tagSlug: string): Promise<BlogPost[]> {
 export async function getPostsByAuthor(authorId: string): Promise<BlogPost[]> {
   try {
     const posts = await fetchBlogPosts();
-    if (posts.length > 0) {
-      return posts.filter(post => post.author_id === authorId);
+    const formattedPosts = posts.map(post => {
+      if (post.author) {
+        return {
+          ...post,
+          author: ensureCorrectAuthorFormat(post.author)
+        };
+      }
+      return post;
+    });
+    
+    if (formattedPosts.length > 0) {
+      return formattedPosts.filter(post => post.author_id === authorId);
     }
     
     return mockBlogPosts.filter(post => post.author_id === authorId);
@@ -185,7 +257,9 @@ export async function getAllTags(): Promise<Tag[]> {
 export async function getAllAuthors(): Promise<Author[]> {
   try {
     const authors = await fetchAuthors();
-    return authors.length > 0 ? authors : mockAuthors;
+    // Make sure all authors have the correct social format
+    const formattedAuthors = authors.map(ensureCorrectAuthorFormat);
+    return formattedAuthors.length > 0 ? formattedAuthors : mockAuthors;
   } catch (error) {
     console.error('Error fetching authors, using mock data:', error);
     return mockAuthors;
@@ -195,7 +269,7 @@ export async function getAllAuthors(): Promise<Author[]> {
 export async function getAuthorByIdAsync(id: string): Promise<Author | undefined> {
   try {
     const author = await fetchAuthorById(id);
-    if (author) return author;
+    if (author) return ensureCorrectAuthorFormat(author);
     
     return mockAuthors.find(author => author.id === id);
   } catch (error) {

@@ -1,123 +1,121 @@
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useToast } from '@/components/ui/use-toast';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import BlogPostForm from '@/components/dashboard/BlogPostForm';
+import { 
+  getBlogPostById,
+  createBlogPost, 
+  updateBlogPost 
+} from '@/services/blogService';
 import { BlogPost } from '@/types/blog';
-import { getBlogPostById, createBlogPost, updateBlogPost } from '@/services/blogService';
-import { useToast } from '@/components/ui/use-toast';
-import { calculateReadTime } from '@/data/blogData';
 
-const DashboardBlogPostForm = () => {
-  const { id } = useParams<{ id: string }>();
+const BlogPostFormPage = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(!!id);
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const isEditMode = !!id;
   
+  // Fetch post data if in edit mode
   useEffect(() => {
     const fetchPost = async () => {
-      if (id) {
-        try {
-          const data = await getBlogPostById(id);
-          if (data) {
-            setPost(data);
-          } else {
-            toast({
-              title: 'Error',
-              description: 'Blog post not found',
-              variant: 'destructive',
-            });
-            navigate('/dashboard/posts');
+      if (!id) return;
+      
+      setLoading(true);
+      try {
+        const postData = await getBlogPostById(id);
+        if (postData) {
+          // Ensure proper social data format
+          if (postData.author && typeof postData.author.social === 'object') {
+            postData.author.social = postData.author.social as {
+              twitter?: string;
+              linkedin?: string;
+              github?: string;
+            };
+          } else if (postData.author) {
+            postData.author.social = {};
           }
-        } catch (error) {
-          console.error('Error fetching blog post:', error);
+          
+          setPost(postData);
+        } else {
           toast({
-            title: 'Error',
-            description: 'Failed to load blog post',
-            variant: 'destructive',
+            title: "Error",
+            description: "Post not found",
+            variant: "destructive"
           });
-        } finally {
-          setLoading(false);
+          navigate('/dashboard/posts');
         }
+      } catch (error) {
+        console.error('Error fetching post:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load post. Please try again later.",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
       }
     };
-
+    
     fetchPost();
   }, [id, navigate, toast]);
   
-  const handleSave = async (postData: BlogPost) => {
-    setIsSubmitting(true);
-    
+  const handleSave = async (formData: BlogPost, tagIds: string[]) => {
+    setSubmitting(true);
     try {
-      // Extract tag IDs
-      const tagIds = postData.tags?.map(tag => tag.id) || [];
-      
-      // Calculate read time if not provided
-      if (!postData.read_time) {
-        postData.read_time = calculateReadTime(postData.content);
-      }
-      
-      if (id) {
+      if (isEditMode && id) {
         // Update existing post
-        await updateBlogPost(id, postData, tagIds);
-        
+        await updateBlogPost(id, formData, tagIds);
         toast({
-          title: "Post updated",
-          description: "The blog post has been updated successfully.",
+          title: "Success",
+          description: "Blog post updated successfully."
         });
       } else {
         // Create new post
-        await createBlogPost(postData, tagIds);
-        
+        await createBlogPost(formData, tagIds);
         toast({
-          title: "Post created",
-          description: "The blog post has been created successfully.",
+          title: "Success",
+          description: "Blog post created successfully."
         });
       }
       
       navigate('/dashboard/posts');
     } catch (error) {
-      console.error('Error saving blog post:', error);
+      console.error('Error saving post:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to save blog post. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: isEditMode 
+          ? "Failed to update blog post. Please try again." 
+          : "Failed to create blog post. Please try again.",
+        variant: "destructive"
       });
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
   };
   
-  const title = post ? 'Edit Blog Post' : 'Create Blog Post';
-  const subtitle = post 
-    ? `Editing "${post.title}"` 
-    : 'Create a new blog post with rich content';
-  
-  if (loading) {
-    return (
-      <DashboardLayout title="Loading..." subtitle="Please wait">
-        <div className="flex justify-center items-center h-64">
-          <div className="text-center">
-            <p>Loading post data...</p>
-          </div>
-        </div>
-      </DashboardLayout>
-    );
-  }
-  
   return (
-    <DashboardLayout title={title} subtitle={subtitle}>
-      <div className="bg-white shadow-sm rounded-lg p-6">
+    <DashboardLayout 
+      title={isEditMode ? "Edit Blog Post" : "New Blog Post"} 
+      subtitle={isEditMode ? "Update your blog post content" : "Create a new blog post"}
+    >
+      {isEditMode && loading ? (
+        <div className="flex items-center justify-center py-10">
+          <p>Loading post data...</p>
+        </div>
+      ) : (
         <BlogPostForm 
-          post={post} 
+          post={post || undefined}
           onSave={handleSave}
-          isSubmitting={isSubmitting}
+          isSubmitting={submitting}
         />
-      </div>
+      )}
     </DashboardLayout>
   );
 };
 
-export default DashboardBlogPostForm;
+export default BlogPostFormPage;

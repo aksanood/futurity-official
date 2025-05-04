@@ -24,7 +24,9 @@ const mockPortfolioItems: PortfolioItem[] = [
 
 export async function getAllPortfolioItems() {
   try {
+    console.log('Fetching portfolio items from Supabase...');
     const items = await getPortfolioItems();
+    console.log('Received portfolio items:', items);
     return items.length > 0 ? items : mockPortfolioItems;
   } catch (error) {
     console.error('Error fetching portfolio items, using mock data:', error);
@@ -34,7 +36,10 @@ export async function getAllPortfolioItems() {
 
 export async function getPortfolioItemBySlugAsync(slug: string) {
   try {
+    console.log(`Fetching portfolio item with slug: ${slug}`);
     const item = await getPortfolioItemBySlug(slug);
+    console.log('Received portfolio item:', item);
+    
     if (item) return item;
     
     // Fallback to mock data
@@ -48,6 +53,9 @@ export async function getPortfolioItemBySlugAsync(slug: string) {
 export async function getFilteredPortfolioItems(tag: string) {
   try {
     const items = await getPortfolioItems();
+    console.log(`Filtering portfolio items by tag: ${tag}`);
+    console.log('Items before filtering:', items);
+    
     if (items.length > 0) {
       if (tag === 'all') return items;
       return items.filter(item => item.category.toLowerCase().includes(tag));
@@ -73,10 +81,13 @@ export async function getFilteredPortfolioItems(tag: string) {
 export async function getFeaturedPortfolioItems(limit = 3) {
   try {
     const items = await getPortfolioItems();
+    console.log('Fetching featured portfolio items');
+    console.log('All items before filtering for featured:', items);
+    
     if (items.length > 0) {
-      return items
-        .filter(item => item.featured)
-        .slice(0, limit);
+      const featuredItems = items.filter(item => item.featured);
+      console.log('Featured items:', featuredItems);
+      return featuredItems.slice(0, limit);
     }
     
     // Fallback to mock data

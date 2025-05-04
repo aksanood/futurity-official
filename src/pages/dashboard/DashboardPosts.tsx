@@ -33,8 +33,25 @@ const DashboardPosts = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        console.log('Fetching blog posts for dashboard...');
         const data = await getBlogPosts();
-        setPosts(data);
+        console.log('Retrieved posts:', data);
+        
+        // Ensure proper social data format for each post
+        const formattedPosts = data.map(post => {
+          if (post.author && typeof post.author.social !== 'object') {
+            return {
+              ...post,
+              author: {
+                ...post.author,
+                social: {} // Default empty object if social is not an object
+              }
+            };
+          }
+          return post;
+        });
+        
+        setPosts(formattedPosts);
       } catch (error) {
         console.error('Error fetching blog posts:', error);
         toast({

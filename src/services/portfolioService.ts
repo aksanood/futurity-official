@@ -1,8 +1,8 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { PortfolioItem } from '@/types/portfolio';
 
 export async function getPortfolioItems() {
+  console.log('Calling getPortfolioItems from Supabase');
   const { data, error } = await supabase
     .from('portfolio')
     .select('*')
@@ -13,10 +13,12 @@ export async function getPortfolioItems() {
     throw error;
   }
 
+  console.log('Retrieved portfolio items from Supabase:', data);
   return data || [];
 }
 
 export async function getPortfolioItemBySlug(slug: string) {
+  console.log(`Fetching portfolio item with slug: ${slug} from Supabase`);
   const { data, error } = await supabase
     .from('portfolio')
     .select('*')
@@ -28,6 +30,7 @@ export async function getPortfolioItemBySlug(slug: string) {
     return null;
   }
 
+  console.log('Retrieved portfolio item:', data);
   return data;
 }
 
