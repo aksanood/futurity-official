@@ -1,4 +1,3 @@
-
 import { cn } from "@/lib/utils";
 
 interface SectionHeadingProps {
@@ -16,7 +15,16 @@ const SectionHeading = ({ title, subtitle, center, className }: SectionHeadingPr
         <span className="absolute -bottom-2 left-0 w-20 h-1 bg-futurity-orange"
           style={{ left: center ? '50%' : '0', transform: center ? 'translateX(-50%)' : 'none' }}></span>
       </h2>
-      {subtitle && <p className="text-futurity-gray mt-6 max-w-3xl mx-auto">{subtitle}</p>}
+      {subtitle && (
+        <p
+          className={cn(
+            "text-futurity-gray mt-6 max-w-3xl",
+            center ? "mx-auto text-center" : "text-left"
+          )}
+        >
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 };

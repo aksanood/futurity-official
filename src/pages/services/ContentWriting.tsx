@@ -1,4 +1,3 @@
-
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,7 @@ import {
   Book,
   Mail
 } from 'lucide-react';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 
 const ContentWritingPage = () => {
   return (
@@ -242,33 +242,28 @@ const ContentWritingPage = () => {
               center
             />
           </div>
-          
-          <div className="space-y-6">
-            <FaqItem 
-              question="How do you ensure content matches our brand voice?" 
-              answer="We develop a comprehensive understanding of your brand voice through a detailed onboarding process that includes reviewing your existing content, brand guidelines, and target audience information. We create a tailored style guide for your content that outlines tone, style, and language preferences. For ongoing projects, we refine this approach based on your feedback to ensure consistency and alignment with your brand identity."
-            />
-            
-            <FaqItem 
-              question="How long does it take to create content?" 
-              answer="Timelines vary based on content type, complexity, and volume. Blog posts typically take 3-5 business days, website copy 5-10 days, and longer content like whitepapers or e-books 2-3 weeks. Rush services are available for time-sensitive projects. We'll provide specific timelines during our initial consultation based on your project scope and requirements."
-            />
-            
-            <FaqItem 
-              question="Do you optimize content for SEO?" 
-              answer="Yes, SEO optimization is included in our content writing services. We research relevant keywords for your industry and target audience, then strategically incorporate them into headlines, subheadings, and body text. We also optimize meta descriptions, apply proper heading structures, and ensure readability. Our approach balances search engine optimization with engaging, reader-friendly content that performs well both for algorithms and human readers."
-            />
-            
-            <FaqItem 
-              question="How much input do you need from us?" 
-              answer="We adapt to your preferred level of involvement. Some clients provide detailed briefs and review multiple drafts, while others prefer to give general direction and let our team handle the details. At minimum, we need information about your target audience, content objectives, key messages, and brand guidelines. Our onboarding questionnaire helps gather essential information, and we can work with whatever materials you have available."
-            />
-            
-            <FaqItem 
-              question="Do you offer content strategy services?" 
-              answer="Yes, we offer comprehensive content strategy services in addition to content creation. Our strategic services include content audits, competitive analysis, content calendar development, topic research, keyword planning, and performance measurement. We can help you develop a cohesive content plan aligned with your business objectives, whether you're starting from scratch or refining an existing approach."
-            />
-          </div>
+          <Accordion type="single" collapsible className="space-y-4">
+            <AccordionItem value="faq1">
+              <AccordionTrigger>How do you ensure content matches our brand voice?</AccordionTrigger>
+              <AccordionContent>We develop a comprehensive understanding of your brand voice through a detailed onboarding process that includes reviewing your existing content, brand guidelines, and target audience information. We create a tailored style guide for your content that outlines tone, style, and language preferences. For ongoing projects, we refine this approach based on your feedback to ensure consistency and alignment with your brand identity.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq2">
+              <AccordionTrigger>How long does it take to create content?</AccordionTrigger>
+              <AccordionContent>Timelines vary based on content type, complexity, and volume. Blog posts typically take 3-5 business days, website copy 5-10 days, and longer content like whitepapers or e-books 2-3 weeks. Rush services are available for time-sensitive projects. We'll provide specific timelines during our initial consultation based on your project scope and requirements.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq3">
+              <AccordionTrigger>Do you optimize content for SEO?</AccordionTrigger>
+              <AccordionContent>Yes, all content is optimized for search engines using best practices for keyword research, on-page SEO, and readability. We ensure your content is both engaging for readers and structured for search engine visibility.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq4">
+              <AccordionTrigger>Can you write for technical or niche industries?</AccordionTrigger>
+              <AccordionContent>Absolutely! Our team includes writers with expertise in a wide range of industries, including technical, medical, legal, SaaS, finance, and more. We conduct thorough research and can adapt to your specific industry requirements.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq5">
+              <AccordionTrigger>What if I need revisions?</AccordionTrigger>
+              <AccordionContent>We include a set number of revisions with every project to ensure your satisfaction. We'll work closely with you to incorporate your feedback and make necessary adjustments until the content meets your expectations.</AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </section>
 
@@ -368,21 +363,6 @@ const IndustryBadge = ({
   return (
     <div className="bg-white py-3 px-4 rounded-lg text-center shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
       <p className="font-medium">{name}</p>
-    </div>
-  );
-};
-
-const FaqItem = ({
-  question,
-  answer
-}: {
-  question: string;
-  answer: string;
-}) => {
-  return (
-    <div className="border border-gray-200 rounded-lg p-6 bg-white">
-      <h4 className="text-lg font-semibold mb-3">{question}</h4>
-      <p className="text-futurity-gray">{answer}</p>
     </div>
   );
 };

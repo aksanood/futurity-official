@@ -1,4 +1,3 @@
-
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
@@ -38,20 +37,24 @@ const About = () => {
         <div className="container-wide">
           <SectionHeading 
             title="Our Story" 
-            subtitle="From a small startup to an award-winning digital agency."
+            subtitle="Building Digital Futures."
+            center={false}
           />
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="animate-on-scroll">
               <div className="space-y-6">
                 <p>
-                  Futurity was founded in 2015 by three friends who shared a passion for technology and design. What started as a small web design studio has grown into a full-service digital agency serving clients across various industries.
+                  Futurity's story began with a simple conversation rooted in a shared conviction: digital experiences should be better. Our founders, drawing on diverse backgrounds from the creative complexity of gaming and emerging technologies to the practical, problem-solving world of IT support, both observed the same frustrations across the digital landscape. They saw businesses hampered by clunky websites, fragmented and short-sighted strategies, slow execution, and a general lack of focus on building long-term value. This shared vision of a fundamentally better approach became the catalyst for change.
                 </p>
                 <p>
-                  Our growth has been driven by our commitment to delivering exceptional results for our clients. We believe that great digital experiences are the result of a deep understanding of our clients' businesses, their users, and the latest technologies.
+                  Driven by this insight, Futurity was established in 2024 with the explicit purpose of transforming how digital services are delivered. From day one, our focus has been clear and unwavering: to combine strategy-led design with future-facing development, fostering genuine, long-term partnerships with our clients. We reject gimmicks and shortcuts, committing instead to building smart, robust digital solutions designed to last and drive meaningful, sustainable growth.
                 </p>
                 <p>
-                  Today, our team of over 25 digital experts continues to push the boundaries of what's possible in the digital landscape, helping our clients achieve their business objectives through innovative digital solutions.
+                  Today, Futurity has rapidly grown into a comprehensive, full-service digital agency. We offer a complete suite of expert services, including UX/UI design, impactful branding, targeted digital marketing covering all key channels, compelling content writing, innovative AI app development, and bespoke website development across various scales. Our singular mission is to empower businesses by providing the essential digital tools, sophisticated systems, and forward-thinking strategy required to not just compete, but truly thrive in today's complex and connected world. This swift expansion since 2024 is propelled by our core values and the dedication of our expert team, who are passionate about achieving client success through continuous innovation, including the strategic integration of AI.
+                </p>
+                <p>
+                  At Futurity, we consistently look beyond the immediate horizon. We understand that the digital landscape is constantly evolving, and our commitment is to build solutions that are ready for what comes next. We don't just build websites or execute campaigns; we build digital futures, creating adaptable, resilient, and forward-looking assets that ensure your business achieves enduring success and stays ahead of the curve.
                 </p>
               </div>
             </div>
@@ -59,34 +62,34 @@ const About = () => {
               {/* Timeline */}
               <div className="border-l-2 border-futurity-orange pl-8 space-y-12 relative">
                 <div className="absolute top-0 left-[-9px] h-4 w-4 rounded-full bg-futurity-orange"></div>
-                
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">2015</h3>
-                  <p className="text-futurity-gray">Founded as a web design studio with 3 team members.</p>
+                  <h3 className="text-xl font-semibold mb-2">Early 2024</h3>
+                  <p className="text-futurity-gray">Founding Vision: Futurity is established with a clear mission to empower businesses through innovative digital solutions.</p>
                 </div>
-                
                 <div className="relative">
                   <div className="absolute top-0 left-[-9px] h-4 w-4 rounded-full bg-futurity-orange -ml-[31px]"></div>
-                  <h3 className="text-xl font-semibold mb-2">2017</h3>
-                  <p className="text-futurity-gray">Expanded services to include mobile app development and digital marketing.</p>
+                  <h3 className="text-xl font-semibold mb-2">Mid 2024</h3>
+                  <p className="text-futurity-gray">Building the Foundation: Assembled a core team of passionate digital experts across key disciplines (UX/UI, Development, Marketing).</p>
                 </div>
-                
                 <div className="relative">
                   <div className="absolute top-0 left-[-9px] h-4 w-4 rounded-full bg-futurity-orange -ml-[31px]"></div>
-                  <h3 className="text-xl font-semibold mb-2">2019</h3>
-                  <p className="text-futurity-gray">Opened a second office and grew to a team of 15.</p>
+                  <h3 className="text-xl font-semibold mb-2">Late 2024</h3>
+                  <p className="text-futurity-gray">Launching Core Services: Successfully delivered initial projects and established a strong footing in bespoke website development, branding, and initial digital marketing services.</p>
                 </div>
-                
                 <div className="relative">
                   <div className="absolute top-0 left-[-9px] h-4 w-4 rounded-full bg-futurity-orange -ml-[31px]"></div>
-                  <h3 className="text-xl font-semibold mb-2">2021</h3>
-                  <p className="text-futurity-gray">Won our first industry award for exceptional digital experiences.</p>
+                  <h3 className="text-xl font-semibold mb-2">Early 2025</h3>
+                  <p className="text-futurity-gray">Expanding Expertise: Rapidly expanded service offerings to include AI App Development, reflecting our commitment to the future of technology.</p>
                 </div>
-                
                 <div className="relative">
                   <div className="absolute top-0 left-[-9px] h-4 w-4 rounded-full bg-futurity-orange -ml-[31px]"></div>
-                  <h3 className="text-xl font-semibold mb-2">2023</h3>
-                  <p className="text-futurity-gray">Expanded to a team of 25+ and serving clients globally.</p>
+                  <h3 className="text-xl font-semibold mb-2">Mid 2025</h3>
+                  <p className="text-futurity-gray">Achieving Client Success: Reached significant milestones in client growth and satisfaction, with a growing portfolio of successful partnerships and measurable results (up to 150% Client Growth).</p>
+                </div>
+                <div className="relative">
+                  <div className="absolute top-0 left-[-9px] h-4 w-4 rounded-full bg-futurity-orange -ml-[31px]"></div>
+                  <h3 className="text-xl font-semibold mb-2">Ongoing</h3>
+                  <p className="text-futurity-gray">Future Focus: Continuously innovating and expanding our capabilities to stay ahead in the ever-evolving digital landscape.</p>
                 </div>
               </div>
             </div>

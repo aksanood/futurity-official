@@ -5,13 +5,13 @@ import SectionHeading from '@/components/ui/section-heading';
 import ServiceCard from '@/components/ui/service-card';
 import PortfolioCard from '@/components/ui/portfolio-card';
 import TestimonialCard from '@/components/ui/testimonial-card';
-import { Layout as LayoutIcon, Smartphone, Palette, BarChart, FileSearch } from 'lucide-react';
+import { Layout as LayoutIcon, Smartphone, Palette, BarChart, FileSearch, Image, Globe, LayoutDashboard, Compass, FileText } from 'lucide-react';
 
 const Index = () => {
   return (
     <Layout>
       {/* Hero Section - Updated with new design */}
-      <section className="hero-main min-h-[80vh] flex items-center">
+      <section className="hero-main min-h-screen flex items-center relative overflow-hidden">
         
         <div 
           className="absolute inset-0 opacity-20"
@@ -26,10 +26,10 @@ const Index = () => {
         <div className="container-wide grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
           <div className="text-white">
             <h1 className="animate-on-scroll text-5xl md:text-6xl font-bold mb-6 leading-tight">
-              Transform Your <span className="text-futurity-orange">Digital</span><br /> Presence
+              Smarter <span className="text-futurity-orange">Digital</span> Solutions for <span className="text-futurity-orange">Measurable</span> Growth
             </h1>
             <p className="animate-on-scroll stagger-delay-1 text-xl mb-8 max-w-2xl text-white/90">
-              We create cutting-edge digital experiences that elevate your brand, engage your audience, and drive measurable results.
+              From bespoke website design and development to strategic digital marketing and AI solutions, Futurity provides the expertise you need to thrive online.
             </p>
             <div className="animate-on-scroll stagger-delay-2 flex flex-col sm:flex-row gap-4 mt-8">
               <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white border-0">
@@ -46,16 +46,16 @@ const Index = () => {
             </div>
             <div className="grid grid-cols-3 gap-8 mt-12">
               <div>
-                <div className="text-4xl font-bold text-futurity-orange mb-2">200+</div>
-                <div className="text-white/80">Projects Completed</div>
+                <div className="text-4xl font-bold text-futurity-orange mb-2">150%</div>
+                <div className="text-white/80">Client Growth</div>
               </div>
               <div>
-                <div className="text-4xl font-bold text-futurity-orange mb-2">95%</div>
+                <div className="text-4xl font-bold text-futurity-orange mb-2">100%</div>
                 <div className="text-white/80">Client Satisfaction</div>
               </div>
               <div>
-                <div className="text-4xl font-bold text-futurity-orange mb-2">10+</div>
-                <div className="text-white/80">Years Experience</div>
+                <div className="text-4xl font-bold text-futurity-orange mb-2">50+</div>
+                <div className="text-white/80">Innovative Solutions Deployed</div>
               </div>
             </div>
           </div>
@@ -67,10 +67,35 @@ const Index = () => {
             />
           </div>
         </div>
-        
-        {/* Straight line at bottom instead of wave */}
-        <div className="hero-straight-line">
-          <div className="h-16 bg-white absolute bottom-0 left-0 right-0"></div>
+      </section>
+
+      {/* About Section - alternating background */}
+      <section className="section section-alternate">
+        <div className="container-wide grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="animate-on-scroll">
+            <SectionHeading
+              title="Who We Are"
+              subtitle="Futurity is a team of digital experts passionate about creating exceptional digital experiences that drive business growth."
+            />
+            <p className="mb-6">
+              Launched in 2024, Futurity was born from a collective passion for empowering businesses to navigate and succeed in the evolving digital landscape.
+            </p>
+            <p className="mb-6">
+              Our team brings together dedicated specialists across UX/UI design, bespoke development, strategic marketing, and cutting-edge AI. We believe in a collaborative approach, working closely with you to transform challenges into opportunities.
+            </p>
+            <p className="mb-6">
+              Our focus is on building more than just websites or campaigns; we forge strategic partnerships aimed at delivering exceptional, user-centric digital experiences that resonate deeply and achieve tangible results for your business.
+            </p>
+          </div>
+          <div className="animate-on-scroll stagger-delay-1 relative">
+            <div className="absolute -top-4 -left-4 w-32 h-32 bg-futurity-orange/10 rounded-lg z-0"></div>
+            <img 
+              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80"
+              alt="Futurity Team" 
+              className="rounded-lg shadow-lg relative z-10"
+            />
+            <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-futurity-blue/10 rounded-lg z-0"></div>
+          </div>
         </div>
       </section>
 
@@ -85,38 +110,38 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <ServiceCard
-              icon={<LayoutIcon size={28} />}
-              title="Web Development"
-              description="We build responsive, scalable websites and web applications that deliver exceptional user experiences."
-              href="/services#web-development"
+              icon={<Image size={28} />}
+              title="Web Design"
+              description="Beautiful, responsive websites that captivate your audience"
+              href="/services/web-design"
               className="animate-on-scroll"
             />
             <ServiceCard
-              icon={<Smartphone size={28} />}
-              title="Mobile App Development"
-              description="Native and cross-platform mobile applications that engage users and drive business results."
-              href="/services#mobile-apps"
+              icon={<Globe size={28} />}
+              title="Web Development"
+              description="Custom web applications built with modern technologies"
+              href="/services/web-development"
               className="animate-on-scroll stagger-delay-1"
             />
             <ServiceCard
-              icon={<Palette size={28} />}
-              title="UI/UX Design"
-              description="User-centered design that balances aesthetics with functionality to create intuitive digital experiences."
-              href="/services#ui-ux-design"
+              icon={<LayoutDashboard size={28} />}
+              title="UX/UI Design"
+              description="User-centered design for intuitive digital experiences"
+              href="/services/ui-ux-design"
               className="animate-on-scroll stagger-delay-2"
             />
             <ServiceCard
-              icon={<BarChart size={28} />}
-              title="Digital Marketing"
-              description="Strategic marketing campaigns that connect your brand with your target audience and drive conversions."
-              href="/services#digital-marketing"
+              icon={<Compass size={28} />}
+              title="Branding"
+              description="Distinctive brand identities that make you stand out"
+              href="/services/branding-services"
               className="animate-on-scroll"
             />
             <ServiceCard
-              icon={<FileSearch size={28} />}
-              title="SEO & Content Strategy"
-              description="Data-driven SEO and content strategies that improve visibility and engage your audience."
-              href="/services#seo"
+              icon={<FileText size={28} />}
+              title="Content Writing"
+              description="Compelling copy that engages and drives action"
+              href="/services/content-writing"
               className="animate-on-scroll stagger-delay-1"
             />
             <div className="animate-on-scroll stagger-delay-2 rounded-lg p-6 flex flex-col items-center justify-center text-center bg-futurity-orange/10">
@@ -126,38 +151,6 @@ const Index = () => {
                 <Link to="/contact">Contact Us</Link>
               </Button>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* About Section - alternating background */}
-      <section className="section section-alternate">
-        <div className="container-wide grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="animate-on-scroll">
-            <SectionHeading
-              title="Who We Are"
-              subtitle="Futurity is a team of digital experts passionate about creating exceptional digital experiences that drive business growth."
-            />
-            <p className="mb-6">
-              Founded in 2015, we've helped over 100 clients across various industries establish a strong digital presence and achieve their business objectives.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 mt-8">
-              <Button asChild className="bg-futurity-orange text-white hover:bg-futurity-orange/90 border-0">
-                <Link to="/about">Learn More About Us</Link>
-              </Button>
-              <Button asChild variant="outline" className="text-futurity-blue border-futurity-blue/30">
-                <Link to="/contact">Get in Touch</Link>
-              </Button>
-            </div>
-          </div>
-          <div className="animate-on-scroll stagger-delay-1 relative">
-            <div className="absolute -top-4 -left-4 w-32 h-32 bg-futurity-orange/10 rounded-lg z-0"></div>
-            <img 
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80"
-              alt="Futurity Team" 
-              className="rounded-lg shadow-lg relative z-10"
-            />
-            <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-futurity-blue/10 rounded-lg z-0"></div>
           </div>
         </div>
       </section>

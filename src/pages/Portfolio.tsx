@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
@@ -62,6 +61,25 @@ const Portfolio = () => {
 
     fetchFilteredItems();
   }, [activeFilter, toast]);
+
+  useEffect(() => {
+    // Re-run scroll animation observer after filteredItems or visibleItems change
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    if (window.IntersectionObserver) {
+      const observer = new window.IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animated');
+          }
+        });
+      }, { threshold: 0.15 });
+      elements.forEach((el) => observer.observe(el));
+      return () => observer.disconnect();
+    } else {
+      // Fallback: just show all
+      elements.forEach((el) => el.classList.add('animated'));
+    }
+  }, [filteredItems, visibleItems]);
 
   const loadMore = () => {
     setVisibleItems(prev => prev + 3);
@@ -140,7 +158,10 @@ const Portfolio = () => {
 
           {visibleItems < filteredItems.length && (
             <div className="text-center mt-12">
-              <Button onClick={loadMore} variant="outline" className="border-futurity-blue text-futurity-blue">
+              <Button 
+                onClick={loadMore} 
+                className="bg-futurity-blue text-white hover:bg-futurity-blue/90 border-0"
+              >
                 Load More Projects
               </Button>
             </div>

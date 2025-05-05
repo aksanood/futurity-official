@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
@@ -22,7 +21,7 @@ const PortfolioCard = ({
     <Link 
       to={href}
       className={cn(
-        "portfolio-card",
+        "portfolio-card flex flex-col h-full",
         className
       )}
     >
@@ -38,8 +37,9 @@ const PortfolioCard = ({
           </span>
         </div>
       </div>
-      <div className="p-6">
+      <div className="p-6 flex flex-col flex-1">
         <h3 className="text-xl font-bold text-futurity-blue mb-2">{title}</h3>
+        <div className="flex-1"></div>
         <div className="flex items-center mt-4 text-futurity-blue font-medium">
           <span>View Case Study</span>
           <ExternalLink size={16} className="ml-1" />

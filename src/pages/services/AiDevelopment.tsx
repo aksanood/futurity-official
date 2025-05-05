@@ -1,4 +1,3 @@
-
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
@@ -12,6 +11,7 @@ import {
   Image,
   Zap
 } from 'lucide-react';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 
 const AiDevelopmentPage = () => {
   return (
@@ -249,33 +249,28 @@ const AiDevelopmentPage = () => {
               center
             />
           </div>
-          
-          <div className="space-y-6">
-            <FaqItem 
-              question="Do I need a large amount of data to implement AI solutions?" 
-              answer="The data requirements depend on the specific AI application. Some AI solutions can work effectively with modest amounts of data, while others require larger datasets for optimal performance. During our discovery phase, we assess your existing data and determine if it's sufficient for your goals. If needed, we can help with data acquisition and preparation strategies, or recommend AI approaches that work well with limited data."
-            />
-            
-            <FaqItem 
-              question="How long does it take to develop an AI solution?" 
-              answer="Development timelines vary widely based on the complexity of the solution, data availability, and integration requirements. Simple AI implementations might take 1-2 months, while more complex enterprise solutions can require 3-6 months or more. We break projects into phases with incremental deliverables, allowing you to see progress and value throughout the development process."
-            />
-            
-            <FaqItem 
-              question="How will AI benefit my specific business?" 
-              answer="AI can benefit businesses in numerous ways, including automating routine tasks, providing deeper customer insights, enabling personalized experiences, optimizing operations, and creating new product offerings. During our consultation, we'll discuss your specific business challenges and goals to identify the most valuable AI applications for your situation and calculate potential ROI."
-            />
-            
-            <FaqItem 
-              question="Do you use pre-built AI solutions or create custom ones?" 
-              answer="We utilize a hybrid approach, leveraging pre-built AI components where appropriate while developing custom elements for your specific needs. This approach balances development speed, cost-effectiveness, and customization. Pre-built components have been tested and refined, while custom development ensures the solution addresses your unique requirements and integrates with your existing systems."
-            />
-            
-            <FaqItem 
-              question="How do you handle data privacy and security in AI projects?" 
-              answer="Data privacy and security are paramount in all our AI projects. We implement industry best practices including data encryption, access controls, anonymization techniques, and secure development methodologies. We design solutions to comply with relevant regulations like GDPR, CCPA, and others applicable to your industry. We also provide clear documentation on data usage and can work within your existing security frameworks."
-            />
-          </div>
+          <Accordion type="single" collapsible className="space-y-4">
+            <AccordionItem value="faq1">
+              <AccordionTrigger>Do I need a large amount of data to implement AI solutions?</AccordionTrigger>
+              <AccordionContent>The data requirements depend on the specific AI application. Some AI solutions can work effectively with modest amounts of data, while others require larger datasets for optimal performance. During our discovery phase, we assess your existing data and determine if it's sufficient for your goals. If needed, we can help with data acquisition and preparation strategies, or recommend AI approaches that work well with limited data.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq2">
+              <AccordionTrigger>How long does it take to develop an AI solution?</AccordionTrigger>
+              <AccordionContent>Development timelines vary widely based on the complexity of the solution, data availability, and integration requirements. Simple AI implementations might take 1-2 months, while more complex enterprise solutions can require 3-6 months or more. We break projects into phases with incremental deliverables, allowing you to see progress and value throughout the development process.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq3">
+              <AccordionTrigger>How will AI benefit my specific business?</AccordionTrigger>
+              <AccordionContent>AI can benefit businesses in numerous ways, including automating routine tasks, providing deeper customer insights, enabling personalized experiences, optimizing operations, and creating new product offerings. During our consultation, we'll discuss your specific business challenges and goals to identify the most valuable AI applications for your situation and calculate potential ROI.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq4">
+              <AccordionTrigger>Do you use pre-built AI solutions or create custom ones?</AccordionTrigger>
+              <AccordionContent>We utilize a hybrid approach, leveraging pre-built AI components where appropriate while developing custom elements for your specific needs. This approach balances development speed, cost-effectiveness, and customization. Pre-built components have been tested and refined, while custom development ensures the solution addresses your unique requirements and integrates with your existing systems.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq5">
+              <AccordionTrigger>How do you handle data privacy and security in AI projects?</AccordionTrigger>
+              <AccordionContent>Data privacy and security are paramount in all our AI projects. We implement industry best practices including data encryption, access controls, anonymization techniques, and secure development methodologies. We design solutions to comply with relevant regulations like GDPR, CCPA, and others applicable to your industry. We also provide clear documentation on data usage and can work within your existing security frameworks.</AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </section>
 
@@ -373,21 +368,6 @@ const TechnologyCard = ({
   return (
     <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow">
       <p className="font-semibold">{name}</p>
-    </div>
-  );
-};
-
-const FaqItem = ({
-  question,
-  answer
-}: {
-  question: string;
-  answer: string;
-}) => {
-  return (
-    <div className="border border-gray-200 rounded-lg p-6 bg-white">
-      <h4 className="text-lg font-semibold mb-3">{question}</h4>
-      <p className="text-futurity-gray">{answer}</p>
     </div>
   );
 };

@@ -95,15 +95,15 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-start space-x-3">
                 <MapPin size={18} className="text-futurity-orange mt-1 flex-shrink-0" />
-                <span>123 Innovation Street, Tech District, CA 94103</span>
+                <span>Based in Leamington spa, Warwickshire.</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone size={18} className="text-futurity-orange flex-shrink-0" />
-                <span>+1 (123) 456-7890</span>
+                <a href="tel:+447356250335" className="hover:underline text-white/80">+44 7356 250335</a>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail size={18} className="text-futurity-orange flex-shrink-0" />
-                <span>info@futurity.com</span>
+                <span>info@futurity.biz</span>
               </li>
             </ul>
           </div>
@@ -129,7 +129,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 text-sm">
-          <p>© {currentYear} FUturity. All Rights Reserved.</p>
+          <p>© {currentYear} Futurity. All Rights Reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link to="/privacy-policy" className="text-white/70 hover:text-white transition-colors">
               Privacy Policy

@@ -1,9 +1,9 @@
-
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { CheckCircle, TrendingUp, BarChart2, Megaphone, FileSearch, Target } from 'lucide-react';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 
 const DigitalMarketingPage = () => {
   return (
@@ -195,33 +195,28 @@ const DigitalMarketingPage = () => {
               center
             />
           </div>
-          
-          <div className="space-y-6">
-            <FaqItem 
-              question="How long does it take to see results from digital marketing?" 
-              answer="Results timelines vary depending on the channel and strategies used. Paid advertising can generate results almost immediately, while SEO typically takes 3-6 months to show significant improvements. Content marketing and social media efforts generally show progressive results over 2-4 months. We provide regular reporting so you can track progress throughout your campaign."
-            />
-            
-            <FaqItem 
-              question="How much should I budget for digital marketing?" 
-              answer="Digital marketing budgets vary based on your goals, industry, competition level, and the channels you're targeting. We work with businesses of all sizes and can create customized strategies to fit various budgets. During our consultation, we'll recommend an appropriate budget range based on your specific objectives."
-            />
-            
-            <FaqItem 
-              question="Which digital marketing channels are best for my business?" 
-              answer="The most effective channels depend on your specific business, industry, target audience, and goals. We conduct thorough research to determine where your audience is most active and which channels will provide the best ROI for your business. Our strategies typically include a mix of channels for comprehensive coverage."
-            />
-            
-            <FaqItem 
-              question="How do you measure digital marketing success?" 
-              answer="We establish clear KPIs aligned with your business goals at the beginning of our engagement. These might include website traffic, conversion rates, lead generation, sales, engagement metrics, or other relevant measures. We provide regular reports that track these metrics and demonstrate the ROI of your marketing investment."
-            />
-            
-            <FaqItem 
-              question="Do I need ongoing marketing or can I just do a one-time campaign?" 
-              answer="While one-time campaigns can drive short-term results, digital marketing typically performs best as an ongoing effort. Search engine algorithms change, competition evolves, and consumer behaviors shift, requiring continuous optimization. We offer both project-based services and ongoing marketing packages to suit different needs."
-            />
-          </div>
+          <Accordion type="single" collapsible className="space-y-4">
+            <AccordionItem value="faq1">
+              <AccordionTrigger>How long does it take to see results from digital marketing?</AccordionTrigger>
+              <AccordionContent>Results timelines vary depending on the channel and strategies used. Paid advertising can generate results almost immediately, while SEO typically takes 3-6 months to show significant improvements. Content marketing and social media efforts generally show progressive results over 2-4 months. We provide regular reporting so you can track progress throughout your campaign.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq2">
+              <AccordionTrigger>How much should I budget for digital marketing?</AccordionTrigger>
+              <AccordionContent>Digital marketing budgets vary based on your goals, industry, competition, and the channels you want to use. We work with clients of all sizes and can recommend a strategy that fits your budget and objectives. During our consultation, we'll provide a tailored proposal with budget recommendations and expected outcomes.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq3">
+              <AccordionTrigger>Which digital marketing channels are best for my business?</AccordionTrigger>
+              <AccordionContent>The best channels depend on your target audience, goals, and industry. We help you identify the most effective mix of channels—such as SEO, PPC, social media, email marketing, and content marketing—based on your unique needs. Our strategies are data-driven and focused on delivering measurable results.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq4">
+              <AccordionTrigger>Do you provide ongoing optimization and reporting?</AccordionTrigger>
+              <AccordionContent>Yes, ongoing optimization is a core part of our digital marketing services. We continuously monitor performance, test new strategies, and refine campaigns to maximize ROI. You'll receive regular reports with key metrics, insights, and recommendations for improvement.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq5">
+              <AccordionTrigger>Can you help with both B2B and B2C marketing?</AccordionTrigger>
+              <AccordionContent>Absolutely! We have experience working with both B2B and B2C clients across a wide range of industries. Our team tailors strategies to your specific audience and business model to achieve the best results.</AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </section>
 
@@ -313,21 +308,6 @@ const CaseStudyItem = ({
         <h3 className="text-lg font-bold text-futurity-blue mb-2">{title}</h3>
         <p className="text-futurity-gray">{results}</p>
       </div>
-    </div>
-  );
-};
-
-const FaqItem = ({
-  question,
-  answer
-}: {
-  question: string;
-  answer: string;
-}) => {
-  return (
-    <div className="border border-gray-200 rounded-lg p-6 bg-white">
-      <h4 className="text-lg font-semibold mb-3">{question}</h4>
-      <p className="text-futurity-gray">{answer}</p>
     </div>
   );
 };

@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import PriceCard from '@/components/ui/price-card';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 
 const WebDevelopmentPage = () => {
   return (
@@ -331,33 +332,28 @@ const WebDevelopmentPage = () => {
               center
             />
           </div>
-          
-          <div className="space-y-6">
-            <FaqItem 
-              question="How long does it take to build a website?" 
-              answer="Website development timelines vary based on complexity, functionality, and scope. A basic informational website might take 4-6 weeks, while complex e-commerce sites or custom web applications can require 3-6 months or more. During our initial consultation, we'll assess your specific requirements and provide a detailed timeline. We work in phases and provide regular updates throughout the development process."
-            />
-            
-            <FaqItem 
-              question="How much does a website cost?" 
-              answer="Website costs vary widely depending on your specific requirements. Factors that influence pricing include design complexity, number of pages, custom functionality, integration requirements, and content needs. Basic informational websites start around $5,000, while e-commerce sites and custom web applications typically start at $15,000+. We provide detailed quotes based on your specific project requirements after our initial consultation."
-            />
-            
-            <FaqItem 
-              question="Will I be able to update the website myself?" 
-              answer="Yes, we develop websites with user-friendly content management systems (CMS) that allow you to easily update content without technical knowledge. We provide training on how to use your CMS effectively and create documentation for future reference. For more complex updates or new features, our support team is always available to assist."
-            />
-            
-            <FaqItem 
-              question="Do you provide hosting and maintenance?" 
-              answer="Yes, we offer hosting and ongoing maintenance services for websites we develop. Our hosting packages include security monitoring, regular backups, software updates, and technical support. We also offer maintenance plans that include content updates, performance optimization, and ongoing improvements to keep your site secure and functioning optimally."
-            />
-            
-            <FaqItem 
-              question="How do you ensure websites are search engine friendly?" 
-              answer="SEO best practices are integrated throughout our development process. We build websites with clean, semantic code, optimal site structure, fast loading speeds, mobile responsiveness, and proper metadata implementation. We also set up analytics and can implement technical SEO elements like sitemaps, robots.txt, structured data, and canonical tags. Our developers work closely with our SEO specialists to ensure your website is built on a strong foundation for search visibility."
-            />
-          </div>
+          <Accordion type="single" collapsible className="space-y-4">
+            <AccordionItem value="faq1">
+              <AccordionTrigger>How long does it take to build a website?</AccordionTrigger>
+              <AccordionContent>Website development timelines vary based on complexity, functionality, and scope. A basic informational website might take 4-6 weeks, while complex e-commerce sites or custom web applications can require 3-6 months or more. During our initial consultation, we'll assess your specific requirements and provide a detailed timeline. We work in phases and provide regular updates throughout the development process.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq2">
+              <AccordionTrigger>How much does a website cost?</AccordionTrigger>
+              <AccordionContent>Website costs vary widely depending on your specific requirements. Factors that influence pricing include design complexity, number of pages, custom functionality, integration requirements, and content needs. Basic informational websites start around $5,000, while e-commerce sites and custom web applications typically start at $15,000+. We provide detailed quotes based on your specific project requirements after our initial consultation.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq3">
+              <AccordionTrigger>Will I be able to update the website myself?</AccordionTrigger>
+              <AccordionContent>Yes, we develop websites with user-friendly content management systems (CMS) that allow you to easily update content without technical knowledge. We provide training on how to use your CMS effectively and create documentation for future reference. For more complex updates or new features, our support team is always available to assist.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq4">
+              <AccordionTrigger>Do you provide hosting and maintenance?</AccordionTrigger>
+              <AccordionContent>Yes, we offer hosting and ongoing maintenance services for websites we develop. Our hosting packages include security monitoring, regular backups, software updates, and technical support. We also offer maintenance plans that include content updates, performance optimization, and ongoing improvements to keep your site secure and functioning optimally.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq5">
+              <AccordionTrigger>How do you ensure websites are search engine friendly?</AccordionTrigger>
+              <AccordionContent>SEO best practices are integrated throughout our development process. We build websites with clean, semantic code, optimal site structure, fast loading speeds, mobile responsiveness, and proper metadata implementation. We also set up analytics and can implement technical SEO elements like sitemaps, robots.txt, structured data, and canonical tags. Our developers work closely with our SEO specialists to ensure your website is built on a strong foundation for search visibility.</AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </section>
 
@@ -483,21 +479,6 @@ const SecurityFeature = ({
         <h4 className="font-medium">{title}</h4>
         <p className="text-futurity-gray text-sm">{description}</p>
       </div>
-    </div>
-  );
-};
-
-const FaqItem = ({
-  question,
-  answer
-}: {
-  question: string;
-  answer: string;
-}) => {
-  return (
-    <div className="border border-gray-200 rounded-lg p-6 bg-white">
-      <h4 className="text-lg font-semibold mb-3">{question}</h4>
-      <p className="text-futurity-gray">{answer}</p>
     </div>
   );
 };

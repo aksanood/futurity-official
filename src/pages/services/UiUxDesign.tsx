@@ -1,4 +1,3 @@
-
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,7 @@ import {
   MousePointer,
   PenTool
 } from 'lucide-react';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 
 const UiUxDesignPage = () => {
   return (
@@ -235,33 +235,28 @@ const UiUxDesignPage = () => {
               center
             />
           </div>
-          
-          <div className="space-y-6">
-            <FaqItem 
-              question="What's the difference between UI and UX design?" 
-              answer="UI (User Interface) design focuses on the visual elements users interact with—like buttons, icons, spacing, typography, and colors. UX (User Experience) design encompasses the entire user journey and how users interact with a product, focusing on structure, usability, and function. While UI is about how the product looks, UX is about how it works. Our approach integrates both to create designs that are both visually appealing and functionally effective."
-            />
-            
-            <FaqItem 
-              question="How long does the UI/UX design process take?" 
-              answer="The timeline for a UI/UX project depends on its scope and complexity. A simple website redesign might take 4-6 weeks, while a complex application could require 8-12 weeks or more. Our process includes research, wireframing, visual design, prototyping, and testing—each phase is crucial for creating an effective final product. We'll provide a specific timeline during our initial consultation based on your project requirements."
-            />
-            
-            <FaqItem 
-              question="How do you measure the success of a UI/UX design?" 
-              answer="We measure success using both quantitative and qualitative metrics aligned with your business goals. Quantitative metrics might include conversion rates, task completion rates, time on task, error rates, and user engagement. Qualitative measures include user satisfaction surveys, feedback, and usability testing results. Before starting the project, we'll establish key performance indicators (KPIs) to track and evaluate the effectiveness of the design."
-            />
-            
-            <FaqItem 
-              question="Do you create design systems?" 
-              answer="Yes, we specialize in creating comprehensive design systems that ensure consistency across all digital touchpoints. A design system includes UI components, design patterns, guidelines, and principles—all documented for seamless implementation and future scaling. Design systems help maintain brand consistency, speed up development, and make it easier to update designs across multiple products or platforms."
-            />
-            
-            <FaqItem 
-              question="Can you work with our development team?" 
-              answer="Absolutely. We collaborate effectively with development teams to ensure smooth implementation of our designs. We provide detailed specifications, style guides, and assets, and can work directly with developers to address any questions during implementation. For clients without in-house development teams, we can also recommend trusted development partners or handle the full design-to-development process."
-            />
-          </div>
+          <Accordion type="single" collapsible className="space-y-4">
+            <AccordionItem value="faq1">
+              <AccordionTrigger>What's the difference between UI and UX design?</AccordionTrigger>
+              <AccordionContent>UI (User Interface) design focuses on the visual elements users interact with—like buttons, icons, spacing, typography, and colors. UX (User Experience) design encompasses the entire user journey and how users interact with a product, focusing on structure, usability, and function. While UI is about how the product looks, UX is about how it works. Our approach integrates both to create designs that are both visually appealing and functionally effective.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq2">
+              <AccordionTrigger>How long does the UI/UX design process take?</AccordionTrigger>
+              <AccordionContent>The timeline for a UI/UX project depends on its scope and complexity. A simple website redesign might take 4-6 weeks, while a complex application could require 8-12 weeks or more. Our process includes research, wireframing, visual design, prototyping, and testing—each phase is crucial for creating an effective final product. We'll provide a specific timeline during our initial consultation based on your project requirements.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq3">
+              <AccordionTrigger>How do you measure the success of a UI/UX design?</AccordionTrigger>
+              <AccordionContent>We measure success using both quantitative and qualitative metrics aligned with your business goals. Quantitative metrics might include conversion rates, task completion rates, time on task, error rates, and user engagement. Qualitative measures include user satisfaction surveys, feedback, and usability testing results. Before starting the project, we'll establish key performance indicators (KPIs) to track and evaluate the effectiveness of the design.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq4">
+              <AccordionTrigger>Do you create design systems?</AccordionTrigger>
+              <AccordionContent>Yes, we specialize in creating comprehensive design systems that ensure consistency across all digital touchpoints. A design system includes UI components, design patterns, guidelines, and principles—all documented for seamless implementation and future scaling. Design systems help maintain brand consistency, speed up development, and make it easier to update designs across multiple products or platforms.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq5">
+              <AccordionTrigger>Can you work with our development team?</AccordionTrigger>
+              <AccordionContent>Absolutely. We collaborate effectively with development teams to ensure smooth implementation of our designs. We provide detailed specifications, style guides, and assets, and can work directly with developers to address any questions during implementation. For clients without in-house development teams, we can also recommend trusted development partners or handle the full design-to-development process.</AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </section>
 
@@ -390,21 +385,6 @@ const TestimonialCard = ({
         <p className="font-semibold">{author}</p>
         <p className="text-sm text-futurity-gray">{company}</p>
       </div>
-    </div>
-  );
-};
-
-const FaqItem = ({
-  question,
-  answer
-}: {
-  question: string;
-  answer: string;
-}) => {
-  return (
-    <div className="border border-gray-200 rounded-lg p-6 bg-white">
-      <h4 className="text-lg font-semibold mb-3">{question}</h4>
-      <p className="text-futurity-gray">{answer}</p>
     </div>
   );
 };

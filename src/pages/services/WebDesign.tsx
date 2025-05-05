@@ -1,10 +1,10 @@
-
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { CheckCircle, FileSearch, LayoutDashboard, Smartphone } from 'lucide-react';
 import PriceCard from '@/components/ui/price-card';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 
 const WebDesignPage = () => {
   return (
@@ -250,33 +250,28 @@ const WebDesignPage = () => {
               center
             />
           </div>
-          
-          <div className="space-y-6">
-            <FaqItem 
-              question="How long does it take to design a website?" 
-              answer="The timeline for designing a website typically ranges from 4 to 12 weeks, depending on the complexity of the project, the number of pages, and the specific features required. Simple websites may be completed more quickly, while complex e-commerce sites or custom web applications may take longer."
-            />
-            
-            <FaqItem 
-              question="How much does a website design cost?" 
-              answer="Website design costs vary based on your specific requirements. Factors that influence pricing include the number of pages, complexity of design, custom functionality needed, and whether you need additional services like content creation or SEO. We provide detailed quotes after understanding your project needs."
-            />
-            
-            <FaqItem 
-              question="Will my website be mobile-friendly?" 
-              answer="Absolutely! All websites we design are fully responsive and tested across multiple devices and screen sizes. This ensures your site looks and functions perfectly on smartphones, tablets, laptops, and desktop computers."
-            />
-            
-            <FaqItem 
-              question="Can you redesign my existing website?" 
-              answer="Yes, we offer website redesign services to update and improve existing websites. We can work with your current content and structure while giving your site a fresh, modern look and improved functionality."
-            />
-            
-            <FaqItem 
-              question="Do you provide website maintenance after launch?" 
-              answer="Yes, we offer ongoing website maintenance and support services to keep your site secure, up-to-date, and performing optimally. We offer various maintenance packages to suit different needs and budgets."
-            />
-          </div>
+          <Accordion type="single" collapsible className="space-y-4">
+            <AccordionItem value="faq1">
+              <AccordionTrigger>How long does it take to design a website?</AccordionTrigger>
+              <AccordionContent>The timeline for designing a website typically ranges from 4 to 12 weeks, depending on the complexity of the project, the number of pages, and the specific features required. Simple websites may be completed more quickly, while complex e-commerce sites or custom web applications may take longer.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq2">
+              <AccordionTrigger>How much does a website design cost?</AccordionTrigger>
+              <AccordionContent>Website design costs vary based on your specific requirements. Factors that influence pricing include the number of pages, complexity of design, custom functionality needed, and whether you need additional services like content creation or SEO. We provide detailed quotes after understanding your project needs.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq3">
+              <AccordionTrigger>Will my website be mobile-friendly?</AccordionTrigger>
+              <AccordionContent>Absolutely! All websites we design are fully responsive and tested across multiple devices and screen sizes. This ensures your site looks and functions perfectly on smartphones, tablets, laptops, and desktop computers.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq4">
+              <AccordionTrigger>Can you redesign my existing website?</AccordionTrigger>
+              <AccordionContent>Yes, we offer website redesign services to update and improve existing websites. We can work with your current content and structure while giving your site a fresh, modern look and improved functionality.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq5">
+              <AccordionTrigger>Do you provide website maintenance after launch?</AccordionTrigger>
+              <AccordionContent>Yes, we offer ongoing website maintenance and support services to keep your site secure, up-to-date, and performing optimally. We offer various maintenance packages to suit different needs and budgets.</AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </section>
 
@@ -372,21 +367,6 @@ const PortfolioItem = ({
       <div className="p-4">
         <h3 className="text-lg font-bold text-futurity-blue">{title}</h3>
       </div>
-    </div>
-  );
-};
-
-const FaqItem = ({
-  question,
-  answer
-}: {
-  question: string;
-  answer: string;
-}) => {
-  return (
-    <div className="border border-gray-200 rounded-lg p-6 bg-white">
-      <h4 className="text-lg font-semibold mb-3">{question}</h4>
-      <p className="text-futurity-gray">{answer}</p>
     </div>
   );
 };

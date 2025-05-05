@@ -1,4 +1,3 @@
-
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,7 @@ import {
   FileText,
   Briefcase
 } from 'lucide-react';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 
 const BrandingServicesPage = () => {
   return (
@@ -247,33 +247,28 @@ const BrandingServicesPage = () => {
               center
             />
           </div>
-          
-          <div className="space-y-6">
-            <FaqItem 
-              question="What's the difference between a logo and a brand?" 
-              answer="A logo is just one element of your overall brand. While a logo is a visual symbol that represents your business, a brand encompasses everything that defines your business identity—including your values, voice, messaging, visual identity system, customer experience, and reputation. Think of your logo as your signature, while your brand is your entire personality and reputation."
-            />
-            
-            <FaqItem 
-              question="How long does the branding process take?" 
-              answer="A typical branding project takes 4-8 weeks, depending on the scope. This includes research and discovery (1-2 weeks), strategy development (1-2 weeks), visual identity design (2-3 weeks), and finalization of brand guidelines (1 week). More complex projects with extensive applications or multiple stakeholders may require additional time. We'll provide a specific timeline based on your project needs."
-            />
-            
-            <FaqItem 
-              question="When should I consider rebranding?" 
-              answer="Consider rebranding when: your business direction or offerings have significantly changed; your brand no longer reflects your values or positioning; you're targeting a new audience; your visual identity looks dated; you're expanding to new markets; you need to overcome negative associations; or you're struggling to differentiate from competitors. Rebranding should be a strategic decision based on business objectives, not just aesthetic preferences."
-            />
-            
-            <FaqItem 
-              question="What does a brand guidelines document include?" 
-              answer="Brand guidelines (also called a brand style guide) typically include: brand strategy overview (mission, vision, values, positioning); logo usage rules (clear space, minimum size, versions); color palette specifications; typography system; photography and illustration style; visual element usage; tone of voice guidelines; messaging frameworks; and application examples. Comprehensive guidelines ensure your brand is implemented consistently across all touchpoints."
-            />
-            
-            <FaqItem 
-              question="How do you measure the effectiveness of branding?" 
-              answer="We measure branding effectiveness through both qualitative and quantitative metrics. Qualitative measures include brand perception research, customer feedback, and competitive positioning. Quantitative metrics include brand awareness, customer loyalty, social media engagement, conversion rates, customer acquisition costs, and premium pricing potential. We establish specific KPIs aligned with your business goals at the start of the project."
-            />
-          </div>
+          <Accordion type="single" collapsible className="space-y-4">
+            <AccordionItem value="faq1">
+              <AccordionTrigger>What's the difference between a logo and a brand?</AccordionTrigger>
+              <AccordionContent>A logo is just one element of your overall brand. While a logo is a visual symbol that represents your business, a brand encompasses everything that defines your business identity—including your values, voice, messaging, visual identity system, customer experience, and reputation. Think of your logo as your signature, while your brand is your entire personality and reputation.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq2">
+              <AccordionTrigger>How long does the branding process take?</AccordionTrigger>
+              <AccordionContent>A typical branding project takes 4-8 weeks, depending on the scope. This includes research and discovery (1-2 weeks), strategy development (1-2 weeks), visual identity design (2-3 weeks), and finalization of brand guidelines (1 week). More complex projects with extensive applications or multiple stakeholders may require additional time. We'll provide a specific timeline based on your project needs.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq3">
+              <AccordionTrigger>When should I consider rebranding?</AccordionTrigger>
+              <AccordionContent>Consider rebranding when: your business direction or offerings have significantly changed; your brand no longer reflects your values or positioning; you're targeting a new audience; your visual identity looks dated; you're expanding to new markets; you need to overcome negative associations; or you're struggling to differentiate from competitors. Rebranding should be a strategic decision based on business objectives, not just aesthetic preferences.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq4">
+              <AccordionTrigger>What does a brand guidelines document include?</AccordionTrigger>
+              <AccordionContent>Brand guidelines (also called a brand style guide) typically include: brand strategy overview (mission, vision, values, positioning); logo usage rules (clear space, minimum size, versions); color palette specifications; typography system; photography and illustration style; visual element usage; tone of voice guidelines; messaging frameworks; and application examples. Comprehensive guidelines ensure your brand is implemented consistently across all touchpoints.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq5">
+              <AccordionTrigger>How do you measure the effectiveness of branding?</AccordionTrigger>
+              <AccordionContent>We measure branding effectiveness using both quantitative and qualitative metrics, such as brand awareness, customer loyalty, market share, and perception surveys. We also track business outcomes like increased sales, higher customer retention, and improved market positioning. We'll work with you to define success metrics at the start of your branding project.</AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </section>
 
@@ -383,21 +378,6 @@ const BenefitCard = ({
       </div>
       <h3 className="text-xl font-semibold mb-3">{title}</h3>
       <p className="text-futurity-gray">{description}</p>
-    </div>
-  );
-};
-
-const FaqItem = ({
-  question,
-  answer
-}: {
-  question: string;
-  answer: string;
-}) => {
-  return (
-    <div className="border border-gray-200 rounded-lg p-6 bg-white">
-      <h4 className="text-lg font-semibold mb-3">{question}</h4>
-      <p className="text-futurity-gray">{answer}</p>
     </div>
   );
 };
