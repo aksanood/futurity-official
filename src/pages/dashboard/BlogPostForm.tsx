@@ -64,9 +64,11 @@ const BlogPostFormPage = () => {
     fetchPost();
   }, [id, navigate, toast]);
   
-  const handleSave = async (formData: BlogPost, tagIds: string[]) => {
+  const handleSave = async (formData: BlogPost) => {
     setSubmitting(true);
     try {
+      const tagIds = formData.tags ? formData.tags.map(tag => tag.id) : [];
+      
       if (isEditMode && id) {
         // Update existing post
         await updateBlogPost(id, formData, tagIds);
@@ -109,7 +111,7 @@ const BlogPostFormPage = () => {
         </div>
       ) : (
         <BlogPostForm 
-          post={post || undefined}
+          post={post || null}
           onSave={handleSave}
           isSubmitting={submitting}
         />
