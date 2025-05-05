@@ -2,35 +2,28 @@
 import { getPortfolioItems, getPortfolioItemBySlug } from '@/services/portfolioService';
 import { PortfolioItem } from '@/types/portfolio';
 
-// Mock data for initial page load or fallback
-const mockPortfolioItems: PortfolioItem[] = [
-  {
-    id: 'ecommerce-platform',
-    title: 'E-commerce Platform Redesign',
-    slug: 'ecommerce-platform-redesign',
-    client: 'Fashion Retailer Inc.',
-    category: 'Web Development',
-    description: 'Complete redesign and development of an e-commerce platform, focusing on user experience and conversion optimization.',
-    challenge: '<p>The client was experiencing high cart abandonment rates and poor mobile engagement.</p>',
-    solution: '<p>We delivered a responsive redesign with streamlined checkout process.</p>',
-    results: '<p>40% increase in conversion rate. 25% reduction in cart abandonment.</p>',
-    image_url: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80',
-    gallery: ['https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d', 'https://images.unsplash.com/photo-1516110833967-0b5716ca1387'],
-    featured: true,
-    date: '2023-07-15',
-  },
-  // ... more mock items
+// Service categories matching your main services
+const serviceCategories = [
+  { id: 'web-development', name: 'Web Development' },
+  { id: 'web-design', name: 'Web Design' },
+  { id: 'ui-ux-design', name: 'UI/UX Design' },
+  { id: 'digital-marketing', name: 'Digital Marketing' },
+  { id: 'branding-services', name: 'Branding Services' },
+  { id: 'content-writing', name: 'Content Writing' },
+  { id: 'ai-development', name: 'AI Development' }
 ];
+
+export const getServiceCategories = () => serviceCategories;
 
 export async function getAllPortfolioItems() {
   try {
     console.log('Fetching portfolio items from Supabase...');
     const items = await getPortfolioItems();
     console.log('Received portfolio items:', items);
-    return items.length > 0 ? items : mockPortfolioItems;
+    return items;
   } catch (error) {
-    console.error('Error fetching portfolio items, using mock data:', error);
-    return mockPortfolioItems;
+    console.error('Error fetching portfolio items:', error);
+    return [];
   }
 }
 
@@ -39,14 +32,10 @@ export async function getPortfolioItemBySlugAsync(slug: string) {
     console.log(`Fetching portfolio item with slug: ${slug}`);
     const item = await getPortfolioItemBySlug(slug);
     console.log('Received portfolio item:', item);
-    
-    if (item) return item;
-    
-    // Fallback to mock data
-    return mockPortfolioItems.find(item => item.slug === slug);
+    return item;
   } catch (error) {
-    console.error('Error fetching portfolio item, using mock data:', error);
-    return mockPortfolioItems.find(item => item.slug === slug);
+    console.error('Error fetching portfolio item:', error);
+    return null;
   }
 }
 
@@ -54,27 +43,16 @@ export async function getFilteredPortfolioItems(tag: string) {
   try {
     const items = await getPortfolioItems();
     console.log(`Filtering portfolio items by tag: ${tag}`);
-    console.log('Items before filtering:', items);
     
     if (items.length > 0) {
       if (tag === 'all') return items;
-      return items.filter(item => item.category.toLowerCase().includes(tag));
+      return items.filter(item => item.category.toLowerCase().includes(tag.toLowerCase()));
     }
     
-    // Fallback to mock data
-    if (tag === 'all') return mockPortfolioItems;
-    return mockPortfolioItems.filter(item => 
-      item.category.toLowerCase().includes(tag) || 
-      // Assuming we might have tags in the future
-      false
-    );
+    return [];
   } catch (error) {
-    console.error('Error fetching filtered portfolio items, using mock data:', error);
-    if (tag === 'all') return mockPortfolioItems;
-    return mockPortfolioItems.filter(item => 
-      item.category.toLowerCase().includes(tag) || 
-      false
-    );
+    console.error('Error fetching filtered portfolio items:', error);
+    return [];
   }
 }
 
@@ -82,22 +60,15 @@ export async function getFeaturedPortfolioItems(limit = 3) {
   try {
     const items = await getPortfolioItems();
     console.log('Fetching featured portfolio items');
-    console.log('All items before filtering for featured:', items);
     
     if (items.length > 0) {
       const featuredItems = items.filter(item => item.featured);
-      console.log('Featured items:', featuredItems);
       return featuredItems.slice(0, limit);
     }
     
-    // Fallback to mock data
-    return mockPortfolioItems
-      .filter(item => item.featured)
-      .slice(0, limit);
+    return [];
   } catch (error) {
-    console.error('Error fetching featured portfolio items, using mock data:', error);
-    return mockPortfolioItems
-      .filter(item => item.featured)
-      .slice(0, limit);
+    console.error('Error fetching featured portfolio items:', error);
+    return [];
   }
 }

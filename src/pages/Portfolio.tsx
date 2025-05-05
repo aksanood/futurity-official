@@ -5,16 +5,9 @@ import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
-import { getAllPortfolioItems, getFilteredPortfolioItems } from '@/data/portfolioData';
+import { getAllPortfolioItems, getFilteredPortfolioItems, getServiceCategories } from '@/data/portfolioData';
 import { PortfolioItem } from '@/types/portfolio';
-
-const categories = [
-  { id: 'all', name: 'All' },
-  { id: 'web', name: 'Web Development' },
-  { id: 'mobile', name: 'Mobile' },
-  { id: 'ui-ux', name: 'UX Design' },
-  { id: 'branding', name: 'Branding' }
-];
+import PortfolioCard from '@/components/ui/portfolio-card';
 
 const Portfolio = () => {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -22,6 +15,7 @@ const Portfolio = () => {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [filteredItems, setFilteredItems] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const categories = getServiceCategories();
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -83,12 +77,21 @@ const Portfolio = () => {
           />
 
           <div className="flex flex-wrap justify-center gap-3 mb-12">
+            <Button
+              key="all"
+              onClick={() => setActiveFilter('all')}
+              className={`portfolio-filter-btn ${activeFilter === 'all' ? 'bg-futurity-blue text-white' : ''}`}
+              variant={activeFilter === 'all' ? "default" : "outline"}
+            >
+              All
+            </Button>
+            
             {categories.map(category => (
               <Button
                 key={category.id}
                 onClick={() => setActiveFilter(category.id)}
-                className={`portfolio-filter-btn ${activeFilter === category.id ? 'active' : ''}`}
-                variant="outline"
+                className={`portfolio-filter-btn ${activeFilter === category.id ? 'bg-futurity-blue text-white' : ''}`}
+                variant={activeFilter === category.id ? "default" : "outline"}
               >
                 {category.name}
               </Button>
@@ -106,38 +109,14 @@ const Portfolio = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredItems.slice(0, visibleItems).map((item, index) => (
-                <div key={item.id} className={`portfolio-card animate-on-scroll ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}>
-                  <div className="relative overflow-hidden aspect-[16/9]">
-                    <img 
-                      src={item.image_url} 
-                      alt={item.title} 
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-futurity-orange text-white text-sm font-medium px-2 py-1 rounded-md">
-                        {item.category}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="portfolio-card-content">
-                    <h3 className="text-xl md:text-2xl font-bold mb-2 text-futurity-blue">{item.title}</h3>
-                    <p className="text-gray-600 mb-4">{item.description}</p>
-                    
-                    <div className="mb-5">
-                      {item.results && item.results.split('\n').map((result, idx) => (
-                        <div key={idx} className="flex items-center mb-2">
-                          <div className="h-2 w-2 rounded-full bg-futurity-orange mr-2"></div>
-                          <span className="text-sm text-gray-700">{result}</span>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <Link to={`/portfolio/${item.slug}`} className="inline-flex items-center text-futurity-blue font-medium hover:text-futurity-orange">
-                      View Case Study 
-                      <ExternalLink size={16} className="ml-1" />
-                    </Link>
-                  </div>
-                </div>
+                <PortfolioCard
+                  key={item.id}
+                  image={item.image_url}
+                  title={item.title}
+                  category={item.category}
+                  href={`/portfolio/${item.slug}`}
+                  className={`animate-on-scroll ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}
+                />
               ))}
             </div>
           )}

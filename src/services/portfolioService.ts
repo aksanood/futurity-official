@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { PortfolioItem } from '@/types/portfolio';
 
@@ -23,7 +24,7 @@ export async function getPortfolioItemBySlug(slug: string) {
     .from('portfolio')
     .select('*')
     .eq('slug', slug)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error('Error fetching portfolio item by slug:', error);
@@ -39,7 +40,7 @@ export async function getPortfolioItemById(id: string) {
     .from('portfolio')
     .select('*')
     .eq('id', id)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error('Error fetching portfolio item by id:', error);
