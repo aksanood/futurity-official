@@ -8,6 +8,7 @@ import { ExternalLink } from 'lucide-react';
 import { getAllPortfolioItems, getFilteredPortfolioItems, getServiceCategories } from '@/data/portfolioData';
 import { PortfolioItem } from '@/types/portfolio';
 import PortfolioCard from '@/components/ui/portfolio-card';
+import { useToast } from '@/components/ui/use-toast';
 
 const Portfolio = () => {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -16,35 +17,51 @@ const Portfolio = () => {
   const [filteredItems, setFilteredItems] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
   const categories = getServiceCategories();
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
+        setLoading(true);
+        console.log('Fetching all portfolio items...');
         const items = await getAllPortfolioItems();
+        console.log('Retrieved items:', items);
         setPortfolioItems(items);
         setFilteredItems(items);
       } catch (error) {
         console.error('Error fetching portfolio items:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load portfolio items',
+          variant: 'destructive'
+        });
       } finally {
         setLoading(false);
       }
     };
 
     fetchItems();
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     const fetchFilteredItems = async () => {
       try {
+        console.log(`Fetching items filtered by: ${activeFilter}`);
         const items = await getFilteredPortfolioItems(activeFilter);
+        console.log('Filtered items:', items);
         setFilteredItems(items);
       } catch (error) {
         console.error('Error filtering portfolio items:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to filter portfolio items',
+          variant: 'destructive'
+        });
       }
     };
 
     fetchFilteredItems();
-  }, [activeFilter]);
+  }, [activeFilter, toast]);
 
   const loadMore = () => {
     setVisibleItems(prev => prev + 3);
