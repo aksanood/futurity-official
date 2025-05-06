@@ -62,13 +62,8 @@ const Layout = ({ children }: LayoutProps) => {
     
     applySectionAlternateBackgrounds();
 
-    // Mobile process step animations
-    const processSteps = document.querySelectorAll('.process-step');
-    processSteps.forEach((step) => observer.observe(step));
-
     return () => {
       elements.forEach((el) => observer.unobserve(el));
-      processSteps.forEach((step) => observer.unobserve(step));
     };
   }, []);
 
