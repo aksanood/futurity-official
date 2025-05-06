@@ -44,6 +44,18 @@ const convertDbAuthorToAppAuthor = (dbAuthor: any): Author => {
   };
 };
 
+// Helper function to clean UUID fields
+function cleanPostUUIDFields(post: any) {
+  const cleaned = { ...post };
+  // Set to null if not a non-empty string matching UUID format
+  const isValidUUID = (v: any) =>
+    typeof v === 'string' && /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(v);
+
+  if (!isValidUUID(cleaned.author_id)) cleaned.author_id = null;
+  if (!isValidUUID(cleaned.category_id)) cleaned.category_id = null;
+  return cleaned;
+}
+
 // Blog Posts
 export async function getBlogPosts() {
   const { data, error } = await supabase
@@ -146,10 +158,15 @@ export async function getBlogPostById(id: string) {
 }
 
 export async function createBlogPost(post: Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>, tagIds: string[]) {
+  // Remove 'tags' property if present
+  const { tags, ...postData } = post;
+  // Clean UUID fields
+  const cleanedPostData = cleanPostUUIDFields(postData);
+  console.log('createBlogPost cleanedPostData:', cleanedPostData); // debug
   // Start a transaction
   const { data, error } = await supabase
     .from('blog_posts')
-    .insert(post)
+    .insert(cleanedPostData)
     .select();
 
   if (error) {
@@ -176,10 +193,14 @@ export async function createBlogPost(post: Omit<BlogPost, 'id' | 'created_at' | 
 }
 
 export async function updateBlogPost(id: string, post: Partial<BlogPost>, tagIds: string[]) {
+  // Remove 'tags' property if present
+  const { tags, ...postData } = post;
+  // Clean UUID fields
+  const cleanedPostData = cleanPostUUIDFields(postData);
   // Update post
   const { data, error } = await supabase
     .from('blog_posts')
-    .update(post)
+    .update(cleanedPostData)
     .eq('id', id)
     .select();
 
@@ -188,7 +209,7 @@ export async function updateBlogPost(id: string, post: Partial<BlogPost>, tagIds
     throw error;
   }
 
-  // Delete existing tag relations
+  // Delete existing tag relations (do NOT use .select())
   const { error: deleteError } = await supabase
     .from('blog_posts_tags')
     .delete()
@@ -199,12 +220,15 @@ export async function updateBlogPost(id: string, post: Partial<BlogPost>, tagIds
     throw deleteError;
   }
 
+  // Remove duplicate tagIds
+  const uniqueTagIds = Array.from(new Set(tagIds));
+
   // Add new tag relations
-  if (tagIds.length > 0) {
-    const tagRelations = tagIds.map(tagId => ({ post_id: id, tag_id: tagId }));
+  if (uniqueTagIds.length > 0) {
+    const tagRelations = uniqueTagIds.map(tagId => ({ post_id: id, tag_id: tagId }));
     const { error: tagsError } = await supabase
       .from('blog_posts_tags')
-      .insert(tagRelations);
+      .upsert(tagRelations, { onConflict: ['post_id', 'tag_id'] });
 
     if (tagsError) {
       console.error('Error adding tags to post:', tagsError);

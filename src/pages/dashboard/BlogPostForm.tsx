@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
@@ -86,15 +85,23 @@ const BlogPostFormPage = () => {
       }
       
       navigate('/dashboard/posts');
-    } catch (error) {
+    } catch (error: any) {
+      if (error.code === '23505' && error.message?.includes('blog_posts_slug_key')) {
+        toast({
+          title: "Duplicate Slug",
+          description: "A blog post with this slug already exists. Please choose a different slug.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: isEditMode 
+            ? "Failed to update blog post. Please try again." 
+            : "Failed to create blog post. Please try again.",
+          variant: "destructive"
+        });
+      }
       console.error('Error saving post:', error);
-      toast({
-        title: "Error",
-        description: isEditMode 
-          ? "Failed to update blog post. Please try again." 
-          : "Failed to create blog post. Please try again.",
-        variant: "destructive"
-      });
     } finally {
       setSubmitting(false);
     }

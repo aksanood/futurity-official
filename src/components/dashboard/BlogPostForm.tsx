@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -115,8 +114,8 @@ const BlogPostForm = ({ post, onSave, isSubmitting = false }: BlogPostFormProps)
       excerpt: '',
       content: '',
       featured_image: '',
-      author_id: '',
-      category_id: '',
+      author_id: undefined,
+      category_id: undefined,
       published_date: new Date(),
       read_time: 0,
     },
@@ -211,7 +210,8 @@ const BlogPostForm = ({ post, onSave, isSubmitting = false }: BlogPostFormProps)
     
     // Prepare post data
     const postData: BlogPost = {
-      id: post?.id || '',
+      // Only include id if editing an existing post
+      ...(post?.id ? { id: post.id } : {}),
       title: values.title,
       slug: values.slug,
       excerpt: values.excerpt,
