@@ -1,19 +1,45 @@
 
-import { getPortfolioItems, getPortfolioItemBySlug } from '@/services/portfolioService';
+import { getPortfolioItems, getPortfolioItemBySlug, getServiceCategories as fetchServiceCategories } from '@/services/portfolioService';
 import { PortfolioItem } from '@/types/portfolio';
 
-// Service categories matching your main services
-const serviceCategories = [
-  { id: 'web-development', name: 'Web Development' },
-  { id: 'web-design', name: 'Web Design' },
-  { id: 'ui-ux-design', name: 'UI/UX Design' },
-  { id: 'digital-marketing', name: 'Digital Marketing' },
-  { id: 'branding-services', name: 'Branding Services' },
-  { id: 'content-writing', name: 'Content Writing' },
-  { id: 'ai-development', name: 'AI Development' }
-];
+// Cached service categories for faster access
+let cachedServiceCategories = null;
 
-export const getServiceCategories = () => serviceCategories;
+export async function getServiceCategories() {
+  try {
+    // If we have cached categories, return them
+    if (cachedServiceCategories) {
+      return cachedServiceCategories;
+    }
+    
+    console.log('Fetching service categories from Supabase...');
+    const categories = await fetchServiceCategories();
+    console.log('Received service categories:', categories);
+    
+    // Map the database categories to the format needed for UI
+    const mappedCategories = categories.map(cat => ({
+      id: cat.slug,
+      name: cat.name
+    }));
+    
+    // Cache the categories for future use
+    cachedServiceCategories = mappedCategories;
+    
+    return mappedCategories;
+  } catch (error) {
+    console.error('Error fetching service categories:', error);
+    // Fallback to default categories if there's an error
+    return [
+      { id: 'web-development', name: 'Web Development' },
+      { id: 'web-design', name: 'Web Design' },
+      { id: 'ui-ux-design', name: 'UI/UX Design' },
+      { id: 'digital-marketing', name: 'Digital Marketing' },
+      { id: 'branding-services', name: 'Branding Services' },
+      { id: 'content-writing', name: 'Content Writing' },
+      { id: 'ai-development', name: 'AI Development' }
+    ];
+  }
+}
 
 export async function getAllPortfolioItems() {
   try {
@@ -48,18 +74,12 @@ export async function getFilteredPortfolioItems(tag: string) {
     if (items && items.length > 0) {
       if (tag === 'all') return items;
       
-      // Convert tag to proper category format for comparison
-      let categoryToMatch = '';
-      switch(tag) {
-        case 'web-development': categoryToMatch = 'Web Development'; break;
-        case 'web-design': categoryToMatch = 'Web Design'; break;
-        case 'ui-ux-design': categoryToMatch = 'UI/UX Design'; break;
-        case 'digital-marketing': categoryToMatch = 'Digital Marketing'; break;
-        case 'branding-services': categoryToMatch = 'Branding Services'; break;
-        case 'content-writing': categoryToMatch = 'Content Writing'; break;
-        case 'ai-development': categoryToMatch = 'AI Development'; break;
-        default: categoryToMatch = tag;
-      }
+      // Get all service categories
+      const categories = await getServiceCategories();
+      
+      // Find the category that matches the tag
+      const matchingCategory = categories.find(cat => cat.id === tag);
+      const categoryToMatch = matchingCategory ? matchingCategory.name : tag;
       
       console.log('Filtering by category:', categoryToMatch);
       const filtered = items.filter(item => item.category === categoryToMatch);

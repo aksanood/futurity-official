@@ -92,3 +92,20 @@ export async function deletePortfolioItem(id: string) {
 
   return true;
 }
+
+// New function to get service categories
+export async function getServiceCategories() {
+  console.log('Fetching service categories from Supabase');
+  const { data, error } = await supabase
+    .from('service_categories')
+    .select('*')
+    .order('name', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching service categories:', error);
+    throw error;
+  }
+
+  console.log('Retrieved service categories:', data);
+  return data || [];
+}

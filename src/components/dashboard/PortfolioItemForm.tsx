@@ -13,12 +13,20 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import RichTextEditor from './RichTextEditor';
 import { PortfolioItem } from '@/types/portfolio';
+import { getServiceCategories } from '@/data/portfolioData';
 
 const formSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
@@ -46,6 +54,8 @@ interface PortfolioItemFormProps {
 const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItemFormProps) => {
   const navigate = useNavigate();
   const [galleryUrls, setGalleryUrls] = useState<string[]>(item?.gallery || ['']);
+  const [categories, setCategories] = useState<Array<{id: string, name: string}>>([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -77,6 +87,23 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
       date: new Date().toISOString().split('T')[0]
     }
   });
+  
+  // Fetch categories when component mounts
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setIsLoadingCategories(true);
+        const serviceCategories = await getServiceCategories();
+        setCategories(serviceCategories);
+      } catch (error) {
+        console.error('Error fetching service categories:', error);
+      } finally {
+        setIsLoadingCategories(false);
+      }
+    };
+    
+    fetchCategories();
+  }, []);
   
   const generateSlug = (title: string) => {
     return title
@@ -207,10 +234,33 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
               <FormItem>
                 <FormLabel>Category</FormLabel>
                 <FormControl>
-                  <Input 
-                    placeholder="e.g., Web Design, Mobile App" 
-                    {...field} 
-                  />
+                  {isLoadingCategories ? (
+                    <div className="flex items-center space-x-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Loading categories...</span>
+                    </div>
+                  ) : categories.length > 0 ? (
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category.id} value={category.name}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input 
+                      placeholder="e.g., Web Design, Mobile App" 
+                      {...field} 
+                    />
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>
