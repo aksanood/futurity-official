@@ -1,6 +1,6 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Editor } from '@tinymce/tinymce-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -38,6 +38,7 @@ import {
 import { DatePicker } from "@/components/ui/date-picker";
 import { BlogPost, Author, Tag, Category } from '@/types/blog';
 import { getAuthors, getCategories, getTags, createTag } from '@/services/blogService';
+import RichTextEditor from './RichTextEditor';
 
 // Define a type for the JsonValue that can be returned from the database
 type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
@@ -298,24 +299,9 @@ const BlogPostForm = ({ post, onSave, isSubmitting = false }: BlogPostFormProps)
               <FormItem>
                 <FormLabel>Content</FormLabel>
                 <FormControl>
-                  <Editor
-                    tinymceScriptSrc="/tinymce/tinymce.min.js"
-                    onEditorChange={field.onChange}
+                  <RichTextEditor
                     value={field.value}
-                    init={{
-                      height: 500,
-                      menubar: true,
-                      plugins: [
-                        'advlist autolink lists link image charmap print preview anchor',
-                        'searchreplace visualblocks code fullscreen',
-                        'insertdatetime media table paste code help wordcount'
-                      ],
-                      toolbar:
-                        'undo redo | formatselect | ' +
-                        'bold italic backcolor | alignleft aligncenter ' +
-                        'alignright alignjustify | bullist numlist outdent indent | ' +
-                        'removeformat | help'
-                    }}
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />

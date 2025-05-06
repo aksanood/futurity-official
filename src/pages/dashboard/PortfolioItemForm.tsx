@@ -12,13 +12,14 @@ const DashboardPortfolioItemForm = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [item, setItem] = useState<PortfolioItem | undefined>(undefined);
+  const [item, setItem] = useState<PortfolioItem | null>(null);
   const [loading, setLoading] = useState(!!id);
   
   useEffect(() => {
     const fetchItem = async () => {
       if (id) {
         try {
+          setLoading(true);
           const data = await getPortfolioItemById(id);
           if (data) {
             setItem(data);
@@ -46,7 +47,7 @@ const DashboardPortfolioItemForm = () => {
     fetchItem();
   }, [id, navigate, toast]);
   
-  const handleSave = async (itemData: PortfolioItem) => {
+  const handleSave = async (itemData: Omit<PortfolioItem, 'id' | 'created_at' | 'updated_at'>) => {
     setIsSubmitting(true);
     
     try {

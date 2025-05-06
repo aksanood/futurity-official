@@ -110,11 +110,13 @@ const BlogPostFormPage = () => {
           <p>Loading post data...</p>
         </div>
       ) : (
-        <BlogPostForm 
-          post={post || null}
-          onSave={handleSave}
-          isSubmitting={submitting}
-        />
+        <div className="bg-white shadow-sm rounded-lg p-6">
+          <BlogPostForm 
+            post={post}
+            onSave={handleSave}
+            isSubmitting={submitting}
+          />
+        </div>
       )}
     </DashboardLayout>
   );
