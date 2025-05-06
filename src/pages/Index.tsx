@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,8 @@ import SectionHeading from '@/components/ui/section-heading';
 import ServiceCard from '@/components/ui/service-card';
 import PortfolioCard from '@/components/ui/portfolio-card';
 import TestimonialCard from '@/components/ui/testimonial-card';
+import ProcessSection from '@/components/ui/process-section';
+import FAQSection from '@/components/ui/faq-section';
 import { Layout as LayoutIcon, Smartphone, Palette, BarChart, FileSearch, Image, Globe, LayoutDashboard, Compass, FileText } from 'lucide-react';
 
 const Index = () => {
@@ -196,6 +199,9 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Our Process Section - NEW */}
+      <ProcessSection />
+
       {/* Testimonials Section with star ratings */}
       <section className="section section-alternate">
         <div className="container-wide">
@@ -233,6 +239,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section - NEW */}
+      <FAQSection />
 
       {/* CTA Section */}
       <section className="section bg-futurity-blue text-white relative overflow-hidden">

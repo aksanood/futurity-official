@@ -1,5 +1,5 @@
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
@@ -8,6 +8,8 @@ interface LayoutProps {
 }
 
 const Layout = ({ children }: LayoutProps) => {
+  const isAnimationInitialized = useRef(false);
+
   // Scroll to top on page change
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -15,6 +17,8 @@ const Layout = ({ children }: LayoutProps) => {
 
   // Initialize intersection observer for scroll animations
   useEffect(() => {
+    if (isAnimationInitialized.current) return;
+    
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -30,9 +34,13 @@ const Layout = ({ children }: LayoutProps) => {
     };
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
-    const elements = document.querySelectorAll('.animate-on-scroll');
     
-    elements.forEach((el) => observer.observe(el));
+    // Delay initialization slightly for better performance
+    setTimeout(() => {
+      const elements = document.querySelectorAll('.animate-on-scroll');
+      elements.forEach((el) => observer.observe(el));
+      isAnimationInitialized.current = true;
+    }, 100);
 
     // Make adjacent sections have alternating backgrounds
     const applySectionAlternateBackgrounds = () => {
@@ -62,8 +70,29 @@ const Layout = ({ children }: LayoutProps) => {
     
     applySectionAlternateBackgrounds();
 
+    // Initialize parallax effect for elements with parallax class
+    const handleParallax = () => {
+      const parallaxElements = document.querySelectorAll('.parallax');
+      const scrollY = window.scrollY;
+      
+      parallaxElements.forEach((element) => {
+        const speed = element.getAttribute('data-speed') || '0.1';
+        const yPos = -(scrollY * parseFloat(speed));
+        element.setAttribute('style', `transform: translateY(${yPos}px)`);
+      });
+    };
+
+    // Add scroll listener for parallax effect
+    window.addEventListener('scroll', handleParallax);
+    
+    // Initial call to position elements
+    handleParallax();
+
     return () => {
-      elements.forEach((el) => observer.unobserve(el));
+      if (elements) {
+        elements.forEach((el) => observer.unobserve(el));
+      }
+      window.removeEventListener('scroll', handleParallax);
     };
   }, []);
 
