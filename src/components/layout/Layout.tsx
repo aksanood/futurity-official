@@ -9,6 +9,8 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const isAnimationInitialized = useRef(false);
+  // Add a ref to store the elements for cleanup
+  const animatedElementsRef = useRef<NodeListOf<Element> | null>(null);
 
   // Scroll to top on page change
   useEffect(() => {
@@ -39,6 +41,8 @@ const Layout = ({ children }: LayoutProps) => {
     setTimeout(() => {
       const elements = document.querySelectorAll('.animate-on-scroll');
       elements.forEach((el) => observer.observe(el));
+      // Store elements in the ref for cleanup
+      animatedElementsRef.current = elements;
       isAnimationInitialized.current = true;
     }, 100);
 
@@ -89,8 +93,9 @@ const Layout = ({ children }: LayoutProps) => {
     handleParallax();
 
     return () => {
-      if (elements) {
-        elements.forEach((el) => observer.unobserve(el));
+      // Use the ref for cleanup
+      if (animatedElementsRef.current) {
+        animatedElementsRef.current.forEach((el) => observer.unobserve(el));
       }
       window.removeEventListener('scroll', handleParallax);
     };
