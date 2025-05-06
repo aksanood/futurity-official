@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
@@ -15,8 +16,32 @@ const Portfolio = () => {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [filteredItems, setFilteredItems] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const categories = getServiceCategories();
+  const [categories, setCategories] = useState<Array<{id: string, name: string}>>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const { toast } = useToast();
+
+  // Fetch service categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoadingCategories(true);
+        const data = await getServiceCategories();
+        console.log('Retrieved service categories for portfolio:', data);
+        setCategories(data);
+      } catch (error) {
+        console.error('Error fetching service categories:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load service categories',
+          variant: 'destructive'
+        });
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, [toast]);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -121,16 +146,20 @@ const Portfolio = () => {
               All
             </Button>
             
-            {categories.map(category => (
-              <Button
-                key={category.id}
-                onClick={() => setActiveFilter(category.id)}
-                className={`portfolio-filter-btn ${activeFilter === category.id ? 'bg-futurity-blue text-white' : ''}`}
-                variant={activeFilter === category.id ? "default" : "outline"}
-              >
-                {category.name}
-              </Button>
-            ))}
+            {loadingCategories ? (
+              <div className="p-2">Loading categories...</div>
+            ) : (
+              categories.map(category => (
+                <Button
+                  key={category.id}
+                  onClick={() => setActiveFilter(category.id)}
+                  className={`portfolio-filter-btn ${activeFilter === category.id ? 'bg-futurity-blue text-white' : ''}`}
+                  variant={activeFilter === category.id ? "default" : "outline"}
+                >
+                  {category.name}
+                </Button>
+              ))
+            )}
           </div>
 
           {loading ? (
