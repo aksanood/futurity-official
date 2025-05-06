@@ -1,37 +1,22 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { PortfolioItem } from '@/types/portfolio';
 
 export async function getPortfolioItems() {
-  console.log('Calling getPortfolioItems from Supabase');
   const { data, error } = await supabase
     .from('portfolio')
     .select('*')
     .order('date', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching portfolio items:', error);
-    throw error;
-  }
-
-  console.log('Retrieved portfolio items from Supabase:', data);
+  if (error) throw error;
   return data || [];
 }
 
 export async function getPortfolioItemBySlug(slug: string) {
-  console.log(`Fetching portfolio item with slug: ${slug} from Supabase`);
   const { data, error } = await supabase
     .from('portfolio')
     .select('*')
     .eq('slug', slug)
     .maybeSingle();
-
-  if (error) {
-    console.error('Error fetching portfolio item by slug:', error);
-    return null;
-  }
-
-  console.log('Retrieved portfolio item:', data);
+  if (error) return null;
   return data;
 }
 
@@ -41,12 +26,7 @@ export async function getPortfolioItemById(id: string) {
     .select('*')
     .eq('id', id)
     .maybeSingle();
-
-  if (error) {
-    console.error('Error fetching portfolio item by id:', error);
-    return null;
-  }
-
+  if (error) return null;
   return data;
 }
 
@@ -55,12 +35,10 @@ export async function createPortfolioItem(item: Omit<PortfolioItem, 'id' | 'crea
     .from('portfolio')
     .insert(item)
     .select();
-
   if (error) {
-    console.error('Error creating portfolio item:', error);
+    console.error('Supabase insert error:', error);
     throw error;
   }
-
   return data[0];
 }
 
@@ -70,12 +48,7 @@ export async function updatePortfolioItem(id: string, item: Partial<PortfolioIte
     .update(item)
     .eq('id', id)
     .select();
-
-  if (error) {
-    console.error('Error updating portfolio item:', error);
-    throw error;
-  }
-
+  if (error) throw error;
   return data[0];
 }
 
@@ -84,11 +57,15 @@ export async function deletePortfolioItem(id: string) {
     .from('portfolio')
     .delete()
     .eq('id', id);
-
-  if (error) {
-    console.error('Error deleting portfolio item:', error);
-    throw error;
-  }
-
+  if (error) throw error;
   return true;
+}
+
+export async function getServiceCategories() {
+  const { data, error } = await supabase
+    .from('service_categories')
+    .select('*')
+    .order('name');
+  if (error) throw error;
+  return data || [];
 }

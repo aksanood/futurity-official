@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -19,12 +18,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import RichTextEditor from './RichTextEditor';
 import { PortfolioItem } from '@/types/portfolio';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { getServiceCategories } from '@/services/portfolioService';
 
 const formSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
   slug: z.string().min(3, 'Slug must be at least 3 characters'),
   client: z.string().min(2, 'Client name must be at least 2 characters'),
-  category: z.string().min(2, 'Category must be at least 2 characters'),
+  portfolio_category: z.string().min(1, 'Category is required'),
   description: z.string().min(20, 'Description must be at least 20 characters'),
   challenge: z.string().min(20, 'Challenge section must be at least 20 characters'),
   solution: z.string().min(20, 'Solution section must be at least 20 characters'),
@@ -46,6 +47,7 @@ interface PortfolioItemFormProps {
 const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItemFormProps) => {
   const navigate = useNavigate();
   const [galleryUrls, setGalleryUrls] = useState<string[]>(item?.gallery || ['']);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -53,7 +55,7 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
       title: item.title,
       slug: item.slug,
       client: item.client,
-      category: item.category,
+      portfolio_category: item.portfolio_category,
       description: item.description,
       challenge: item.challenge,
       solution: item.solution,
@@ -66,7 +68,7 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
       title: '',
       slug: '',
       client: '',
-      category: '',
+      portfolio_category: '',
       description: '',
       challenge: '',
       solution: '',
@@ -77,6 +79,18 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
       date: new Date().toISOString().split('T')[0]
     }
   });
+  
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const cats = await getServiceCategories();
+        setCategories(cats);
+      } catch (e) {
+        setCategories([]);
+      }
+    }
+    fetchCategories();
+  }, []);
   
   const generateSlug = (title: string) => {
     return title
@@ -122,26 +136,52 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
   };
   
   const onSubmit = (values: FormValues) => {
+    // Log all form values for debugging
+    console.log('Portfolio form submit values:', values);
+    
     // Filter out empty gallery URLs
     const filteredGallery = values.gallery.filter(url => url.trim() !== '');
     
-    const portfolioItem: PortfolioItem = {
-      id: item?.id || String(Date.now()),
-      title: values.title,
-      slug: values.slug,
-      client: values.client,
-      category: values.category,
-      description: values.description,
-      challenge: values.challenge,
-      solution: values.solution,
-      results: values.results,
-      image_url: values.image_url,
-      gallery: filteredGallery,
-      featured: values.featured,
-      date: values.date
-    };
+    let portfolioItem: Partial<PortfolioItem>;
+    if (item?.id) {
+      // Editing: include id
+      portfolioItem = {
+        id: item.id,
+        title: values.title,
+        slug: values.slug,
+        client: values.client,
+        portfolio_category: values.portfolio_category,
+        description: values.description,
+        challenge: values.challenge,
+        solution: values.solution,
+        results: values.results,
+        image_url: values.image_url,
+        gallery: filteredGallery,
+        featured: values.featured,
+        date: values.date
+      };
+    } else {
+      // Creating: do not include id
+      portfolioItem = {
+        title: values.title,
+        slug: values.slug,
+        client: values.client,
+        portfolio_category: values.portfolio_category,
+        description: values.description,
+        challenge: values.challenge,
+        solution: values.solution,
+        results: values.results,
+        image_url: values.image_url,
+        gallery: filteredGallery,
+        featured: values.featured,
+        date: values.date
+      };
+    }
     
-    onSave(portfolioItem);
+    // Log the item being sent to onSave
+    console.log('Portfolio item sent to onSave:', portfolioItem);
+    
+    onSave(portfolioItem as PortfolioItem);
   };
 
   return (
@@ -202,16 +242,22 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
           
           <FormField
             control={form.control}
-            name="category"
+            name="portfolio_category"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Category</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="e.g., Web Design, Mobile App" 
-                    {...field} 
-                  />
-                </FormControl>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

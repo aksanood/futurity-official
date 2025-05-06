@@ -221,7 +221,7 @@ export type Database = {
       }
       portfolio: {
         Row: {
-          category: string
+          portfolio_category: string
           challenge: string
           client: string
           created_at: string
@@ -238,7 +238,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          category: string
+          portfolio_category: string
           challenge: string
           client: string
           created_at?: string
@@ -255,7 +255,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          category?: string
+          portfolio_category?: string
           challenge?: string
           client?: string
           created_at?: string

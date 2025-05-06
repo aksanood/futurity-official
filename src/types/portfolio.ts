@@ -1,10 +1,9 @@
-
 export interface PortfolioItem {
   id: string;
   title: string;
   slug: string;
   client: string;
-  category: string;
+  portfolio_category: string; // references service_categories.id
   description: string;
   challenge: string;
   solution: string;
