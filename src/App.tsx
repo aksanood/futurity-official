@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -44,6 +43,7 @@ import BlogPostForm from './pages/dashboard/BlogPostForm';
 import PortfolioItemForm from './pages/dashboard/PortfolioItemForm';
 import AuthorPage from "./pages/AuthorPage";
 import Reviews from "./pages/Reviews";
+import CsvPortfolioReview from './pages/dashboard/CsvPortfolioReview';
 
 const queryClient = new QueryClient();
 
@@ -114,6 +114,11 @@ const App = () => (
             <Route path="/dashboard/portfolio/edit/:id" element={
               <ProtectedRoute>
                 <PortfolioItemForm />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/portfolio/csv-review" element={
+              <ProtectedRoute>
+                <CsvPortfolioReview />
               </ProtectedRoute>
             } />
             <Route path="/dashboard/inquiries" element={

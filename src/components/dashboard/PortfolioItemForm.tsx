@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Form,
@@ -26,6 +26,8 @@ import * as z from 'zod';
 import RichTextEditor from './RichTextEditor';
 import { PortfolioItem } from '@/types/portfolio';
 import { getServiceCategories } from '@/services/portfolioService';
+import { supabase } from '@/integrations/supabase/client';
+import { v4 as uuidv4 } from 'uuid';
 
 const formSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
@@ -36,8 +38,6 @@ const formSchema = z.object({
   challenge: z.string().min(20, 'Challenge section must be at least 20 characters'),
   solution: z.string().min(20, 'Solution section must be at least 20 characters'),
   results: z.string().min(20, 'Results section must be at least 20 characters'),
-  image_url: z.string().url('Must be a valid URL'),
-  gallery: z.array(z.string().url('Must be a valid URL')),
   featured: z.boolean(),
   date: z.string()
 });
@@ -52,8 +52,12 @@ interface PortfolioItemFormProps {
 
 const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItemFormProps) => {
   const navigate = useNavigate();
-  const [galleryUrls, setGalleryUrls] = useState<string[]>(item?.gallery || ['']);
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [mainImage, setMainImage] = useState<string>(item?.image_url || '');
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [mainImageError, setMainImageError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -66,8 +70,6 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
       challenge: item.challenge,
       solution: item.solution,
       results: item.results,
-      image_url: item.image_url,
-      gallery: item.gallery,
       featured: item.featured,
       date: item.date
     } : {
@@ -79,8 +81,6 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
       challenge: '',
       solution: '',
       results: '',
-      image_url: '',
-      gallery: [''],
       featured: false,
       date: new Date().toISOString().split('T')[0]
     }
@@ -90,7 +90,10 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
     async function fetchCategories() {
       try {
         const cats = await getServiceCategories();
-        setCategories(cats);
+        // Map to only id and name
+        setCategories(
+          cats.map((cat: any) => ({ id: cat.id, name: cat.name }))
+        );
       } catch (e) {
         setCategories([]);
       }
@@ -111,7 +114,6 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
     const title = e.target.value;
     form.setValue('title', title);
     
-    // Only auto-generate slug if it's empty or matches the previous auto-generated slug
     const currentSlug = form.getValues('slug');
     const previousTitle = item?.title || '';
     const previousSlug = generateSlug(previousTitle);
@@ -120,37 +122,59 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
       form.setValue('slug', generateSlug(title));
     }
   };
-  
-  const handleAddGalleryImage = () => {
-    setGalleryUrls(prev => [...prev, '']);
-    form.setValue('gallery', [...galleryUrls, '']);
+
+  const handleImageUpload = async (files: FileList | null) => {
+    if (!files) return;
+    setUploadError(null);
+    const uploaded: string[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${uuidv4()}.${fileExt}`;
+      const { data, error } = await supabase.storage.from('portfolio').upload(fileName, file);
+      if (error) {
+        setUploadError(`Upload failed for ${file.name}: ${error.message}`);
+        console.error('Upload error:', error, 'File:', fileName);
+        continue;
+      }
+      if (data) {
+        const { data: urlData, error: urlError } = supabase.storage.from('portfolio').getPublicUrl(fileName);
+        if (urlError) {
+          setUploadError(`URL error for ${file.name}: ${urlError.message}`);
+          console.error('Public URL error:', urlError, 'File:', fileName);
+        } else if (urlData.publicUrl) {
+          uploaded.push(urlData.publicUrl);
+          console.log('Uploaded file:', fileName, 'Public URL:', urlData.publicUrl);
+        }
+      }
+    }
+    setUploadedImages(prev => [...prev, ...uploaded]);
+    if (!mainImage && uploaded.length > 0) setMainImage(uploaded[0]);
   };
-  
-  const handleRemoveGalleryImage = (index: number) => {
-    setGalleryUrls(prev => prev.filter((_, i) => i !== index));
-    form.setValue(
-      'gallery', 
-      galleryUrls.filter((_, i) => i !== index)
-    );
+
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    await handleImageUpload(e.dataTransfer.files);
   };
-  
-  const handleGalleryImageChange = (index: number, value: string) => {
-    const newGallery = [...galleryUrls];
-    newGallery[index] = value;
-    setGalleryUrls(newGallery);
-    form.setValue('gallery', newGallery);
+
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
   };
   
   const onSubmit = (values: FormValues) => {
-    // Log all form values for debugging
+    setMainImageError(null);
+    // Check for main image selection
+    if (!mainImage) {
+      setMainImageError('You must select a main image before submitting.');
+      return;
+    }
+    
     console.log('Portfolio form submit values:', values);
     
-    // Filter out empty gallery URLs
-    const filteredGallery = values.gallery.filter(url => url.trim() !== '');
+    const filteredGallery = uploadedImages.filter(url => url !== mainImage);
     
     let portfolioItem: Partial<PortfolioItem>;
     if (item?.id) {
-      // Editing: include id
       portfolioItem = {
         id: item.id,
         title: values.title,
@@ -161,13 +185,12 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
         challenge: values.challenge,
         solution: values.solution,
         results: values.results,
-        image_url: values.image_url,
+        image_url: mainImage,
         gallery: filteredGallery,
         featured: values.featured,
         date: values.date
       };
     } else {
-      // Creating: do not include id
       portfolioItem = {
         title: values.title,
         slug: values.slug,
@@ -177,14 +200,13 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
         challenge: values.challenge,
         solution: values.solution,
         results: values.results,
-        image_url: values.image_url,
+        image_url: mainImage,
         gallery: filteredGallery,
         featured: values.featured,
         date: values.date
       };
     }
     
-    // Log the item being sent to onSave
     console.log('Portfolio item sent to onSave:', portfolioItem);
     
     onSave(portfolioItem as PortfolioItem);
@@ -272,23 +294,6 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
         
         <FormField
           control={form.control}
-          name="image_url"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Main Image URL</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="Enter the URL of the main image" 
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem>
@@ -356,43 +361,49 @@ const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItem
           )}
         />
         
-        <FormField
-          control={form.control}
-          name="gallery"
-          render={() => (
-            <FormItem>
-              <FormLabel>Gallery Images</FormLabel>
-              <div className="space-y-2">
-                {galleryUrls.map((url, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <Input
-                      placeholder="Image URL"
-                      value={url}
-                      onChange={(e) => handleGalleryImageChange(index, e.target.value)}
-                      className="flex-1"
-                    />
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleRemoveGalleryImage(index)}
-                    >
-                      Remove
-                    </Button>
-                  </div>
-                ))}
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={handleAddGalleryImage}
-                >
-                  Add Image
-                </Button>
-              </div>
-              <FormMessage />
-            </FormItem>
+        <div>
+          <FormLabel>Project Images</FormLabel>
+          <div
+            className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition mb-4 relative"
+            onDrop={handleDrop}
+            onDragOver={e => e.preventDefault()}
+            onClick={handleBrowseClick}
+          >
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              ref={fileInputRef}
+              className="hidden"
+              onChange={e => handleImageUpload(e.target.files)}
+            />
+            <span className="text-gray-500 text-sm mb-2">Drag & drop images here, or <span className="text-blue-600 underline">browse</span></span>
+            <span className="text-xs text-gray-400">(You can upload multiple images. Click an image below to set as main.)</span>
+          </div>
+          {uploadError && (
+            <div className="text-red-600 text-sm mt-2">{uploadError}</div>
           )}
-        />
+          {mainImageError && (
+            <div className="text-red-600 text-sm mt-2">{mainImageError}</div>
+          )}
+          {uploadedImages.length > 0 && (
+            <div className="flex flex-wrap gap-4 mt-2">
+              {uploadedImages.map((url, idx) => (
+                <div key={url} className="relative group">
+                  <img
+                    src={url}
+                    alt={`Uploaded ${idx}`}
+                    className={`w-28 h-28 object-cover rounded-lg border-2 transition cursor-pointer ${mainImage === url ? 'border-blue-600 shadow-lg scale-105' : 'border-gray-300 group-hover:border-blue-400'}`}
+                    onClick={() => setMainImage(url)}
+                  />
+                  {mainImage === url && (
+                    <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-0.5 rounded shadow">Main</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <FormField

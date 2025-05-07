@@ -1,4 +1,3 @@
-
 import { getPortfolioItems, getPortfolioItemBySlug, getServiceCategories as fetchServiceCategories } from '@/services/portfolioService';
 import { PortfolioItem } from '@/types/portfolio';
 
@@ -18,7 +17,7 @@ export async function getServiceCategories() {
     
     // Map the database categories to the format needed for UI
     const mappedCategories = categories.map(cat => ({
-      id: cat.slug,
+      id: cat.id, // Use UUID for filtering
       name: cat.name
     }));
     

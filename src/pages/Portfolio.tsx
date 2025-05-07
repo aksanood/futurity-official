@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
-import { getAllPortfolioItems, getFilteredPortfolioItems, getServiceCategories } from '@/data/portfolioData';
+import { getAllPortfolioItems, getServiceCategories } from '@/data/portfolioData';
 import { PortfolioItem } from '@/types/portfolio';
 import PortfolioCard from '@/components/ui/portfolio-card';
 import { useToast } from '@/components/ui/use-toast';
@@ -14,10 +13,10 @@ const Portfolio = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [visibleItems, setVisibleItems] = useState(6);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
-  const [filteredItems, setFilteredItems] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<Array<{id: string, name: string}>>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
   const { toast } = useToast();
 
   // Fetch service categories
@@ -51,7 +50,6 @@ const Portfolio = () => {
         const items = await getAllPortfolioItems();
         console.log('Retrieved items:', items);
         setPortfolioItems(items);
-        setFilteredItems(items);
       } catch (error) {
         console.error('Error fetching portfolio items:', error);
         toast({
@@ -67,28 +65,17 @@ const Portfolio = () => {
     fetchItems();
   }, [toast]);
 
-  useEffect(() => {
-    const fetchFilteredItems = async () => {
-      try {
-        console.log(`Fetching items filtered by: ${activeFilter}`);
-        const items = await getFilteredPortfolioItems(activeFilter);
-        console.log('Filtered items:', items);
-        setFilteredItems(items);
-      } catch (error) {
-        console.error('Error filtering portfolio items:', error);
-        toast({
-          title: 'Error',
-          description: 'Failed to filter portfolio items',
-          variant: 'destructive'
-        });
-      }
-    };
+  // Filtering logic (client-side)
+  const filteredItems = portfolioItems.filter(item => {
+    const matchesCategory = activeFilter === 'all' || item.portfolio_category === activeFilter;
+    const matchesFeatured = showFeaturedOnly ? item.featured : true;
+    return matchesCategory && matchesFeatured;
+  });
 
-    fetchFilteredItems();
-  }, [activeFilter, toast]);
+  const displayedItems = filteredItems;
 
   useEffect(() => {
-    // Re-run scroll animation observer after filteredItems or visibleItems change
+    // Re-run scroll animation observer after displayedItems or visibleItems change
     const elements = document.querySelectorAll('.animate-on-scroll');
     if (window.IntersectionObserver) {
       const observer = new window.IntersectionObserver((entries) => {
@@ -104,7 +91,7 @@ const Portfolio = () => {
       // Fallback: just show all
       elements.forEach((el) => el.classList.add('animated'));
     }
-  }, [filteredItems, visibleItems]);
+  }, [displayedItems, visibleItems]);
 
   const loadMore = () => {
     setVisibleItems(prev => prev + 3);
@@ -136,6 +123,24 @@ const Portfolio = () => {
             center
           />
 
+          {/* Toggle for All/Featured */}
+          <div className="flex justify-center gap-4 mb-6">
+            <Button
+              variant={!showFeaturedOnly ? 'default' : 'outline'}
+              onClick={() => setShowFeaturedOnly(false)}
+              className={showFeaturedOnly ? '' : 'bg-futurity-blue text-white'}
+            >
+              All
+            </Button>
+            <Button
+              variant={showFeaturedOnly ? 'default' : 'outline'}
+              onClick={() => setShowFeaturedOnly(true)}
+              className={showFeaturedOnly ? 'bg-futurity-blue text-white' : ''}
+            >
+              Featured
+            </Button>
+          </div>
+
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             <Button
               key="all"
@@ -166,26 +171,30 @@ const Portfolio = () => {
             <div className="flex justify-center items-center h-64">
               <p>Loading portfolio items...</p>
             </div>
-          ) : filteredItems.length === 0 ? (
+          ) : displayedItems.length === 0 ? (
             <div className="flex justify-center items-center h-64">
-              <p>No portfolio items found for this category.</p>
+              <p>No portfolio items found for this selection.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredItems.slice(0, visibleItems).map((item, index) => (
-                <PortfolioCard
-                  key={item.id}
-                  image={item.image_url}
-                  title={item.title}
-                  category={item.category}
-                  href={`/portfolio/${item.slug}`}
-                  className={`animate-on-scroll ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}
-                />
-              ))}
+              {displayedItems.slice(0, visibleItems).map((item, index) => {
+                const categoryObj = categories.find(cat => cat.id === item.portfolio_category);
+                const categoryName = categoryObj ? categoryObj.name : item.portfolio_category;
+                return (
+                  <PortfolioCard
+                    key={item.id}
+                    image={item.image_url}
+                    title={item.title}
+                    category={categoryName}
+                    href={`/portfolio/${item.slug}`}
+                    className={`animate-on-scroll ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}
+                  />
+                );
+              })}
             </div>
           )}
 
-          {visibleItems < filteredItems.length && (
+          {visibleItems < displayedItems.length && (
             <div className="text-center mt-12">
               <Button 
                 onClick={loadMore} 

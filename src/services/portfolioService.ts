@@ -53,11 +53,18 @@ export async function updatePortfolioItem(id: string, item: Partial<PortfolioIte
 }
 
 export async function deletePortfolioItem(id: string) {
+  if (!id) {
+    console.error('deletePortfolioItem: No id provided');
+    throw new Error('No id provided for delete');
+  }
   const { error } = await supabase
     .from('portfolio')
     .delete()
     .eq('id', id);
-  if (error) throw error;
+  if (error) {
+    console.error('Supabase delete error:', error, 'for id:', id);
+    throw error;
+  }
   return true;
 }
 

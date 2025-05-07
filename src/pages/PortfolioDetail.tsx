@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Calendar, Building, ChevronRight } from 'lucide-react';
@@ -6,23 +5,30 @@ import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { getPortfolioItemBySlugAsync } from '@/data/portfolioData';
 import { PortfolioItem } from '@/types/portfolio';
+import { getServiceCategories } from '@/services/portfolioService';
 
 const PortfolioDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const [item, setItem] = useState<PortfolioItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [categoryName, setCategoryName] = useState<string>('');
+  const [allImages, setAllImages] = useState<string[]>([]);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
 
   useEffect(() => {
     const fetchPortfolioItem = async () => {
       if (!slug) return;
-      
+
       try {
         setLoading(true);
         const data = await getPortfolioItemBySlugAsync(slug);
-        
+
         if (data) {
           setItem(data);
+          // Prepare all images (main + gallery)
+          const images = [data.image_url, ...(data.gallery || []).filter((img: string) => img && img !== data.image_url)];
+          setAllImages(images);
         }
       } catch (error) {
         console.error('Error fetching portfolio item:', error);
@@ -33,6 +39,27 @@ const PortfolioDetail = () => {
 
     fetchPortfolioItem();
   }, [slug]);
+
+  useEffect(() => {
+    const fetchCats = async () => {
+      const cats = await getServiceCategories();
+      setCategories(cats);
+      if (item) {
+        const cat = cats.find((c: any) => c.id === item.portfolio_category);
+        setCategoryName(cat ? cat.name : '');
+      }
+    };
+    fetchCats();
+  }, [item]);
+
+  // Auto-slide logic
+  useEffect(() => {
+    if (allImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveImageIndex((prev) => (prev + 1) % allImages.length);
+    }, 3500); // 3.5 seconds per slide
+    return () => clearInterval(interval);
+  }, [allImages]);
 
   if (loading) {
     return (
@@ -100,38 +127,34 @@ const PortfolioDetail = () => {
                 })}</span>
               </div>
               <div className="bg-futurity-orange text-white px-3 py-1 rounded-full text-sm">
-                {item.category}
+                {categoryName}
               </div>
             </div>
           </div>
           
-          {/* Main image */}
-          <div className="relative rounded-xl overflow-hidden mb-8">
-            <img 
-              src={item.gallery && item.gallery.length > 0 ? item.gallery[activeImageIndex] : item.image_url} 
-              alt={item.title} 
-              className="w-full h-auto object-cover rounded-xl aspect-video"
-            />
-          </div>
-          
-          {/* Thumbnails */}
-          {item.gallery && item.gallery.length > 1 && (
-            <div className="flex gap-2 mb-12 overflow-x-auto pb-2">
-              {item.gallery.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveImageIndex(index)}
-                  className={`min-w-[100px] h-[60px] rounded-md overflow-hidden border-2 ${
-                    activeImageIndex === index ? 'border-futurity-blue' : 'border-transparent'
-                  }`}
-                >
-                  <img 
-                    src={image} 
-                    alt={`${item.title} view ${index + 1}`} 
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
+          {/* Image slider */}
+          {allImages.length > 0 && (
+            <div className="relative mb-8 flex items-center justify-center bg-white rounded-xl border border-gray-200 h-96">
+              <img
+                src={allImages[activeImageIndex]}
+                alt={item.title}
+                className="max-h-full max-w-full object-contain rounded-xl transition-all duration-700 ease-in-out"
+                style={{ margin: 'auto' }}
+              />
+              {allImages.length > 1 && (
+                <div className="absolute inset-x-0 bottom-2 flex justify-center gap-2">
+                  {allImages.map((img, idx) => (
+                    <button
+                      key={img}
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`w-6 h-6 rounded-full border-2 ${activeImageIndex === idx ? 'border-futurity-orange bg-futurity-orange' : 'border-white bg-white/70'} transition`}
+                      style={{ outline: 'none' }}
+                    >
+                      <img src={img} alt="thumb" className="w-full h-full object-cover rounded-full" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           )}
           
@@ -165,7 +188,7 @@ const PortfolioDetail = () => {
                   
                   <div>
                     <h4 className="text-sm text-gray-500 uppercase">Service</h4>
-                    <p className="font-medium">{item.category}</p>
+                    <p className="font-medium">{categoryName}</p>
                   </div>
                   
                   <div>
