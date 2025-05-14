@@ -205,7 +205,7 @@ export async function createPost(post: BlogPost): Promise<void> {
   }
 }
 
-export const updatePost = async (postId: string, post: BlogPost): Promise<void> => {
+export async function updatePost(postId: string, post: BlogPost): Promise<void> {
   try {
     // Update the main post data
     const { error } = await supabase
@@ -253,7 +253,7 @@ export const updatePost = async (postId: string, post: BlogPost): Promise<void> 
     console.error('Error updating blog post:', error);
     throw error;
   }
-};
+}
 
 export async function deletePost(postId: string): Promise<void> {
   try {
@@ -384,3 +384,35 @@ export async function deleteAuthor(authorId: string): Promise<void> {
     throw error;
   }
 }
+
+// Add the missing createTag function
+export async function createTag(tag: { name: string; slug: string }): Promise<Tag> {
+  try {
+    const { data, error } = await supabase
+      .from('blog_tags')
+      .insert({
+        name: tag.name,
+        slug: tag.slug
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating tag:', error);
+      throw error;
+    }
+
+    return data as Tag;
+  } catch (error) {
+    console.error('Error in createTag:', error);
+    throw error;
+  }
+}
+
+// Add aliased functions to match the imported names in other files
+export const getBlogPosts = getPosts;
+export const getBlogPostBySlug = getPostBySlug;
+export const getBlogPostById = getPostBySlug; // Using getPostBySlug with id parameter
+export const createBlogPost = createPost;
+export const updateBlogPost = updatePost;
+export const deleteBlogPost = deletePost;

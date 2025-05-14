@@ -1,7 +1,7 @@
 
 import { 
-  getBlogPosts as fetchBlogPosts, 
-  getBlogPostBySlug as fetchBlogPostBySlug, 
+  getPosts as fetchBlogPosts, 
+  getPostBySlug as fetchBlogPostBySlug, 
   getAuthors as fetchAuthors, 
   getCategories as fetchCategories,
   getTags as fetchTags,

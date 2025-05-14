@@ -1,12 +1,13 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import BlogPostForm from '@/components/dashboard/BlogPostForm';
 import { 
-  getBlogPostById,
-  createBlogPost, 
-  updateBlogPost 
+  getPostBySlug as getBlogPostById,
+  createPost as createBlogPost, 
+  updatePost as updateBlogPost 
 } from '@/services/blogService';
 import { BlogPost } from '@/types/blog';
 

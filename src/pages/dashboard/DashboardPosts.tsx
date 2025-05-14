@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from '@/components/ui/use-toast';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
-import { getBlogPosts, deleteBlogPost } from '@/services/blogService';
+import { getPosts as getBlogPosts, deletePost as deleteBlogPost } from '@/services/blogService';
 import { BlogPost } from '@/types/blog';
 import { format } from 'date-fns';
 
