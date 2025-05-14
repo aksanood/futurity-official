@@ -1,469 +1,308 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage 
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { Loader2 } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import RichTextEditor from './RichTextEditor';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import RichTextEditor from '@/components/dashboard/RichTextEditor';
+import { X, Image, Loader2, FileUp } from 'lucide-react';
+import { getPortfolioItemById, createPortfolioItem, updatePortfolioItem } from '@/services/portfolioService';
 import { PortfolioItem } from '@/types/portfolio';
-import { getServiceCategories } from '@/services/portfolioService';
+import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { v4 as uuidv4 } from 'uuid';
-
-const formSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  slug: z.string().min(3, 'Slug must be at least 3 characters'),
-  client: z.string().min(2, 'Client name must be at least 2 characters'),
-  portfolio_category: z.string().min(1, 'Category is required'),
-  description: z.string().min(20, 'Description must be at least 20 characters'),
-  challenge: z.string().min(20, 'Challenge section must be at least 20 characters'),
-  solution: z.string().min(20, 'Solution section must be at least 20 characters'),
-  results: z.string().min(20, 'Results section must be at least 20 characters'),
-  featured: z.boolean(),
-  date: z.string()
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { getServiceCategories } from '@/data/portfolioData';
 
 interface PortfolioItemFormProps {
-  item?: PortfolioItem;
-  onSave: (item: PortfolioItem) => void;
-  isSubmitting?: boolean;
+  isEditMode?: boolean;
 }
 
-const PortfolioItemForm = ({ item, onSave, isSubmitting = false }: PortfolioItemFormProps) => {
+const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ isEditMode = false }) => {
+  const [title, setTitle] = useState('');
+  const [slug, setSlug] = useState('');
+  const [client, setClient] = useState('');
+  const [date, setDate] = useState('');
+  const [category, setCategory] = useState('');
+  const [description, setDescription] = useState('');
+  const [content, setContent] = useState('');
+  const [featured, setFeatured] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+	const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [portfolioItem, setPortfolioItem] = useState<PortfolioItem | null>(null);
+  const [categories, setCategories] = useState<Array<{id: string, name: string}>>([]);
+	const [loadingCategories, setLoadingCategories] = useState(true);
   const navigate = useNavigate();
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [mainImage, setMainImage] = useState<string>(item?.image_url || '');
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const [mainImageError, setMainImageError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: item ? {
-      title: item.title,
-      slug: item.slug,
-      client: item.client,
-      portfolio_category: item.portfolio_category,
-      description: item.description,
-      challenge: item.challenge,
-      solution: item.solution,
-      results: item.results,
-      featured: item.featured,
-      date: item.date
-    } : {
-      title: '',
-      slug: '',
-      client: '',
-      portfolio_category: '',
-      description: '',
-      challenge: '',
-      solution: '',
-      results: '',
-      featured: false,
-      date: new Date().toISOString().split('T')[0]
-    }
-  });
-  
+  const { toast } = useToast();
+  const { id } = useParams<{ id: string }>();
+
   useEffect(() => {
-    async function fetchCategories() {
+    const fetchCategories = async () => {
       try {
-        const cats = await getServiceCategories();
-        // Map to only id and name
-        setCategories(
-          cats.map((cat: any) => ({ id: cat.id, name: cat.name }))
-        );
-      } catch (e) {
+        setLoadingCategories(true);
+        const data = await getServiceCategories();
+        setCategories(data);
+      } catch (error) {
         setCategories([]);
+      } finally {
+        setLoadingCategories(false);
       }
-    }
+    };
     fetchCategories();
   }, []);
-  
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
-  };
-  
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const title = e.target.value;
-    form.setValue('title', title);
-    
-    const currentSlug = form.getValues('slug');
-    const previousTitle = item?.title || '';
-    const previousSlug = generateSlug(previousTitle);
-    
-    if (!currentSlug || currentSlug === previousSlug) {
-      form.setValue('slug', generateSlug(title));
-    }
-  };
 
-  const handleImageUpload = async (files: FileList | null) => {
-    if (!files) return;
-    setUploadError(null);
-    const uploaded: string[] = [];
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${uuidv4()}.${fileExt}`;
-      const { data, error } = await supabase.storage.from('portfolio').upload(fileName, file);
-      if (error) {
-        setUploadError(`Upload failed for ${file.name}: ${error.message}`);
-        console.error('Upload error:', error, 'File:', fileName);
-        continue;
-      }
-      if (data) {
-        const { data: urlData, error: urlError } = supabase.storage.from('portfolio').getPublicUrl(fileName);
-        if (urlError) {
-          setUploadError(`URL error for ${file.name}: ${urlError.message}`);
-          console.error('Public URL error:', urlError, 'File:', fileName);
-        } else if (urlData.publicUrl) {
-          uploaded.push(urlData.publicUrl);
-          console.log('Uploaded file:', fileName, 'Public URL:', urlData.publicUrl);
+  useEffect(() => {
+    if (isEditMode && id) {
+      const fetchPortfolioItem = async () => {
+        const item = await getPortfolioItemById(id);
+        if (item) {
+          setPortfolioItem(item);
+          setTitle(item.title);
+          setSlug(item.slug);
+          setClient(item.client);
+          setDate(item.date);
+          setCategory(item.portfolio_category);
+          setDescription(item.description);
+          setContent(item.content);
+          setFeatured(item.featured);
+          setImageUrl(item.image_url);
+        } else {
+          toast({
+            title: 'Error',
+            description: 'Failed to load portfolio item.',
+            variant: 'destructive',
+          });
         }
-      }
+      };
+      fetchPortfolioItem();
     }
-    setUploadedImages(prev => [...prev, ...uploaded]);
-    if (!mainImage && uploaded.length > 0) setMainImage(uploaded[0]);
-  };
+  }, [isEditMode, id, toast]);
 
-  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+	const uploadImage = async (file: File) => {
+		setUploading(true);
+		try {
+			const fileExt = file.name.split('.').pop();
+			const fileName = `${Math.random()}.${fileExt}`;
+			const filePath = `portfolio/${fileName}`;
+
+			const { data, error } = await supabase.storage
+				.from('images')
+				.upload(filePath, file);
+
+			if (error) {
+				console.error('Error uploading image:', error);
+				toast({
+					title: 'Error',
+					description: 'Failed to upload image.',
+					variant: 'destructive',
+				});
+				return null;
+			}
+
+			const publicUrl = supabase.storage
+				.from('images')
+				.getPublicUrl(data.path).data.publicUrl;
+			return publicUrl;
+		} catch (error) {
+			console.error('Unexpected error uploading image:', error);
+			toast({
+				title: 'Error',
+				description: 'Unexpected error uploading image.',
+				variant: 'destructive',
+			});
+			return null;
+		} finally {
+			setUploading(false);
+		}
+	};
+
+	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (!file) return;
+
+		setImageFile(file);
+
+		const uploadedUrl = await uploadImage(file);
+		if (uploadedUrl) {
+			setImageUrl(uploadedUrl);
+		}
+	};
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await handleImageUpload(e.dataTransfer.files);
-  };
 
-  const handleBrowseClick = () => {
-    fileInputRef.current?.click();
-  };
-  
-  const onSubmit = (values: FormValues) => {
-    setMainImageError(null);
-    // Check for main image selection
-    if (!mainImage) {
-      setMainImageError('You must select a main image before submitting.');
-      return;
+    const itemData = {
+      title,
+      slug,
+      client,
+      date,
+      portfolio_category: category,
+      description,
+      content,
+      featured,
+      image_url: imageUrl,
+    };
+
+    try {
+      if (isEditMode && portfolioItem) {
+        await updatePortfolioItem(portfolioItem.id, itemData);
+        toast({
+          title: 'Project updated',
+          description: 'The portfolio project has been updated successfully.',
+        });
+      } else {
+        await createPortfolioItem(itemData);
+        toast({
+          title: 'Project created',
+          description: 'The portfolio project has been created successfully.',
+        });
+      }
+      navigate('/dashboard/portfolio');
+    } catch (error) {
+      console.error('Error saving portfolio item:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to save portfolio item. Please try again later.',
+        variant: 'destructive',
+      });
     }
-    
-    console.log('Portfolio form submit values:', values);
-    
-    const filteredGallery = uploadedImages.filter(url => url !== mainImage);
-    
-    let portfolioItem: Partial<PortfolioItem>;
-    if (item?.id) {
-      portfolioItem = {
-        id: item.id,
-        title: values.title,
-        slug: values.slug,
-        client: values.client,
-        portfolio_category: values.portfolio_category,
-        description: values.description,
-        challenge: values.challenge,
-        solution: values.solution,
-        results: values.results,
-        image_url: mainImage,
-        gallery: filteredGallery,
-        featured: values.featured,
-        date: values.date
-      };
-    } else {
-      portfolioItem = {
-        title: values.title,
-        slug: values.slug,
-        client: values.client,
-        portfolio_category: values.portfolio_category,
-        description: values.description,
-        challenge: values.challenge,
-        solution: values.solution,
-        results: values.results,
-        image_url: mainImage,
-        gallery: filteredGallery,
-        featured: values.featured,
-        date: values.date
-      };
-    }
-    
-    console.log('Portfolio item sent to onSave:', portfolioItem);
-    
-    onSave(portfolioItem as PortfolioItem);
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="Enter project title" 
-                  {...field} 
-                  onChange={handleTitleChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <Label htmlFor="title">Title</Label>
+        <Input
+          type="text"
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
         />
-        
-        <FormField
-          control={form.control}
-          name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Slug</FormLabel>
-              <FormControl>
-                <Input 
-                  placeholder="Enter project slug" 
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+      </div>
+      <div>
+        <Label htmlFor="slug">Slug</Label>
+        <Input
+          type="text"
+          id="slug"
+          value={slug}
+          onChange={(e) => setSlug(e.target.value)}
+          required
         />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="client"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Client Name</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="Enter client name" 
-                    {...field} 
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
-            name="portfolio_category"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Category</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Project Description</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Enter a brief overview of the project" 
-                  {...field} 
-                  rows={3}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+      </div>
+      <div>
+        <Label htmlFor="client">Client</Label>
+        <Input
+          type="text"
+          id="client"
+          value={client}
+          onChange={(e) => setClient(e.target.value)}
+          required
         />
-        
-        <FormField
-          control={form.control}
-          name="challenge"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Challenge</FormLabel>
-              <FormControl>
-                <RichTextEditor 
-                  value={field.value} 
-                  onChange={field.onChange} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+      </div>
+      <div>
+        <Label htmlFor="date">Date</Label>
+        <Input
+          type="date"
+          id="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
         />
-        
-        <FormField
-          control={form.control}
-          name="solution"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Solution</FormLabel>
-              <FormControl>
-                <RichTextEditor 
-                  value={field.value} 
-                  onChange={field.onChange} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+      </div>
+      <div>
+        <Label htmlFor="category">Category</Label>
+        <Select value={category} onValueChange={setCategory}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a category" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map(cat => (
+              <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div>
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          required
         />
-        
-        <FormField
-          control={form.control}
-          name="results"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Results</FormLabel>
-              <FormControl>
-                <RichTextEditor 
-                  value={field.value} 
-                  onChange={field.onChange} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+      </div>
+      <div>
+        <Label htmlFor="content">Content</Label>
+        <RichTextEditor value={content} onChange={setContent} />
+      </div>
+			<div>
+				<Label>Featured Image</Label>
+				<div className="flex items-center space-x-4">
+					<AspectRatio ratio={16 / 9} className="w-64 h-36 rounded-md overflow-hidden border shadow">
+						{imageUrl ? (
+							<Image
+								src={imageUrl}
+								alt="Featured"
+								className="object-cover w-full h-full"
+							/>
+						) : (
+							<div className="flex items-center justify-center h-full bg-gray-100 text-gray-500">
+								No Image
+							</div>
+						)}
+					</AspectRatio>
+					<div>
+						<Input
+							type="file"
+							id="image"
+							accept="image/*"
+							onChange={handleImageUpload}
+							className="hidden"
+						/>
+						<Label htmlFor="image" className="bg-secondary hover:bg-secondary-foreground text-secondary-foreground hover:text-primary-foreground rounded-md px-4 py-2 cursor-pointer">
+							{uploading ? (
+								<div className="flex items-center justify-center">
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									<span>Uploading...</span>
+								</div>
+							) : (
+								<div className="flex items-center justify-center">
+									<FileUp className="mr-2 h-4 w-4" />
+									<span>Upload</span>
+								</div>
+							)}
+						</Label>
+						{imageUrl && (
+							<Button
+								type="button"
+								variant="ghost"
+								size="sm"
+								onClick={() => {
+									setImageUrl('');
+									setImageFile(null);
+								}}
+								className="mt-2"
+							>
+								<X className="mr-2 h-4 w-4" />
+								Remove
+							</Button>
+						)}
+					</div>
+				</div>
+			</div>
+      <div>
+        <Label htmlFor="featured">Featured</Label>
+        <Switch
+          id="featured"
+          checked={featured}
+          onCheckedChange={(checked) => setFeatured(checked)}
         />
-        
-        <div>
-          <FormLabel>Project Images</FormLabel>
-          <div
-            className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition mb-4 relative"
-            onDrop={handleDrop}
-            onDragOver={e => e.preventDefault()}
-            onClick={handleBrowseClick}
-          >
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              ref={fileInputRef}
-              className="hidden"
-              onChange={e => handleImageUpload(e.target.files)}
-            />
-            <span className="text-gray-500 text-sm mb-2">Drag & drop images here, or <span className="text-blue-600 underline">browse</span></span>
-            <span className="text-xs text-gray-400">(You can upload multiple images. Click an image below to set as main.)</span>
-          </div>
-          {uploadError && (
-            <div className="text-red-600 text-sm mt-2">{uploadError}</div>
-          )}
-          {mainImageError && (
-            <div className="text-red-600 text-sm mt-2">{mainImageError}</div>
-          )}
-          {uploadedImages.length > 0 && (
-            <div className="flex flex-wrap gap-4 mt-2">
-              {uploadedImages.map((url, idx) => (
-                <div key={url} className="relative group">
-                  <img
-                    src={url}
-                    alt={`Uploaded ${idx}`}
-                    className={`w-28 h-28 object-cover rounded-lg border-2 transition cursor-pointer ${mainImage === url ? 'border-blue-600 shadow-lg scale-105' : 'border-gray-300 group-hover:border-blue-400'}`}
-                    onClick={() => setMainImage(url)}
-                  />
-                  {mainImage === url && (
-                    <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-0.5 rounded shadow">Main</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <FormField
-            control={form.control}
-            name="date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Completion Date</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="date"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
-            name="featured"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <FormLabel className="text-base">Featured Project</FormLabel>
-                </div>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
-        
-        <div className="flex justify-end gap-4">
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={() => navigate('/dashboard/portfolio')}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {item ? 'Updating...' : 'Creating...'}
-              </>
-            ) : (
-              <>{item ? 'Update' : 'Create'} Project</>
-            )}
-          </Button>
-        </div>
-      </form>
-    </Form>
+      </div>
+      <Button type="submit">{isEditMode ? 'Update Project' : 'Create Project'}</Button>
+    </form>
   );
 };
 

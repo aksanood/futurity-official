@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-import { BlogPost, Author, Category, Tag } from '@/types/blog';
+import { BlogPost, Category, Tag } from '@/types/blog';
 
 // Helper function to parse author's social data
 const parseSocialData = (socialData: any): Author['social'] => {

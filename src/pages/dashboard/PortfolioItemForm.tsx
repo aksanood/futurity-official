@@ -1,115 +1,96 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import PortfolioItemForm from '@/components/dashboard/PortfolioItemForm';
-import { useToast } from '@/components/ui/use-toast';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
+import { getPortfolioItemById } from '@/services/portfolioService';
 import { PortfolioItem } from '@/types/portfolio';
-import { getPortfolioItemById, createPortfolioItem, updatePortfolioItem } from '@/services/portfolioService';
+import { supabase } from '@/integrations/supabase/client';
 
-const DashboardPortfolioItemForm = () => {
+const DashboardEditPortfolioItem = () => {
   const { id } = useParams<{ id: string }>();
+  const [item, setItem] = useState<PortfolioItem | null>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [item, setItem] = useState<PortfolioItem | null>(null);
-  const [loading, setLoading] = useState(!!id);
-  
+
   useEffect(() => {
     const fetchItem = async () => {
-      if (id) {
-        try {
-          setLoading(true);
-          const data = await getPortfolioItemById(id);
-          if (data) {
-            setItem(data);
-          } else {
-            toast({
-              title: 'Error',
-              description: 'Portfolio item not found',
-              variant: 'destructive',
-            });
-            navigate('/dashboard/portfolio');
-          }
-        } catch (error) {
-          console.error('Error fetching portfolio item:', error);
+      if (!id) {
+        toast({
+          title: 'Error',
+          description: 'Missing portfolio item ID.',
+          variant: 'destructive',
+        });
+        navigate('/dashboard/portfolio');
+        return;
+      }
+
+      try {
+        const data = await getPortfolioItemById(id);
+        if (data) {
+          setItem(data);
+        } else {
           toast({
             title: 'Error',
-            description: 'Failed to load portfolio item',
+            description: 'Portfolio item not found.',
             variant: 'destructive',
           });
-        } finally {
-          setLoading(false);
+          navigate('/dashboard/portfolio');
         }
+      } catch (error) {
+        console.error('Error fetching portfolio item:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load portfolio item. Please try again later.',
+          variant: 'destructive',
+        });
+        navigate('/dashboard/portfolio');
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchItem();
   }, [id, navigate, toast]);
-  
-  const handleSave = async (itemData: Omit<PortfolioItem, 'id' | 'created_at' | 'updated_at'>) => {
-    setIsSubmitting(true);
-    
-    try {
-      if (id) {
-        // Update existing portfolio item
-        await updatePortfolioItem(id, itemData);
-        
-        toast({
-          title: "Project updated",
-          description: "The portfolio project has been updated successfully.",
-        });
-      } else {
-        // Create new portfolio item
-        await createPortfolioItem(itemData);
-        
-        toast({
-          title: "Project created",
-          description: "The portfolio project has been created successfully.",
-        });
-      }
-      
-      navigate('/dashboard/portfolio');
-    } catch (error) {
-      console.error('Error saving portfolio item:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to save portfolio item. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-  
-  const title = id ? 'Edit Portfolio Project' : 'Create Portfolio Project';
-  const subtitle = id && item 
-    ? `Editing "${item.title}"` 
-    : 'Create a new portfolio project to showcase your work';
-  
+
   if (loading) {
     return (
-      <DashboardLayout title="Loading..." subtitle="Please wait">
-        <div className="flex justify-center items-center h-64">
-          <div className="text-center">
-            <p>Loading project data...</p>
-          </div>
-        </div>
+      <DashboardLayout title="Edit Portfolio Item" subtitle="Loading...">
+        <p>Loading portfolio item...</p>
       </DashboardLayout>
     );
   }
-  
+
+  if (!item) {
+    return (
+      <DashboardLayout title="Edit Portfolio Item" subtitle="Not Found">
+        <p>Portfolio item not found.</p>
+      </DashboardLayout>
+    );
+  }
+
   return (
-    <DashboardLayout title={title} subtitle={subtitle}>
-      <div className="bg-white shadow-sm rounded-lg p-6">
-        <PortfolioItemForm 
-          item={item} 
-          onSave={handleSave}
-          isSubmitting={isSubmitting}
-        />
-      </div>
+    <DashboardLayout title="Edit Portfolio Item" subtitle="Edit your portfolio project">
+      <Tabs defaultValue="content" className="w-full">
+        <TabsList>
+          <TabsTrigger value="content">Content</TabsTrigger>
+          {/* <TabsTrigger value="images">Images</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger> */}
+        </TabsList>
+        <TabsContent value="content">
+          <PortfolioItemForm item={item} />
+        </TabsContent>
+        {/* <TabsContent value="images">
+          <p>Images content</p>
+        </TabsContent>
+        <TabsContent value="settings">
+          <p>Settings content</p>
+        </TabsContent> */}
+      </Tabs>
     </DashboardLayout>
   );
 };
 
-export default DashboardPortfolioItemForm;
+export default DashboardEditPortfolioItem;

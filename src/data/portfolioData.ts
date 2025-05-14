@@ -1,3 +1,5 @@
+
+import { supabase } from '@/integrations/supabase/client';
 import { getPortfolioItems, getPortfolioItemBySlug, getServiceCategories as fetchServiceCategories } from '@/services/portfolioService';
 import { PortfolioItem } from '@/types/portfolio';
 
