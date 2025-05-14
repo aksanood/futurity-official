@@ -1,435 +1,464 @@
-import { supabase } from '@/integrations/supabase/client';
-import { BlogPost, Category, Tag, Author } from '@/types/blog';
+import { supabase } from '@/lib/supabaseClient';
+import { Post, Category, Tag } from '@/types/blog';
+import { v4 as uuidv4 } from 'uuid';
+import { slugify } from '@/lib/utils';
 
-// Helper function to parse author's social data
-const parseSocialData = (socialData: any): Author['social'] => {
-  if (!socialData) return {};
-  
-  try {
-    if (typeof socialData === 'string') {
-      return JSON.parse(socialData);
-    }
-    return socialData;
-  } catch (e) {
-    console.error('Error parsing social data:', e);
-    return {};
-  }
-};
-
-// Helper function to convert database author to application Author type
-const convertDbAuthorToAppAuthor = (dbAuthor: any): Author => {
-  return {
-    id: dbAuthor.id,
-    name: dbAuthor.name,
-    avatar: dbAuthor.avatar || '',
-    bio: dbAuthor.bio || '',
-    role: dbAuthor.role || '',
-    social: parseSocialData(dbAuthor.social),
-    created_at: dbAuthor.created_at,
-    updated_at: dbAuthor.updated_at
-  };
-};
-
-export async function getPosts(): Promise<BlogPost[]> {
+// Function to get all posts
+export async function getPosts(): Promise<Post[]> {
   try {
     const { data, error } = await supabase
-      .from('blog_posts')
+      .from('posts')
       .select(`
         *,
-        author:author_id (
-          id,
-          name,
-          avatar,
-          bio,
-          role,
-          social,
-          created_at,
-          updated_at
-        ),
-        category:category_id (
-          id,
+        category:categories (
           name,
           slug
+        ),
+        tags:post_tags (
+          tag:tags (
+            name,
+            slug
+          )
+        ),
+        author:users (
+          id,
+          name,
+          avatar_url
         )
       `)
-      .order('published_date', { ascending: false });
+      .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching blog posts:', error);
-      throw error;
+      console.error("Error fetching posts:", error);
+      return [];
     }
 
-    // Convert authors to the correct type
-    const posts: BlogPost[] = data.map((post: any) => ({
-      ...post,
-      author: post.author ? convertDbAuthorToAppAuthor(post.author) : null,
-      tags: [] // You might need to fetch tags separately
+    // Transform the data to match the Post type
+    const posts: Post[] = data.map((post: any) => ({
+      id: post.id,
+      created_at: post.created_at,
+      title: post.title,
+      slug: post.slug,
+      excerpt: post.excerpt,
+      content: post.content,
+      cover_image: post.cover_image,
+      category: post.category ? {
+        name: post.category.name,
+        slug: post.category.slug
+      } : null,
+      tags: post.tags ? post.tags.map((post_tag: any) => ({
+        name: post_tag.tag.name,
+        slug: post_tag.tag.slug
+      })) : [],
+	  author: post.author ? {
+		id: post.author.id,
+		name: post.author.name,
+		avatar_url: post.author.avatar_url
+	  } : null
     }));
 
     return posts;
   } catch (error) {
-    console.error('Error in getPosts:', error);
-    throw error;
+    console.error("Unexpected error fetching posts:", error);
+    return [];
   }
 }
 
-export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
+// Function to get a single post by slug
+export async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
     const { data, error } = await supabase
-      .from('blog_posts')
+      .from('posts')
       .select(`
         *,
-        author:author_id (
-          id,
-          name,
-          avatar,
-          bio,
-          role,
-          social,
-          created_at,
-          updated_at
-        ),
-        category:category_id (
-          id,
+        category:categories (
           name,
           slug
         ),
-        blog_posts_tags (
-          tag_id
+        tags:post_tags (
+          tag:tags (
+            name,
+            slug
+          )
         ),
-        blog_tags (
-          id,
-          name,
-          slug
-        )
+		author:users (
+			id,
+			name,
+			avatar_url
+		  )
       `)
       .eq('slug', slug)
       .single();
 
     if (error) {
-      console.error('Error fetching blog post by slug:', error);
+      console.error("Error fetching post by slug:", error);
       return null;
     }
 
-    if (!data) {
-      return null;
-    }
-
-   // Convert authors to the correct type
-    const post: BlogPost = {
-      ...data,
-      author: data.author ? convertDbAuthorToAppAuthor(data.author) : null,
-      tags: data.blog_tags || []
+    // Transform the data to match the Post type
+    const post: Post = {
+      id: data.id,
+      created_at: data.created_at,
+      title: data.title,
+      slug: data.slug,
+      excerpt: data.excerpt,
+      content: data.content,
+      cover_image: data.cover_image,
+      category: data.category ? {
+        name: data.category.name,
+        slug: data.category.slug
+      } : null,
+      tags: data.tags ? data.tags.map((post_tag: any) => ({
+        name: post_tag.tag.name,
+        slug: post_tag.tag.slug
+      })) : [],
+	  author: data.author ? {
+		id: data.author.id,
+		name: data.author.name,
+		avatar_url: data.author.avatar_url
+	  } : null
     };
 
     return post;
   } catch (error) {
-    console.error('Error in getPostBySlug:', error);
+    console.error("Unexpected error fetching post by slug:", error);
     return null;
   }
 }
 
-export async function getCategories(): Promise<Category[]> {
+// Function to get a single post by ID
+export async function getPostById(id: string): Promise<Post | null> {
   try {
     const { data, error } = await supabase
-      .from('blog_categories')
-      .select('*');
-
-    if (error) {
-      console.error('Error fetching blog categories:', error);
-      throw error;
-    }
-
-    return data || [];
-  } catch (error) {
-    console.error('Error in getCategories:', error);
-    return [];
-  }
-}
-
-export async function getTags(): Promise<Tag[]> {
-  try {
-    const { data, error } = await supabase
-      .from('blog_tags')
-      .select('*');
-
-    if (error) {
-      console.error('Error fetching blog tags:', error);
-      throw error;
-    }
-
-    return data || [];
-  } catch (error) {
-    console.error('Error in getTags:', error);
-    return [];
-  }
-}
-
-export async function createPost(post: BlogPost): Promise<void> {
-  try {
-    // Extract tags for separate handling
-    const tags = post.tags || [];
-    
-    // Create the blog post
-    const { data, error } = await supabase
-      .from('blog_posts')
-      .insert({
-        title: post.title,
-        slug: post.slug,
-        excerpt: post.excerpt,
-        content: post.content,
-        featured_image: post.featured_image,
-        author_id: post.author_id,
-        category_id: post.category_id,
-        published_date: post.published_date,
-        read_time: post.read_time
-      })
-      .select()
-      .single();
-    
-    if (error) {
-      console.error('Error creating blog post:', error);
-      throw error;
-    }
-    
-    // Handle tags if there are any
-    if (tags.length > 0) {
-      // Create associations between post and tags
-      const postTagAssociations = tags.map(tag => ({
-        post_id: data.id,
-        tag_id: tag.id
-      }));
-      
-      const { error: tagsError } = await supabase
-        .from('blog_posts_tags')
-        .insert(postTagAssociations);
-      
-      if (tagsError) {
-        console.error('Error associating tags with post:', tagsError);
-        // Consider whether to throw here or just log
-      }
-    }
-  } catch (error) {
-    console.error('Error in createPost:', error);
-    throw error;
-  }
-}
-
-export async function updatePost(postId: string, post: BlogPost): Promise<void> {
-  try {
-    // Update the main post data
-    const { error } = await supabase
-      .from('blog_posts')
-      .update({
-        title: post.title,
-        slug: post.slug,
-        excerpt: post.excerpt,
-        content: post.content,
-        featured_image: post.featured_image,
-        author_id: post.author_id,
-        category_id: post.category_id,
-        published_date: post.published_date,
-        read_time: post.read_time,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', postId);
-    
-    if (error) {
-      console.error('Error updating blog post:', error);
-      throw error;
-    }
-    
-    // Handle tags - first delete existing associations
-    const { error: deleteError } = await supabase
-      .from('blog_posts_tags')
-      .delete()
-      .eq('post_id', postId);
-    
-    if (deleteError) {
-      console.error('Error removing existing tag associations:', deleteError);
-      // Consider whether to throw here or just log
-    }
-    
-    // Re-create tag associations if there are any
-    if (post.tags && post.tags.length > 0) {
-      const postTagAssociations = post.tags.map(tag => ({
-        post_id: postId,
-        tag_id: tag.id
-      }));
-      
-      const { error: insertError } = await supabase
-        .from('blog_posts_tags')
-        .insert(postTagAssociations);
-      
-      if (insertError) {
-        console.error('Error creating new tag associations:', insertError);
-        // Consider whether to throw here or just log
-      }
-    }
-  } catch (error) {
-    console.error('Error updating blog post:', error);
-    throw error;
-  }
-}
-
-export async function deletePost(postId: string): Promise<void> {
-  try {
-    // Delete tag relationships first
-    const { error: deleteTagsError } = await supabase
-      .from('blog_posts_tags')
-      .delete()
-      .eq('post_id', postId);
-
-    if (deleteTagsError) {
-      console.error('Error deleting blog post tags:', deleteTagsError);
-      throw deleteTagsError;
-    }
-
-    // Then delete the post
-    const { error } = await supabase
-      .from('blog_posts')
-      .delete()
-      .eq('id', postId);
-
-    if (error) {
-      console.error('Error deleting blog post:', error);
-      throw error;
-    }
-  } catch (error) {
-    console.error('Error in deletePost:', error);
-    throw error;
-  }
-}
-
-export async function getAuthors(): Promise<Author[]> {
-  try {
-    const { data, error } = await supabase
-      .from('blog_authors')
-      .select('*');
-
-    if (error) {
-      console.error('Error fetching blog authors:', error);
-      throw error;
-    }
-
-    return data.map(convertDbAuthorToAppAuthor) || [];
-  } catch (error) {
-    console.error('Error in getAuthors:', error);
-    return [];
-  }
-}
-
-export async function getAuthorById(id: string): Promise<Author | null> {
-  try {
-    const { data, error } = await supabase
-      .from('blog_authors')
-      .select('*')
+      .from('posts')
+      .select(`
+        *,
+        category:categories (
+          name,
+          slug
+        ),
+        tags:post_tags (
+          tag:tags (
+            name,
+            slug
+          )
+        ),
+		author:users (
+			id,
+			name,
+			avatar_url
+		  )
+      `)
       .eq('id', id)
       .single();
 
     if (error) {
-      console.error('Error fetching blog author by ID:', error);
+      console.error("Error fetching post by id:", error);
       return null;
     }
 
-    if (!data) {
-      return null;
-    }
+    // Transform the data to match the Post type
+    const post: Post = {
+      id: data.id,
+      created_at: data.created_at,
+      title: data.title,
+      slug: data.slug,
+      excerpt: data.excerpt,
+      content: data.content,
+      cover_image: data.cover_image,
+      category: data.category ? {
+        name: data.category.name,
+        slug: data.category.slug
+      } : null,
+      tags: data.tags ? data.tags.map((post_tag: any) => ({
+        name: post_tag.tag.name,
+        slug: post_tag.tag.slug
+      })) : [],
+	  author: data.author ? {
+		id: data.author.id,
+		name: data.author.name,
+		avatar_url: data.author.avatar_url
+	  } : null
+    };
 
-    return convertDbAuthorToAppAuthor(data);
+    return post;
   } catch (error) {
-    console.error('Error in getAuthorById:', error);
+    console.error("Unexpected error fetching post by id:", error);
     return null;
   }
 }
 
-export async function createAuthor(author: Omit<Author, "id" | "created_at" | "updated_at">) {
-  const { data, error } = await supabase
-    .from('blog_authors')
-    .insert({
-      name: author.name,
-      avatar: author.avatar || '',
-      bio: author.bio || '',
-      role: author.role || '',
-      social: author.social || {}
-    })
-    .select();
-
-  if (error) {
-    console.error('Error creating author:', error);
-    throw error;
-  }
-
-  return data[0];
+interface CreatePostParams {
+  title: string;
+  excerpt: string;
+  content: string;
+  cover_image: string;
+  category_id?: string | null;
+  tag_ids?: string[];
+  author_id: string;
 }
 
-export async function updateAuthor(id: string, author: Partial<Author>) {
-  const updateData: any = {};
-  if (author.name !== undefined) updateData.name = author.name;
-  if (author.avatar !== undefined) updateData.avatar = author.avatar;
-  if (author.bio !== undefined) updateData.bio = author.bio;
-  if (author.role !== undefined) updateData.role = author.role;
-  if (author.social !== undefined) updateData.social = author.social;
-
-  const { data, error } = await supabase
-    .from('blog_authors')
-    .update(updateData)
-    .eq('id', id)
-    .select();
-
-  if (error) {
-    console.error('Error updating author:', error);
-    throw error;
-  }
-
-  return data[0];
-}
-
-export async function deleteAuthor(authorId: string): Promise<void> {
+// Function to create a new post
+export async function createPost(post: CreatePostParams): Promise<Post | null> {
   try {
-    const { error } = await supabase
-      .from('blog_authors')
-      .delete()
-      .eq('id', authorId);
+    const newPostId = uuidv4();
+    const slug = slugify(post.title);
 
-    if (error) {
-      console.error('Error deleting blog author:', error);
-      throw error;
+    const { data: postData, error: postError } = await supabase
+      .from('posts')
+      .insert([
+        {
+          id: newPostId,
+          created_at: new Date().toISOString(),
+          title: post.title,
+          slug: slug,
+          excerpt: post.excerpt,
+          content: post.content,
+          cover_image: post.cover_image,
+		  category_id: post.category_id || null,
+		  author_id: post.author_id
+        }
+      ])
+      .select('*')
+      .single();
+
+    if (postError) {
+      console.error("Error creating post:", postError);
+      return null;
     }
+
+    // Create post_tag entries for each tag
+    if (post.tag_ids && post.tag_ids.length > 0) {
+      const postTags = post.tag_ids.map(tag_id => ({
+        post_id: newPostId,
+        tag_id: tag_id
+      }));
+
+      const { error: postTagsError } = await supabase
+        .from('post_tags')
+        .insert(postTags);
+
+      if (postTagsError) {
+        console.error("Error creating post_tags:", postTagsError);
+        return null;
+      }
+    }
+
+    // Fetch the created post with all details
+    return getPostById(newPostId);
   } catch (error) {
-    console.error('Error in deleteAuthor:', error);
-    throw error;
+    console.error("Unexpected error creating post:", error);
+    return null;
   }
 }
 
-// Add the missing createTag function
-export async function createTag(tag: { name: string; slug: string }): Promise<Tag> {
+interface UpdatePostParams {
+  id: string;
+  title?: string;
+  excerpt?: string;
+  content?: string;
+  cover_image?: string;
+  category_id?: string | null;
+  tag_ids?: string[];
+}
+
+// Function to update a post
+export async function updatePost(post: UpdatePostParams): Promise<Post | null> {
+  try {
+    const { id, title, excerpt, content, cover_image, category_id, tag_ids } = post;
+    const slug = title ? slugify(title) : undefined;
+
+    const { data: postData, error: postError } = await supabase
+      .from('posts')
+      .update({
+        title: title,
+        slug: slug,
+        excerpt: excerpt,
+        content: content,
+        cover_image: cover_image,
+        category_id: category_id || null
+      })
+      .eq('id', id)
+      .select('*')
+      .single();
+
+    if (postError) {
+      console.error("Error updating post:", postError);
+      return null;
+    }
+
+    // Delete existing post_tag entries for the post
+    const { error: deletePostTagsError } = await supabase
+      .from('post_tags')
+      .delete()
+      .eq('post_id', id);
+
+    if (deletePostTagsError) {
+      console.error("Error deleting existing post_tags:", deletePostTagsError);
+      return null;
+    }
+
+    // Create new post_tag entries for each tag
+    if (tag_ids && tag_ids.length > 0) {
+      const postTags = tag_ids.map(tag_id => ({
+        post_id: id,
+        tag_id: tag_id
+      }));
+
+      const { error: postTagsError } = await supabase
+        .from('post_tags')
+        .insert(postTags);
+
+      if (postTagsError) {
+        console.error("Error creating post_tags:", postTagsError);
+        return null;
+      }
+    }
+
+    // Fetch the updated post with all details
+    return getPostById(id);
+  } catch (error) {
+    console.error("Unexpected error updating post:", error);
+    return null;
+  }
+}
+
+// Function to delete a post
+export async function deletePost(id: string): Promise<boolean> {
+  try {
+    // Delete existing post_tag entries for the post
+    const { error: deletePostTagsError } = await supabase
+      .from('post_tags')
+      .delete()
+      .eq('post_id', id);
+
+    if (deletePostTagsError) {
+      console.error("Error deleting existing post_tags:", deletePostTagsError);
+      return false;
+    }
+
+    const { error: postError } = await supabase
+      .from('posts')
+      .delete()
+      .eq('id', id);
+
+    if (postError) {
+      console.error("Error deleting post:", postError);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Unexpected error deleting post:", error);
+    return false;
+  }
+}
+
+// Function to get all categories
+export async function getCategories(): Promise<Category[]> {
   try {
     const { data, error } = await supabase
-      .from('blog_tags')
-      .insert({
-        name: tag.name,
-        slug: tag.slug
-      })
-      .select()
+      .from('categories')
+      .select('*')
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error("Error fetching categories:", error);
+      return [];
+    }
+
+    return data as Category[];
+  } catch (error) {
+    console.error("Unexpected error fetching categories:", error);
+    return [];
+  }
+}
+
+// Function to get a single category by slug
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('slug', slug)
       .single();
 
     if (error) {
-      console.error('Error creating tag:', error);
-      throw error;
+      console.error("Error fetching category by slug:", error);
+      return null;
+    }
+
+    return data as Category;
+  } catch (error) {
+    console.error("Unexpected error fetching category by slug:", error);
+    return null;
+  }
+}
+
+// Function to get all tags
+export async function getTags(): Promise<Tag[]> {
+  try {
+    const { data, error } = await supabase
+      .from('tags')
+      .select('*')
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error("Error fetching tags:", error);
+      return [];
+    }
+
+    return data as Tag[];
+  } catch (error) {
+    console.error("Unexpected error fetching tags:", error);
+    return [];
+  }
+}
+
+// Function to get a single tag by slug
+export async function getTagBySlug(slug: string): Promise<Tag | null> {
+  try {
+    const { data, error } = await supabase
+      .from('tags')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+
+    if (error) {
+      console.error("Error fetching tag by slug:", error);
+      return null;
     }
 
     return data as Tag;
   } catch (error) {
-    console.error('Error in createTag:', error);
-    throw error;
+    console.error("Unexpected error fetching tag by slug:", error);
+    return null;
   }
 }
 
-// Add aliased functions to match the imported names in other files
+// Aliases for compatibility with existing code
 export const getBlogPosts = getPosts;
 export const getBlogPostBySlug = getPostBySlug;
-export const getBlogPostById = getPostBySlug; // Using getPostBySlug with id parameter
+export const getBlogPostById = getPostById;
 export const createBlogPost = createPost;
 export const updateBlogPost = updatePost;
 export const deleteBlogPost = deletePost;
+export const createTag = createNewTag;
+
+// Helper function to create a new tag
+export async function createNewTag(name: string): Promise<Tag> {
+  try {
+    const { data, error } = await supabase
+      .from('tags')
+      .insert({ name, slug: slugify(name) })
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    
+    return data as Tag;
+  } catch (error) {
+    console.error('Error creating tag:', error);
+    throw error;
+  }
+}

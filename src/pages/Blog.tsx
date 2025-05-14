@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { BlogPost, Category, Tag } from '@/types/blog';
 import { getAllPosts, getRecentPosts, getAllCategories, getAllTags } from '@/data/blogData';
+import PageHero from '@/components/ui/page-hero';
 
 const POSTS_PER_PAGE = 8;
 
@@ -75,143 +76,155 @@ const Blog = () => {
   
   return (
     <BlogLayout>
+      {/* Hero Section */}
+      <PageHero
+        title="Blog & Insights"
+        subtitle="Expert insights, industry trends, and actionable advice to help your business thrive in the digital world."
+      />
+      
       {/* Featured Post */}
       {posts.length > 0 && (
-        <div className="mb-12">
-          <BlogCard post={posts[0]} variant="featured" />
+        <div className="container-wide py-12">
+          <div className="mb-12">
+            <BlogCard post={posts[0]} variant="featured" />
+          </div>
         </div>
       )}
       
-      {/* Search and View Toggle (Mobile) */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-8 lg:hidden">
-        <div className="relative flex-grow">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-          <Input
-            type="search"
-            placeholder="Search blog..."
-            className="pl-8"
-            value={searchTerm}
-            onChange={(e) => handleSearch(e.target.value)}
-          />
-        </div>
-        
-        <div className="flex space-x-2">
-          <Button
-            variant={viewMode === 'grid' ? 'default' : 'outline'}
-            size="sm" 
-            onClick={() => setViewMode('grid')}
-          >
-            <Grid className="h-4 w-4" />
-          </Button>
-          <Button
-            variant={viewMode === 'list' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setViewMode('list')}
-          >
-            <List className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Blog Posts */}
-        <div className="lg:col-span-2">
-          {/* View Toggle (Desktop) */}
-          <div className="hidden lg:flex justify-end mb-6">
-            <div className="flex space-x-2">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'outline'}
-                size="sm" 
-                onClick={() => setViewMode('grid')}
-              >
-                <Grid className="h-4 w-4 mr-2" /> Grid
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-              >
-                <List className="h-4 w-4 mr-2" /> List
-              </Button>
-            </div>
+      <div className="container-wide py-12">
+        {/* Search and View Toggle (Mobile) */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-8 lg:hidden">
+          <div className="relative flex-grow">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+            <Input
+              type="search"
+              placeholder="Search blog..."
+              className="pl-8"
+              value={searchTerm}
+              onChange={(e) => handleSearch(e.target.value)}
+            />
           </div>
           
-          {searchTerm && (
-            <div className="mb-6">
-              <p className="text-gray-600">
-                {posts.length === 0 
-                  ? `No results found for "${searchTerm}"` 
-                  : `Showing ${posts.length} ${posts.length === 1 ? 'result' : 'results'} for "${searchTerm}"`
-                }
-              </p>
-            </div>
-          )}
-          
-          {loading ? (
-            <div className="text-center py-12">
-              <p>Loading posts...</p>
-            </div>
-          ) : (
-            <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-2' : 'grid-cols-1'}`}>
-              {currentPosts.length > 0 ? (
-                currentPosts.map(post => (
-                  <BlogCard 
-                    key={post.id} 
-                    post={post} 
-                  />
-                ))
-              ) : (
-                <div className="col-span-full text-center py-8">
-                  <h3 className="text-xl font-bold mb-2">No posts found</h3>
-                  <p className="text-gray-600">Try adjusting your search term or browse all categories.</p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-8">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious 
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                    />
-                  </PaginationItem>
-                  
-                  {[...Array(totalPages)].map((_, i) => (
-                    <PaginationItem key={i}>
-                      <PaginationLink
-                        onClick={() => handlePageChange(i + 1)}
-                        isActive={currentPage === i + 1}
-                      >
-                        {i + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                  
-                  <PaginationItem>
-                    <PaginationNext 
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
+          <div className="flex space-x-2">
+            <Button
+              variant={viewMode === 'grid' ? 'default' : 'outline'}
+              size="sm" 
+              onClick={() => setViewMode('grid')}
+            >
+              <Grid className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         
-        {/* Sidebar */}
-        <div className="lg:col-span-1">
-          <BlogSidebar 
-            categories={categoriesList} 
-            tags={tagsList} 
-            recentPosts={recentPostsList}
-            onSearch={handleSearch}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Blog Posts */}
+          <div className="lg:col-span-2">
+            {/* View Toggle (Desktop) */}
+            <div className="hidden lg:flex justify-end mb-6">
+              <div className="flex space-x-2">
+                <Button
+                  variant={viewMode === 'grid' ? 'default' : 'outline'}
+                  size="sm" 
+                  onClick={() => setViewMode('grid')}
+                >
+                  <Grid className="h-4 w-4 mr-2" /> Grid
+                </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                >
+                  <List className="h-4 w-4 mr-2" /> List
+                </Button>
+              </div>
+            </div>
+            
+            {searchTerm && (
+              <div className="mb-6">
+                <p className="text-gray-600">
+                  {posts.length === 0 
+                    ? `No results found for "${searchTerm}"` 
+                    : `Showing ${posts.length} ${posts.length === 1 ? 'result' : 'results'} for "${searchTerm}"`
+                  }
+                </p>
+              </div>
+            )}
+            
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="h-12 w-12 border-4 border-futurity-orange/30 border-t-futurity-orange rounded-full animate-spin mx-auto mb-4"></div>
+                <p>Loading posts...</p>
+              </div>
+            ) : (
+              <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-2' : 'grid-cols-1'}`}>
+                {currentPosts.length > 0 ? (
+                  currentPosts.map(post => (
+                    <BlogCard 
+                      key={post.id} 
+                      post={post} 
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-8">
+                    <h3 className="text-xl font-bold mb-2">No posts found</h3>
+                    <p className="text-gray-600">Try adjusting your search term or browse all categories.</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-8">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                      />
+                    </PaginationItem>
+                    
+                    {[...Array(totalPages)].map((_, i) => (
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          onClick={() => handlePageChange(i + 1)}
+                          isActive={currentPage === i + 1}
+                        >
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </div>
+          
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <BlogSidebar 
+              categories={categoriesList} 
+              tags={tagsList} 
+              recentPosts={recentPostsList}
+              onSearch={handleSearch}
+              className="sticky top-24"
+            />
+          </div>
         </div>
       </div>
     </BlogLayout>

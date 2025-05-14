@@ -1,36 +1,23 @@
+
 import Layout from '@/components/layout/Layout';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
+import PageHero from '@/components/ui/page-hero';
 
 const About = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-futurity-blue text-white">
-        <div className="container-wide">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div className="animate-on-scroll">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">About Futurity</h1>
-              <p className="text-xl text-white/90 mb-6">
-                We are a team of digital experts passionate about creating exceptional experiences that drive business growth.
-              </p>
-              <p className="text-white/80">
-                Founded in 2015, Futurity has grown from a small team of 3 to a full-service digital agency with over 25 talented professionals.
-              </p>
-            </div>
-            <div className="relative animate-on-scroll stagger-delay-1">
-              <div className="absolute top-0 left-0 w-full h-full bg-futurity-orange rounded-lg transform rotate-3"></div>
-              <img 
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80" 
-                alt="Futurity Team" 
-                className="relative z-10 rounded-lg shadow-xl"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        title="About Futurity"
+        subtitle="We are a team of digital experts passionate about creating exceptional experiences that drive business growth."
+      >
+        <p className="text-white/80 animate-on-scroll stagger-delay-2">
+          Founded in 2015, Futurity has grown from a small team of 3 to a full-service digital agency with over 25 talented professionals.
+        </p>
+      </PageHero>
 
       {/* Our Story */}
       <section className="section">
@@ -181,7 +168,7 @@ const About = () => {
             <p className="text-xl mb-6">
               Our team of 25+ experts includes designers, developers, strategists, and marketers dedicated to delivering exceptional results.
             </p>
-            <Button asChild>
+            <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white">
               <Link to="/contact">Join Our Team</Link>
             </Button>
           </div>
@@ -222,7 +209,7 @@ const About = () => {
             Let's discuss how we can help you achieve your digital goals.
           </p>
           <div className="animate-on-scroll stagger-delay-2">
-            <Button asChild size="lg">
+            <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white">
               <Link to="/contact">Get in Touch</Link>
             </Button>
           </div>
@@ -235,7 +222,7 @@ const About = () => {
 // Helper components
 const ValueCard = ({ title, description, className }: { title: string; description: string; className?: string }) => {
   return (
-    <div className={`bg-white p-6 rounded-lg shadow-sm border border-gray-100 ${className}`}>
+    <div className={`bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow ${className}`}>
       <h3 className="text-xl font-semibold mb-3 text-futurity-blue">{title}</h3>
       <p className="text-futurity-gray">{description}</p>
     </div>
@@ -245,7 +232,7 @@ const ValueCard = ({ title, description, className }: { title: string; descripti
 const TeamMember = ({ name, position, image, className }: { name: string; position: string; image: string; className?: string }) => {
   return (
     <div className={`${className}`}>
-      <div className="bg-white rounded-lg overflow-hidden shadow-sm">
+      <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
         <div className="aspect-[3/4] relative overflow-hidden">
           <img 
             src={image} 

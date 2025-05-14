@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { inquiriesService } from '@/services/inquiriesService';
+import PageHero from '@/components/ui/page-hero';
 
 interface FormState {
   name: string;
@@ -67,16 +69,10 @@ const Contact = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-futurity-blue text-white">
-        <div className="container-wide">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-on-scroll">Get in Touch</h1>
-            <p className="text-xl text-white/90 mb-8 animate-on-scroll stagger-delay-1">
-              Have a project in mind? We'd love to hear from you. Reach out to discuss how we can help.
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        title="Get in Touch"
+        subtitle="Have a project in mind? We'd love to hear from you. Reach out to discuss how we can help."
+      />
 
       {/* Contact Section */}
       <section className="section">
@@ -100,6 +96,7 @@ const Contact = () => {
                       name="name"
                       value={formState.name}
                       onChange={handleChange}
+                      className="border-gray-300 focus:ring-futurity-orange focus:border-futurity-orange"
                       required
                     />
                   </div>
@@ -113,6 +110,7 @@ const Contact = () => {
                       type="email"
                       value={formState.email}
                       onChange={handleChange}
+                      className="border-gray-300 focus:ring-futurity-orange focus:border-futurity-orange"
                       required
                     />
                   </div>
@@ -129,6 +127,7 @@ const Contact = () => {
                       type="tel"
                       value={formState.phone}
                       onChange={handleChange}
+                      className="border-gray-300 focus:ring-futurity-orange focus:border-futurity-orange"
                     />
                   </div>
                   <div>
@@ -140,6 +139,7 @@ const Contact = () => {
                       name="subject"
                       value={formState.subject}
                       onChange={handleChange}
+                      className="border-gray-300 focus:ring-futurity-orange focus:border-futurity-orange"
                       required
                     />
                   </div>
@@ -155,11 +155,17 @@ const Contact = () => {
                     rows={5}
                     value={formState.message}
                     onChange={handleChange}
+                    className="border-gray-300 focus:ring-futurity-orange focus:border-futurity-orange"
                     required
                   />
                 </div>
                 
-                <Button type="submit" size="lg" disabled={isSubmitting}>
+                <Button 
+                  type="submit" 
+                  size="lg" 
+                  disabled={isSubmitting} 
+                  className="bg-futurity-orange hover:bg-futurity-orange/90 text-white"
+                >
                   {isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>
@@ -198,7 +204,7 @@ const Contact = () => {
                 />
               </div>
               
-              <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
+              <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="text-xl font-semibold mb-4">Follow Us</h3>
                 <div className="flex space-x-4">
                   <SocialButton name="Facebook" />
@@ -215,7 +221,7 @@ const Contact = () => {
       {/* Map Section */}
       <section className="section bg-gray-50 pt-0">
         <div className="container-wide">
-          <div className="bg-white p-6 rounded-lg shadow-sm -mt-16 mb-8">
+          <div className="bg-white p-6 rounded-lg shadow-sm -mt-16 mb-8 hover:shadow-md transition-shadow">
             <h3 className="text-xl font-semibold mb-4">Our Location</h3>
             <div className="aspect-[21/9] rounded-lg overflow-hidden">
               {/* Placeholder for Google Maps - Would integrate actual Google Maps in a real implementation */}
@@ -234,6 +240,13 @@ const Contact = () => {
           <p className="text-xl mb-8 text-white/90 animate-on-scroll stagger-delay-1">
             Let's collaborate to create exceptional digital experiences that drive results.
           </p>
+          <Button 
+            asChild 
+            size="lg" 
+            className="bg-futurity-orange hover:bg-futurity-orange/90 text-white animate-on-scroll stagger-delay-2"
+          >
+            <a href="#contact-form">Start Your Project</a>
+          </Button>
         </div>
       </section>
     </Layout>
