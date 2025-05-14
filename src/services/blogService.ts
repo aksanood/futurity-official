@@ -1,6 +1,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { BlogPost, Category, Tag } from '@/types/blog';
+import { BlogPost, Author, Category, Tag } from '@/types/blog';
 import { v4 as uuidv4 } from 'uuid';
 import { slugify, calculateReadTime } from '@/lib/utils';
 
@@ -44,7 +44,7 @@ export async function getPosts(): Promise<BlogPost[]> {
       slug: post.slug,
       excerpt: post.excerpt,
       content: post.content,
-      featured_image: post.featured_image || post.cover_image,
+      featured_image: post.featured_image,
       author_id: post.author_id,
       category_id: post.category_id,
       published_date: post.published_date || post.created_at,
@@ -55,7 +55,7 @@ export async function getPosts(): Promise<BlogPost[]> {
         id: post.category.id,
         name: post.category.name,
         slug: post.category.slug
-      } : null,
+      } : undefined,
       tags: post.tags ? post.tags.map((post_tag: any) => ({
         id: post_tag.tag.id,
         name: post_tag.tag.name,
@@ -67,8 +67,8 @@ export async function getPosts(): Promise<BlogPost[]> {
         avatar: post.author.avatar,
         bio: post.author.bio || '',
         role: post.author.role || '',
-        social: post.author.social || {}
-      } : null
+        social: {} // Default empty object for social
+      } : undefined
     }));
 
     return posts;
@@ -102,8 +102,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
           name,
           avatar,
           role,
-          bio,
-          social
+          bio
         )
       `)
       .eq('slug', slug)
@@ -121,7 +120,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
       slug: data.slug,
       excerpt: data.excerpt,
       content: data.content,
-      featured_image: data.featured_image || data.cover_image,
+      featured_image: data.featured_image,
       author_id: data.author_id,
       category_id: data.category_id,
       published_date: data.published_date || data.created_at,
@@ -132,7 +131,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
         id: data.category.id,
         name: data.category.name,
         slug: data.category.slug
-      } : null,
+      } : undefined,
       tags: data.tags ? data.tags.map((post_tag: any) => ({
         id: post_tag.tag.id,
         name: post_tag.tag.name,
@@ -144,8 +143,8 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
         avatar: data.author.avatar,
         bio: data.author.bio || '',
         role: data.author.role || '',
-        social: data.author.social || {}
-      } : null
+        social: {} // Default empty object for social
+      } : undefined
     };
 
     return post;
@@ -179,8 +178,7 @@ export async function getPostById(id: string): Promise<BlogPost | null> {
           name,
           avatar,
           role,
-          bio,
-          social
+          bio
         )
       `)
       .eq('id', id)
@@ -198,7 +196,7 @@ export async function getPostById(id: string): Promise<BlogPost | null> {
       slug: data.slug,
       excerpt: data.excerpt,
       content: data.content,
-      featured_image: data.featured_image || data.cover_image,
+      featured_image: data.featured_image,
       author_id: data.author_id,
       category_id: data.category_id,
       published_date: data.published_date || data.created_at,
@@ -209,7 +207,7 @@ export async function getPostById(id: string): Promise<BlogPost | null> {
         id: data.category.id,
         name: data.category.name,
         slug: data.category.slug
-      } : null,
+      } : undefined,
       tags: data.tags ? data.tags.map((post_tag: any) => ({
         id: post_tag.tag.id,
         name: post_tag.tag.name,
@@ -221,8 +219,8 @@ export async function getPostById(id: string): Promise<BlogPost | null> {
         avatar: data.author.avatar,
         bio: data.author.bio || '',
         role: data.author.role || '',
-        social: data.author.social || {}
-      } : null
+        social: {} // Default empty object for social
+      } : undefined
     };
 
     return post;

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -130,7 +131,9 @@ const BlogPostForm = ({ post, onSave, isSubmitting = false }: BlogPostFormProps)
           getTags(),
         ]);
         
-        setAuthors(authorsData);
+        // Convert authors to the proper format
+        const formattedAuthors = authorsData.map(convertDatabaseAuthor);
+        setAuthors(formattedAuthors);
         setCategories(categoriesData);
         setAllTags(tagsData);
         

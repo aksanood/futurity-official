@@ -1,6 +1,7 @@
+
 import { 
   getPosts, 
-  getPostBySlug, 
+  getBlogPostBySlug as getPostBySlugService, 
   getAuthors, 
   getCategories,
   getTags,
@@ -121,7 +122,7 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
   try {
-    const post = await getPostBySlug(slug);
+    const post = await getPostBySlugService(slug);
     if (post) {
       // Ensure author has correctly formatted social data
       if (post.author) {
