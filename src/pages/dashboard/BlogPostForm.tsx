@@ -1,12 +1,13 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import BlogPostForm from '@/components/dashboard/BlogPostForm';
 import { 
-  getPostBySlug as getBlogPostById,
-  createPost as createBlogPost, 
-  updatePost as updateBlogPost 
+  getPostById,
+  createPost, 
+  updatePost 
 } from '@/services/blogService';
 import { BlogPost } from '@/types/blog';
 
@@ -26,7 +27,7 @@ const BlogPostFormPage = () => {
       
       setLoading(true);
       try {
-        const postData = await getBlogPostById(id);
+        const postData = await getPostById(id);
         if (postData) {
           // Ensure proper social data format
           if (postData.author && typeof postData.author.social === 'object') {
@@ -67,15 +68,23 @@ const BlogPostFormPage = () => {
     setSubmitting(true);
     try {
       if (isEditMode && id) {
-        // Update existing post - Now just passing post ID and form data (2 arguments instead of 3)
-        await updateBlogPost(id, formData);
+        // Convert BlogPost to UpdatePostParams
+        const { id: postId, ...postData } = formData;
+        
+        // Update existing post with ID and form data
+        await updatePost(id, postData);
         toast({
           title: "Success",
           description: "Blog post updated successfully."
         });
       } else {
-        // Create new post - Now just passing form data (1 argument instead of 2)
-        await createBlogPost(formData);
+        // Create new post with form data
+        // Ensure featured_image field is set correctly for the API
+        const postData = {
+          ...formData,
+          featured_image: formData.featured_image
+        };
+        await createPost(postData);
         toast({
           title: "Success",
           description: "Blog post created successfully."

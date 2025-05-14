@@ -179,10 +179,7 @@ const BlogPostForm = ({ post, onSave, isSubmitting = false }: BlogPostFormProps)
     if (!newTagName.trim()) return;
     
     try {
-      const newTag = await createTag({ 
-        name: newTagName.trim(),
-        slug: slugify(newTagName.trim()) 
-      });
+      const newTag = await createTag(newTagName.trim());
       
       setAllTags(prev => [...prev, newTag]);
       setSelectedTags(prev => [...prev, newTag]);

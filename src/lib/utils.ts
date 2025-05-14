@@ -1,3 +1,4 @@
+
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -15,4 +16,27 @@ export function formatDate(dateString: string): string {
     day: 'numeric',
     year: 'numeric'
   });
+}
+
+/**
+ * Convert a string to a URL-friendly slug
+ */
+export function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')       // Replace spaces with -
+    .replace(/&/g, '-and-')     // Replace & with 'and'
+    .replace(/[^\w\-]+/g, '')   // Remove all non-word characters
+    .replace(/\-\-+/g, '-');    // Replace multiple - with single -
+}
+
+/**
+ * Calculate estimated read time based on content length
+ */
+export function calculateReadTime(content: string): number {
+  const wordsPerMinute = 200;
+  const words = content.trim().split(/\s+/).length;
+  return Math.ceil(words / wordsPerMinute) || 1;  // Minimum 1 minute read time
 }

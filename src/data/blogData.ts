@@ -1,11 +1,10 @@
-
 import { 
-  getPosts as fetchBlogPosts, 
-  getPostBySlug as fetchBlogPostBySlug, 
-  getAuthors as fetchAuthors, 
-  getCategories as fetchCategories,
-  getTags as fetchTags,
-  getAuthorById as fetchAuthorById
+  getPosts, 
+  getPostBySlug, 
+  getAuthors, 
+  getCategories,
+  getTags,
+  getAuthorById
 } from '@/services/blogService';
 import { BlogPost, Author, Category, Tag } from '@/types/blog';
 import { slugify } from '@/lib/utils';
@@ -100,7 +99,7 @@ const mockBlogPosts: BlogPost[] = [
 
 export async function getAllPosts(): Promise<BlogPost[]> {
   try {
-    const posts = await fetchBlogPosts();
+    const posts = await getPosts();
     
     // Ensure each post has correctly formatted author social data
     const formattedPosts = posts.map(post => {
@@ -122,7 +121,7 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
   try {
-    const post = await fetchBlogPostBySlug(slug);
+    const post = await getPostBySlug(slug);
     if (post) {
       // Ensure author has correctly formatted social data
       if (post.author) {
@@ -140,7 +139,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | undefined>
 
 export async function getRecentPosts(limit = 5): Promise<BlogPost[]> {
   try {
-    const posts = await fetchBlogPosts();
+    const posts = await getPosts();
     const formattedPosts = posts.map(post => {
       if (post.author) {
         return {
@@ -164,7 +163,7 @@ export async function getRecentPosts(limit = 5): Promise<BlogPost[]> {
 
 export async function getPostsByCategory(categorySlug: string): Promise<BlogPost[]> {
   try {
-    const posts = await fetchBlogPosts();
+    const posts = await getPosts();
     const formattedPosts = posts.map(post => {
       if (post.author) {
         return {
@@ -188,7 +187,7 @@ export async function getPostsByCategory(categorySlug: string): Promise<BlogPost
 
 export async function getPostsByTag(tagSlug: string): Promise<BlogPost[]> {
   try {
-    const posts = await fetchBlogPosts();
+    const posts = await getPosts();
     const formattedPosts = posts.map(post => {
       if (post.author) {
         return {
@@ -212,7 +211,7 @@ export async function getPostsByTag(tagSlug: string): Promise<BlogPost[]> {
 
 export async function getPostsByAuthor(authorId: string): Promise<BlogPost[]> {
   try {
-    const posts = await fetchBlogPosts();
+    const posts = await getPosts();
     const formattedPosts = posts.map(post => {
       if (post.author) {
         return {
@@ -236,7 +235,7 @@ export async function getPostsByAuthor(authorId: string): Promise<BlogPost[]> {
 
 export async function getAllCategories(): Promise<Category[]> {
   try {
-    const categories = await fetchCategories();
+    const categories = await getCategories();
     return categories.length > 0 ? categories : mockCategories;
   } catch (error) {
     console.error('Error fetching categories, using mock data:', error);
@@ -246,7 +245,7 @@ export async function getAllCategories(): Promise<Category[]> {
 
 export async function getAllTags(): Promise<Tag[]> {
   try {
-    const tags = await fetchTags();
+    const tags = await getTags();
     return tags.length > 0 ? tags : mockTags;
   } catch (error) {
     console.error('Error fetching tags, using mock data:', error);
@@ -256,7 +255,7 @@ export async function getAllTags(): Promise<Tag[]> {
 
 export async function getAllAuthors(): Promise<Author[]> {
   try {
-    const authors = await fetchAuthors();
+    const authors = await getAuthors();
     // Make sure all authors have the correct social format
     const formattedAuthors = authors.map(ensureCorrectAuthorFormat);
     return formattedAuthors.length > 0 ? formattedAuthors : mockAuthors;
@@ -268,7 +267,7 @@ export async function getAllAuthors(): Promise<Author[]> {
 
 export async function getAuthorByIdAsync(id: string): Promise<Author | undefined> {
   try {
-    const author = await fetchAuthorById(id);
+    const author = await getAuthorById(id);
     if (author) return ensureCorrectAuthorFormat(author);
     
     return mockAuthors.find(author => author.id === id);

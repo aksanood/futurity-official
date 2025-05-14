@@ -1,29 +1,33 @@
-import { supabase } from '@/lib/supabaseClient';
-import { Post, Category, Tag } from '@/types/blog';
+
+import { supabase } from '@/integrations/supabase/client';
+import { BlogPost, Category, Tag } from '@/types/blog';
 import { v4 as uuidv4 } from 'uuid';
-import { slugify } from '@/lib/utils';
+import { slugify, calculateReadTime } from '@/lib/utils';
 
 // Function to get all posts
-export async function getPosts(): Promise<Post[]> {
+export async function getPosts(): Promise<BlogPost[]> {
   try {
     const { data, error } = await supabase
-      .from('posts')
+      .from('blog_posts')
       .select(`
         *,
-        category:categories (
+        category:blog_categories (
+          id,
           name,
           slug
         ),
-        tags:post_tags (
-          tag:tags (
+        tags:blog_posts_tags (
+          tag:blog_tags (
+            id,
             name,
             slug
           )
         ),
-        author:users (
+        author:blog_authors (
           id,
           name,
-          avatar_url
+          avatar,
+          role
         )
       `)
       .order('created_at', { ascending: false });
@@ -33,28 +37,38 @@ export async function getPosts(): Promise<Post[]> {
       return [];
     }
 
-    // Transform the data to match the Post type
-    const posts: Post[] = data.map((post: any) => ({
+    // Transform the data to match the BlogPost type
+    const posts: BlogPost[] = data.map((post: any) => ({
       id: post.id,
-      created_at: post.created_at,
       title: post.title,
       slug: post.slug,
       excerpt: post.excerpt,
       content: post.content,
-      cover_image: post.cover_image,
+      featured_image: post.featured_image || post.cover_image,
+      author_id: post.author_id,
+      category_id: post.category_id,
+      published_date: post.published_date || post.created_at,
+      read_time: post.read_time || calculateReadTime(post.content),
+      created_at: post.created_at,
+      updated_at: post.updated_at,
       category: post.category ? {
+        id: post.category.id,
         name: post.category.name,
         slug: post.category.slug
       } : null,
       tags: post.tags ? post.tags.map((post_tag: any) => ({
+        id: post_tag.tag.id,
         name: post_tag.tag.name,
         slug: post_tag.tag.slug
       })) : [],
-	  author: post.author ? {
-		id: post.author.id,
-		name: post.author.name,
-		avatar_url: post.author.avatar_url
-	  } : null
+      author: post.author ? {
+        id: post.author.id,
+        name: post.author.name,
+        avatar: post.author.avatar,
+        bio: post.author.bio || '',
+        role: post.author.role || '',
+        social: post.author.social || {}
+      } : null
     }));
 
     return posts;
@@ -65,27 +79,32 @@ export async function getPosts(): Promise<Post[]> {
 }
 
 // Function to get a single post by slug
-export async function getPostBySlug(slug: string): Promise<Post | null> {
+export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
     const { data, error } = await supabase
-      .from('posts')
+      .from('blog_posts')
       .select(`
         *,
-        category:categories (
+        category:blog_categories (
+          id,
           name,
           slug
         ),
-        tags:post_tags (
-          tag:tags (
+        tags:blog_posts_tags (
+          tag:blog_tags (
+            id,
             name,
             slug
           )
         ),
-		author:users (
-			id,
-			name,
-			avatar_url
-		  )
+        author:blog_authors (
+          id,
+          name,
+          avatar,
+          role,
+          bio,
+          social
+        )
       `)
       .eq('slug', slug)
       .single();
@@ -95,28 +114,38 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       return null;
     }
 
-    // Transform the data to match the Post type
-    const post: Post = {
+    // Transform the data to match the BlogPost type
+    const post: BlogPost = {
       id: data.id,
-      created_at: data.created_at,
       title: data.title,
       slug: data.slug,
       excerpt: data.excerpt,
       content: data.content,
-      cover_image: data.cover_image,
+      featured_image: data.featured_image || data.cover_image,
+      author_id: data.author_id,
+      category_id: data.category_id,
+      published_date: data.published_date || data.created_at,
+      read_time: data.read_time || calculateReadTime(data.content),
+      created_at: data.created_at,
+      updated_at: data.updated_at,
       category: data.category ? {
+        id: data.category.id,
         name: data.category.name,
         slug: data.category.slug
       } : null,
       tags: data.tags ? data.tags.map((post_tag: any) => ({
+        id: post_tag.tag.id,
         name: post_tag.tag.name,
         slug: post_tag.tag.slug
       })) : [],
-	  author: data.author ? {
-		id: data.author.id,
-		name: data.author.name,
-		avatar_url: data.author.avatar_url
-	  } : null
+      author: data.author ? {
+        id: data.author.id,
+        name: data.author.name,
+        avatar: data.author.avatar,
+        bio: data.author.bio || '',
+        role: data.author.role || '',
+        social: data.author.social || {}
+      } : null
     };
 
     return post;
@@ -127,27 +156,32 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 }
 
 // Function to get a single post by ID
-export async function getPostById(id: string): Promise<Post | null> {
+export async function getPostById(id: string): Promise<BlogPost | null> {
   try {
     const { data, error } = await supabase
-      .from('posts')
+      .from('blog_posts')
       .select(`
         *,
-        category:categories (
+        category:blog_categories (
+          id,
           name,
           slug
         ),
-        tags:post_tags (
-          tag:tags (
+        tags:blog_posts_tags (
+          tag:blog_tags (
+            id,
             name,
             slug
           )
         ),
-		author:users (
-			id,
-			name,
-			avatar_url
-		  )
+        author:blog_authors (
+          id,
+          name,
+          avatar,
+          role,
+          bio,
+          social
+        )
       `)
       .eq('id', id)
       .single();
@@ -157,28 +191,38 @@ export async function getPostById(id: string): Promise<Post | null> {
       return null;
     }
 
-    // Transform the data to match the Post type
-    const post: Post = {
+    // Transform the data to match the BlogPost type
+    const post: BlogPost = {
       id: data.id,
-      created_at: data.created_at,
       title: data.title,
       slug: data.slug,
       excerpt: data.excerpt,
       content: data.content,
-      cover_image: data.cover_image,
+      featured_image: data.featured_image || data.cover_image,
+      author_id: data.author_id,
+      category_id: data.category_id,
+      published_date: data.published_date || data.created_at,
+      read_time: data.read_time || calculateReadTime(data.content),
+      created_at: data.created_at,
+      updated_at: data.updated_at,
       category: data.category ? {
+        id: data.category.id,
         name: data.category.name,
         slug: data.category.slug
       } : null,
       tags: data.tags ? data.tags.map((post_tag: any) => ({
+        id: post_tag.tag.id,
         name: post_tag.tag.name,
         slug: post_tag.tag.slug
       })) : [],
-	  author: data.author ? {
-		id: data.author.id,
-		name: data.author.name,
-		avatar_url: data.author.avatar_url
-	  } : null
+      author: data.author ? {
+        id: data.author.id,
+        name: data.author.name,
+        avatar: data.author.avatar,
+        bio: data.author.bio || '',
+        role: data.author.role || '',
+        social: data.author.social || {}
+      } : null
     };
 
     return post;
@@ -192,20 +236,22 @@ interface CreatePostParams {
   title: string;
   excerpt: string;
   content: string;
-  cover_image: string;
+  featured_image: string;
+  author_id: string;
   category_id?: string | null;
   tag_ids?: string[];
-  author_id: string;
+  published_date?: string;
+  read_time?: number;
 }
 
 // Function to create a new post
-export async function createPost(post: CreatePostParams): Promise<Post | null> {
+export async function createPost(post: CreatePostParams): Promise<BlogPost | null> {
   try {
     const newPostId = uuidv4();
     const slug = slugify(post.title);
 
     const { data: postData, error: postError } = await supabase
-      .from('posts')
+      .from('blog_posts')
       .insert([
         {
           id: newPostId,
@@ -214,9 +260,11 @@ export async function createPost(post: CreatePostParams): Promise<Post | null> {
           slug: slug,
           excerpt: post.excerpt,
           content: post.content,
-          cover_image: post.cover_image,
-		  category_id: post.category_id || null,
-		  author_id: post.author_id
+          featured_image: post.featured_image,
+          category_id: post.category_id || null,
+          author_id: post.author_id,
+          published_date: post.published_date || new Date().toISOString(),
+          read_time: post.read_time || calculateReadTime(post.content)
         }
       ])
       .select('*')
@@ -235,7 +283,7 @@ export async function createPost(post: CreatePostParams): Promise<Post | null> {
       }));
 
       const { error: postTagsError } = await supabase
-        .from('post_tags')
+        .from('blog_posts_tags')
         .insert(postTags);
 
       if (postTagsError) {
@@ -257,26 +305,30 @@ interface UpdatePostParams {
   title?: string;
   excerpt?: string;
   content?: string;
-  cover_image?: string;
+  featured_image?: string;
   category_id?: string | null;
   tag_ids?: string[];
+  published_date?: string;
+  read_time?: number;
 }
 
 // Function to update a post
-export async function updatePost(post: UpdatePostParams): Promise<Post | null> {
+export async function updatePost(id: string, post: UpdatePostParams): Promise<BlogPost | null> {
   try {
-    const { id, title, excerpt, content, cover_image, category_id, tag_ids } = post;
+    const { title, excerpt, content, featured_image, category_id, tag_ids, published_date, read_time } = post;
     const slug = title ? slugify(title) : undefined;
 
     const { data: postData, error: postError } = await supabase
-      .from('posts')
+      .from('blog_posts')
       .update({
         title: title,
         slug: slug,
         excerpt: excerpt,
         content: content,
-        cover_image: cover_image,
-        category_id: category_id || null
+        featured_image: featured_image,
+        category_id: category_id || null,
+        published_date: published_date,
+        read_time: read_time || (content ? calculateReadTime(content) : undefined)
       })
       .eq('id', id)
       .select('*')
@@ -289,7 +341,7 @@ export async function updatePost(post: UpdatePostParams): Promise<Post | null> {
 
     // Delete existing post_tag entries for the post
     const { error: deletePostTagsError } = await supabase
-      .from('post_tags')
+      .from('blog_posts_tags')
       .delete()
       .eq('post_id', id);
 
@@ -306,7 +358,7 @@ export async function updatePost(post: UpdatePostParams): Promise<Post | null> {
       }));
 
       const { error: postTagsError } = await supabase
-        .from('post_tags')
+        .from('blog_posts_tags')
         .insert(postTags);
 
       if (postTagsError) {
@@ -328,7 +380,7 @@ export async function deletePost(id: string): Promise<boolean> {
   try {
     // Delete existing post_tag entries for the post
     const { error: deletePostTagsError } = await supabase
-      .from('post_tags')
+      .from('blog_posts_tags')
       .delete()
       .eq('post_id', id);
 
@@ -338,7 +390,7 @@ export async function deletePost(id: string): Promise<boolean> {
     }
 
     const { error: postError } = await supabase
-      .from('posts')
+      .from('blog_posts')
       .delete()
       .eq('id', id);
 
@@ -358,7 +410,7 @@ export async function deletePost(id: string): Promise<boolean> {
 export async function getCategories(): Promise<Category[]> {
   try {
     const { data, error } = await supabase
-      .from('categories')
+      .from('blog_categories')
       .select('*')
       .order('name', { ascending: true });
 
@@ -378,7 +430,7 @@ export async function getCategories(): Promise<Category[]> {
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   try {
     const { data, error } = await supabase
-      .from('categories')
+      .from('blog_categories')
       .select('*')
       .eq('slug', slug)
       .single();
@@ -399,7 +451,7 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 export async function getTags(): Promise<Tag[]> {
   try {
     const { data, error } = await supabase
-      .from('tags')
+      .from('blog_tags')
       .select('*')
       .order('name', { ascending: true });
 
@@ -419,7 +471,7 @@ export async function getTags(): Promise<Tag[]> {
 export async function getTagBySlug(slug: string): Promise<Tag | null> {
   try {
     const { data, error } = await supabase
-      .from('tags')
+      .from('blog_tags')
       .select('*')
       .eq('slug', slug)
       .single();
@@ -436,20 +488,52 @@ export async function getTagBySlug(slug: string): Promise<Tag | null> {
   }
 }
 
-// Aliases for compatibility with existing code
-export const getBlogPosts = getPosts;
-export const getBlogPostBySlug = getPostBySlug;
-export const getBlogPostById = getPostById;
-export const createBlogPost = createPost;
-export const updateBlogPost = updatePost;
-export const deleteBlogPost = deletePost;
-export const createTag = createNewTag;
-
-// Helper function to create a new tag
-export async function createNewTag(name: string): Promise<Tag> {
+// Function to get all authors
+export async function getAuthors() {
   try {
     const { data, error } = await supabase
-      .from('tags')
+      .from('blog_authors')
+      .select('*')
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error("Error fetching authors:", error);
+      return [];
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Unexpected error fetching authors:", error);
+    return [];
+  }
+}
+
+// Function to get author by id
+export async function getAuthorById(id: string) {
+  try {
+    const { data, error } = await supabase
+      .from('blog_authors')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching author:", error);
+      return null;
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Unexpected error fetching author:", error);
+    return null;
+  }
+}
+
+// Helper function to create a new tag
+export async function createTag(name: string): Promise<Tag> {
+  try {
+    const { data, error } = await supabase
+      .from('blog_tags')
       .insert({ name, slug: slugify(name) })
       .select('*')
       .single();
@@ -462,3 +546,11 @@ export async function createNewTag(name: string): Promise<Tag> {
     throw error;
   }
 }
+
+// Aliases for compatibility with existing code
+export const getBlogPosts = getPosts;
+export const getBlogPostBySlug = getPostBySlug;
+export const getBlogPostById = getPostById;
+export const createBlogPost = createPost;
+export const updateBlogPost = updatePost;
+export const deleteBlogPost = deletePost;
