@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
@@ -67,18 +66,16 @@ const BlogPostFormPage = () => {
   const handleSave = async (formData: BlogPost) => {
     setSubmitting(true);
     try {
-      const tagIds = formData.tags ? formData.tags.map(tag => tag.id) : [];
-      
       if (isEditMode && id) {
-        // Update existing post
-        await updateBlogPost(id, formData, tagIds);
+        // Update existing post - Now just passing post ID and form data (2 arguments instead of 3)
+        await updateBlogPost(id, formData);
         toast({
           title: "Success",
           description: "Blog post updated successfully."
         });
       } else {
-        // Create new post
-        await createBlogPost(formData, tagIds);
+        // Create new post - Now just passing form data (1 argument instead of 2)
+        await createBlogPost(formData);
         toast({
           title: "Success",
           description: "Blog post created successfully."

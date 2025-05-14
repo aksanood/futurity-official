@@ -167,10 +167,13 @@ export async function getTags(): Promise<Tag[]> {
 
 export async function createPost(post: BlogPost): Promise<void> {
   try {
-    const { error } = await supabase
+    // Extract tags for separate handling
+    const tags = post.tags || [];
+    
+    // Create the blog post
+    const { data, error } = await supabase
       .from('blog_posts')
       .insert({
-        id: post.id,
         title: post.title,
         slug: post.slug,
         excerpt: post.excerpt,
@@ -179,28 +182,35 @@ export async function createPost(post: BlogPost): Promise<void> {
         author_id: post.author_id,
         category_id: post.category_id,
         published_date: post.published_date,
-        read_time: post.read_time,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      });
-
-    if (error) throw error;
-
-    // Create tag relationships
-    if (post.tags && post.tags.length > 0) {
-      const tagRelationships = post.tags.map((tag) => ({
-        post_id: post.id,
+        read_time: post.read_time
+      })
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('Error creating blog post:', error);
+      throw error;
+    }
+    
+    // Handle tags if there are any
+    if (tags.length > 0) {
+      // Create associations between post and tags
+      const postTagAssociations = tags.map(tag => ({
+        post_id: data.id,
         tag_id: tag.id
       }));
-
-      const { error: insertError } = await supabase
+      
+      const { error: tagsError } = await supabase
         .from('blog_posts_tags')
-        .insert(tagRelationships);
-
-      if (insertError) throw insertError;
+        .insert(postTagAssociations);
+      
+      if (tagsError) {
+        console.error('Error associating tags with post:', tagsError);
+        // Consider whether to throw here or just log
+      }
     }
   } catch (error) {
-    console.error('Error creating blog post:', error);
+    console.error('Error in createPost:', error);
     throw error;
   }
 }
@@ -223,31 +233,38 @@ export async function updatePost(postId: string, post: BlogPost): Promise<void> 
         updated_at: new Date().toISOString()
       })
       .eq('id', postId);
-
-    if (error) throw error;
-
-    // Delete existing tag relationships
+    
+    if (error) {
+      console.error('Error updating blog post:', error);
+      throw error;
+    }
+    
+    // Handle tags - first delete existing associations
     const { error: deleteError } = await supabase
       .from('blog_posts_tags')
       .delete()
       .eq('post_id', postId);
-
-    if (deleteError) throw deleteError;
-
-    // Only insert new tag relationships if there are tags
+    
+    if (deleteError) {
+      console.error('Error removing existing tag associations:', deleteError);
+      // Consider whether to throw here or just log
+    }
+    
+    // Re-create tag associations if there are any
     if (post.tags && post.tags.length > 0) {
-      // Create tag relationships array
-      const tagRelationships = post.tags.map((tag) => ({
+      const postTagAssociations = post.tags.map(tag => ({
         post_id: postId,
         tag_id: tag.id
       }));
-
-      // Insert tag relationships as an array
+      
       const { error: insertError } = await supabase
         .from('blog_posts_tags')
-        .insert(tagRelationships);
-
-      if (insertError) throw insertError;
+        .insert(postTagAssociations);
+      
+      if (insertError) {
+        console.error('Error creating new tag associations:', insertError);
+        // Consider whether to throw here or just log
+      }
     }
   } catch (error) {
     console.error('Error updating blog post:', error);
