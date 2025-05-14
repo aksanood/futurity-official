@@ -208,9 +208,9 @@ const BlogPostForm = ({ post, onSave, isSubmitting = false }: BlogPostFormProps)
     // Calculate read time
     const readTime = values.read_time || calculateReadTime(values.content);
     
-    // Prepare post data with a required ID
+    // Prepare post data - ensure id is always a string
     const postData: BlogPost = {
-      id: post?.id || '', // Provide an empty string as fallback for new posts
+      id: post?.id || '', // Always provide an id (empty string if new post)
       title: values.title,
       slug: values.slug,
       excerpt: values.excerpt,

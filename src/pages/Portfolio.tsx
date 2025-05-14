@@ -1,7 +1,7 @@
+
 import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import PageHero from '@/components/ui/page-hero';
-import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
@@ -9,6 +9,7 @@ import { getAllPortfolioItems, getServiceCategories } from '@/data/portfolioData
 import { PortfolioItem } from '@/types/portfolio';
 import PortfolioCard from '@/components/ui/portfolio-card';
 import { useToast } from '@/components/ui/use-toast';
+import SectionHeading from '@/components/ui/section-heading';
 
 const Portfolio = () => {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -95,7 +96,7 @@ const Portfolio = () => {
   }, [displayedItems, visibleItems]);
 
   const loadMore = () => {
-    setVisibleItems(prev => prev + 3);
+    setVisibleItems((prev) => prev + 3);
   };
 
   return (
@@ -112,8 +113,8 @@ const Portfolio = () => {
             subtitle="Browse our recent work across various industries and services."
             center
           />
-
-          {/* Toggle for All/Featured */}
+          
+          {/* Filter Buttons */}
           <div className="flex justify-center gap-4 mb-6">
             <Button
               variant={!showFeaturedOnly ? 'default' : 'outline'}
@@ -130,13 +131,14 @@ const Portfolio = () => {
               Featured
             </Button>
           </div>
-
+          
+          {/* Category Filters */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             <Button
-              key="all"
               onClick={() => setActiveFilter('all')}
               className={`portfolio-filter-btn ${activeFilter === 'all' ? 'bg-futurity-blue text-white' : ''}`}
               variant={activeFilter === 'all' ? "default" : "outline"}
+              key="all"
             >
               All
             </Button>
@@ -146,17 +148,18 @@ const Portfolio = () => {
             ) : (
               categories.map(category => (
                 <Button
-                  key={category.id}
                   onClick={() => setActiveFilter(category.id)}
                   className={`portfolio-filter-btn ${activeFilter === category.id ? 'bg-futurity-blue text-white' : ''}`}
                   variant={activeFilter === category.id ? "default" : "outline"}
+                  key={category.id}
                 >
                   {category.name}
                 </Button>
               ))
             )}
           </div>
-
+          
+          {/* Portfolio Items */}
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <p>Loading portfolio items...</p>
@@ -169,7 +172,7 @@ const Portfolio = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {displayedItems.slice(0, visibleItems).map((item, index) => {
                 const categoryObj = categories.find(cat => cat.id === item.portfolio_category);
-                const categoryName = categoryObj ? categoryObj.name : item.portfolio_category;
+                const categoryName = categoryObj ? categoryObj.name : '';
                 return (
                   <PortfolioCard
                     key={item.id}
@@ -177,27 +180,28 @@ const Portfolio = () => {
                     title={item.title}
                     category={categoryName}
                     href={`/portfolio/${item.slug}`}
-                    className={`animate-on-scroll ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}
+                    className={`animate-on-scroll hover:shadow-lg transition-all duration-300 ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}
                   />
                 );
               })}
             </div>
           )}
-
+          
+          {/* Load More Button */}
           {visibleItems < displayedItems.length && (
             <div className="text-center mt-12">
               <Button 
                 onClick={loadMore} 
                 className="bg-futurity-blue text-white hover:bg-futurity-blue/90 border-0"
               >
-                Load More Projects <ChevronRight className="ml-2 h-4 w-4" />
+                Load More Projects
               </Button>
             </div>
           )}
         </div>
       </section>
 
-      {/* CTA section */}
+      {/* CTA Section */}
       <section className="section bg-futurity-blue text-white">
         <div className="container-tight text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-on-scroll">Let's Create Something Amazing Together</h2>
@@ -206,7 +210,7 @@ const Portfolio = () => {
           </p>
           <div className="animate-on-scroll stagger-delay-2">
             <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white border-0">
-              <Link to="/contact">Start Your Project <ChevronRight className="ml-2 h-4 w-4" /></Link>
+              <Link to="/contact">Start Your Project</Link>
             </Button>
           </div>
         </div>

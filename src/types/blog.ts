@@ -15,7 +15,7 @@ export interface BlogPost {
   // These are joined fields, not in the actual database row
   author?: Author;
   category?: Category;
-  tags?: Tag[];
+  tags: Tag[];
 }
 
 export interface Author {
@@ -29,6 +29,8 @@ export interface Author {
     linkedin?: string;
     github?: string;
   };
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Category {

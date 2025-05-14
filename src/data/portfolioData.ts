@@ -8,45 +8,22 @@ let cachedServiceCategories = null;
 
 export async function getServiceCategories() {
   try {
-    // If we have cached categories, return them
     if (cachedServiceCategories) {
       return cachedServiceCategories;
     }
     
-    console.log('Fetching service categories from Supabase...');
     const categories = await fetchServiceCategories();
-    console.log('Received service categories:', categories);
-    
-    // Map the database categories to the format needed for UI
-    const mappedCategories = categories.map(cat => ({
-      id: cat.id, // Use UUID for filtering
-      name: cat.name
-    }));
-    
-    // Cache the categories for future use
-    cachedServiceCategories = mappedCategories;
-    
-    return mappedCategories;
+    cachedServiceCategories = categories;
+    return categories;
   } catch (error) {
     console.error('Error fetching service categories:', error);
-    // Fallback to default categories if there's an error
-    return [
-      { id: 'web-development', name: 'Web Development' },
-      { id: 'web-design', name: 'Web Design' },
-      { id: 'ui-ux-design', name: 'UI/UX Design' },
-      { id: 'digital-marketing', name: 'Digital Marketing' },
-      { id: 'branding-services', name: 'Branding Services' },
-      { id: 'content-writing', name: 'Content Writing' },
-      { id: 'ai-development', name: 'AI Development' }
-    ];
+    return [];
   }
 }
 
 export async function getAllPortfolioItems() {
   try {
-    console.log('Fetching portfolio items from Supabase...');
     const items = await getPortfolioItems();
-    console.log('Received portfolio items:', items);
     return items;
   } catch (error) {
     console.error('Error fetching portfolio items:', error);
@@ -56,12 +33,9 @@ export async function getAllPortfolioItems() {
 
 export async function getPortfolioItemBySlugAsync(slug: string) {
   try {
-    console.log(`Fetching portfolio item with slug: ${slug}`);
-    const item = await getPortfolioItemBySlug(slug);
-    console.log('Received portfolio item:', item);
-    return item;
+    return await getPortfolioItemBySlug(slug);
   } catch (error) {
-    console.error('Error fetching portfolio item:', error);
+    console.error(`Error fetching portfolio item with slug ${slug}:`, error);
     return null;
   }
 }
@@ -80,10 +54,10 @@ export async function getFilteredPortfolioItems(tag: string) {
       
       // Find the category that matches the tag
       const matchingCategory = categories.find(cat => cat.id === tag);
-      const categoryToMatch = matchingCategory ? matchingCategory.id : tag;
+      const categoryToMatch = matchingCategory ? matchingCategory.name : tag;
       
       console.log('Filtering by category:', categoryToMatch);
-      // Use portfolio_category instead of category
+      // Use portfolio_category property (not category)
       const filtered = items.filter(item => item.portfolio_category === categoryToMatch);
       console.log('Filtered items:', filtered);
       return filtered;
@@ -99,14 +73,9 @@ export async function getFilteredPortfolioItems(tag: string) {
 export async function getFeaturedPortfolioItems(limit = 3) {
   try {
     const items = await getPortfolioItems();
-    console.log('Fetching featured portfolio items');
-    
-    if (items && items.length > 0) {
-      const featuredItems = items.filter(item => item.featured);
-      return featuredItems.slice(0, limit);
-    }
-    
-    return [];
+    return items
+      .filter(item => item.featured)
+      .slice(0, limit);
   } catch (error) {
     console.error('Error fetching featured portfolio items:', error);
     return [];

@@ -19,35 +19,32 @@ const DashboardEditPortfolioItem = () => {
   useEffect(() => {
     const fetchItem = async () => {
       if (!id) {
-        toast({
-          title: 'Error',
-          description: 'Missing portfolio item ID.',
-          variant: 'destructive',
-        });
         navigate('/dashboard/portfolio');
         return;
       }
 
       try {
-        const data = await getPortfolioItemById(id);
-        if (data) {
-          setItem(data);
-        } else {
+        setLoading(true);
+        const portfolioItem = await getPortfolioItemById(id);
+        
+        if (!portfolioItem) {
           toast({
-            title: 'Error',
-            description: 'Portfolio item not found.',
-            variant: 'destructive',
+            title: "Error",
+            description: "Portfolio item not found",
+            variant: "destructive",
           });
           navigate('/dashboard/portfolio');
+          return;
         }
+        
+        setItem(portfolioItem);
       } catch (error) {
-        console.error('Error fetching portfolio item:', error);
+        console.error("Error fetching portfolio item:", error);
         toast({
-          title: 'Error',
-          description: 'Failed to load portfolio item. Please try again later.',
-          variant: 'destructive',
+          title: "Error",
+          description: "Failed to load portfolio item",
+          variant: "destructive",
         });
-        navigate('/dashboard/portfolio');
       } finally {
         setLoading(false);
       }
@@ -59,15 +56,19 @@ const DashboardEditPortfolioItem = () => {
   if (loading) {
     return (
       <DashboardLayout title="Edit Portfolio Item" subtitle="Loading...">
-        <p>Loading portfolio item...</p>
+        <div className="flex justify-center items-center h-64">
+          <p>Loading portfolio item...</p>
+        </div>
       </DashboardLayout>
     );
   }
 
   if (!item) {
     return (
-      <DashboardLayout title="Edit Portfolio Item" subtitle="Not Found">
-        <p>Portfolio item not found.</p>
+      <DashboardLayout title="Edit Portfolio Item" subtitle="Not found">
+        <div className="flex justify-center items-center h-64">
+          <p>Portfolio item not found</p>
+        </div>
       </DashboardLayout>
     );
   }

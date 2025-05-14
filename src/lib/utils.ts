@@ -1,38 +1,28 @@
 
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
-import { format, parseISO } from "date-fns"
- 
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export function slugify(text: string) {
+// Function to slugify text
+export function slugify(text: string): string {
   return text
     .toString()
     .toLowerCase()
-    .replace(/\s+/g, '-')         // Replace spaces with -
-    .replace(/[^\w\-]+/g, '')     // Remove all non-word chars
-    .replace(/\-\-+/g, '-')       // Replace multiple - with single -
-    .replace(/^-+/, '')           // Trim - from start of text
-    .replace(/-+$/, '');          // Trim - from end of text
+    .trim()
+    .replace(/\s+/g, '-')     // Replace spaces with -
+    .replace(/&/g, '-and-')   // Replace & with 'and'
+    .replace(/[^\w\-]+/g, '') // Remove all non-word characters
+    .replace(/\-\-+/g, '-')   // Replace multiple - with single -
+    .replace(/^-+/, '')       // Trim - from start of text
+    .replace(/-+$/, '');      // Trim - from end of text
 }
 
-export function calculateReadTime(content: string) {
+// Function to calculate reading time
+export function calculateReadTime(content: string): number {
   const wordsPerMinute = 200;
   const words = content.trim().split(/\s+/).length;
-  return Math.ceil(words / wordsPerMinute);
-}
-
-export function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substring(2);
-}
-
-export function formatDate(dateString: string) {
-  try {
-    return format(parseISO(dateString), 'MMMM d, yyyy');
-  } catch (error) {
-    console.error("Error formatting date:", error);
-    return dateString;
-  }
+  return Math.max(1, Math.ceil(words / wordsPerMinute));
 }

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import RichTextEditor from '@/components/dashboard/RichTextEditor';
-import { X, Image as ImageIcon, Loader2, FileUp } from 'lucide-react';
+import { X, Loader2, FileUp } from 'lucide-react';
 import { getPortfolioItemById, createPortfolioItem, updatePortfolioItem } from '@/services/portfolioService';
 import { PortfolioItem } from '@/types/portfolio';
 import { useToast } from '@/hooks/use-toast';
@@ -17,7 +16,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { getServiceCategories } from '@/data/portfolioData';
 
 interface PortfolioItemFormProps {
-  item?: PortfolioItem;
+  item?: PortfolioItem; // Make item optional
   isEditMode?: boolean;
 }
 
@@ -31,6 +30,8 @@ const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ item, isEditMode 
   const [challenge, setChallenge] = useState('');
   const [solution, setSolution] = useState('');
   const [results, setResults] = useState('');
+  // Keep a form field for a rich text editor, but we'll map it to description
+  const [richText, setRichText] = useState('');
   const [featured, setFeatured] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -72,6 +73,8 @@ const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ item, isEditMode 
           setChallenge(fetchedItem.challenge);
           setSolution(fetchedItem.solution);
           setResults(fetchedItem.results);
+          // Use description for the rich text editor initially
+          setRichText(fetchedItem.description);
           setFeatured(fetchedItem.featured);
           setImageUrl(fetchedItem.image_url);
         } else {
@@ -84,7 +87,7 @@ const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ item, isEditMode 
       };
       fetchPortfolioItem();
     } else if (item) {
-      // When item is provided through props
+      // If item is passed as prop, use it to populate form
       setTitle(item.title);
       setSlug(item.slug);
       setClient(item.client);
@@ -94,9 +97,10 @@ const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ item, isEditMode 
       setChallenge(item.challenge);
       setSolution(item.solution);
       setResults(item.results);
-      setFeatured(item.featured || false);
+      // Use description for the rich text editor initially
+      setRichText(item.description);
+      setFeatured(item.featured);
       setImageUrl(item.image_url);
-      setPortfolioItem(item);
     }
   }, [isEditMode, id, toast, item]);
 
@@ -165,7 +169,7 @@ const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ item, isEditMode 
       results,
       featured,
       image_url: imageUrl,
-      gallery: [] as string[], // Empty gallery array
+      gallery: [] as string[], // Empty gallery array to match type
     };
 
     try {
@@ -285,6 +289,10 @@ const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ item, isEditMode 
         />
       </div>
       <div>
+        <Label htmlFor="richText">Content (Rich Text)</Label>
+        <RichTextEditor value={richText} onChange={setRichText} />
+      </div>
+      <div>
         <Label>Featured Image</Label>
         <div className="flex items-center space-x-4">
           <AspectRatio ratio={16 / 9} className="w-64 h-36 rounded-md overflow-hidden border shadow">
@@ -296,8 +304,7 @@ const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ item, isEditMode 
               />
             ) : (
               <div className="flex items-center justify-center h-full bg-gray-100 text-gray-500">
-                <ImageIcon className="h-10 w-10" />
-                <span className="ml-2">No Image</span>
+                No Image
               </div>
             )}
           </AspectRatio>
