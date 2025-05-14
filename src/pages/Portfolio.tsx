@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
+import PageHero from '@/components/ui/page-hero';
 import SectionHeading from '@/components/ui/section-heading';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { ExternalLink } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { getAllPortfolioItems, getServiceCategories } from '@/data/portfolioData';
 import { PortfolioItem } from '@/types/portfolio';
 import PortfolioCard from '@/components/ui/portfolio-card';
@@ -99,21 +100,10 @@ const Portfolio = () => {
 
   return (
     <Layout>
-      <section className="hero-secondary">
-        <div className="container-wide">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 animate-on-scroll">Our Portfolio</h1>
-            <p className="text-xl text-white/90 mb-8 animate-on-scroll stagger-delay-1">
-              Explore our latest work and see how we've helped businesses achieve their digital goals through innovative solutions and strategic thinking.
-            </p>
-          </div>
-        </div>
-        
-        {/* Straight line instead of wave */}
-        <div className="hero-straight-line">
-          <div className="h-16 bg-white absolute bottom-0 left-0 right-0"></div>
-        </div>
-      </section>
+      <PageHero
+        title="Our Portfolio"
+        subtitle="Explore our latest work and see how we've helped businesses achieve their digital goals through innovative solutions and strategic thinking."
+      />
 
       <section className="section">
         <div className="container-wide">
@@ -200,7 +190,7 @@ const Portfolio = () => {
                 onClick={loadMore} 
                 className="bg-futurity-blue text-white hover:bg-futurity-blue/90 border-0"
               >
-                Load More Projects
+                Load More Projects <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           )}
@@ -216,7 +206,7 @@ const Portfolio = () => {
           </p>
           <div className="animate-on-scroll stagger-delay-2">
             <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white border-0">
-              <Link to="/contact">Start Your Project</Link>
+              <Link to="/contact">Start Your Project <ChevronRight className="ml-2 h-4 w-4" /></Link>
             </Button>
           </div>
         </div>
