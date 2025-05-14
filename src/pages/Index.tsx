@@ -13,97 +13,117 @@ import { Layout as LayoutIcon, Smartphone, Palette, BarChart, FileSearch, Image,
 const Index = () => {
   return (
     <Layout>
-      {/* Hero Section - Updated with new design */}
-      <section className="hero-main min-h-screen flex items-center relative overflow-hidden">
-        
-        <div 
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        ></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-futurity-blue to-futurity-blue/80"></div>
+      {/* Hero Section - Modern sleek design */}
+      <section className="hero-main min-h-[90vh] flex items-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-futurity-blue z-0">
+          {/* Modern geometric patterns */}
+          <div className="absolute w-full h-full opacity-20">
+            <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-[radial-gradient(circle_at_center,#4171BD_0%,transparent_70%)]"></div>
+            <div className="absolute bottom-0 left-0 w-3/4 h-3/4 bg-[radial-gradient(circle_at_center,#F97316_0%,transparent_60%)]"></div>
+          </div>
+          
+          {/* Abstract lines */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="h-full w-full bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:500px_500px]"></div>
+          </div>
+        </div>
 
-        <div className="container-wide grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-          <div className="text-white">
+        <div className="container-wide grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+          <div className="lg:col-span-7 text-white">
             <h1 className="animate-on-scroll text-5xl md:text-6xl font-bold mb-6 leading-tight">
-              Smarter <span className="text-futurity-orange">Digital</span> Solutions for <span className="text-futurity-orange">Measurable</span> Growth
+              Building <span className="text-futurity-orange">Digital</span> Experiences That <span className="text-futurity-orange">Deliver</span> Results
             </h1>
-            <p className="animate-on-scroll stagger-delay-1 text-xl mb-8 max-w-2xl text-white/90">
-              From bespoke website design and development to strategic digital marketing and AI solutions, Futurity provides the expertise you need to thrive online.
+            <p className="animate-on-scroll stagger-delay-1 text-xl mb-8 max-w-2xl text-white/90 leading-relaxed">
+              From intuitive web design to strategic digital solutions, we create digital experiences that elevate brands and drive measurable growth.
             </p>
             <div className="animate-on-scroll stagger-delay-2 flex flex-col sm:flex-row gap-4 mt-8">
-              <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white border-0">
-                <Link to="/contact">Get Started</Link>
+              <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white border-0 rounded-full px-8">
+                <Link to="/contact">Start Your Project</Link>
               </Button>
               <Button 
                 asChild 
                 size="lg" 
                 variant="outline" 
-                className="border-white text-futurity-blue bg-white hover:bg-gray-100 hover:text-futurity-blue/80"
+                className="border-white text-white hover:bg-white hover:text-futurity-blue rounded-full px-8"
               >
                 <Link to="/portfolio">View Our Work</Link>
               </Button>
             </div>
-            <div className="grid grid-cols-3 gap-8 mt-12">
-              <div>
+            
+            {/* Animated stats section */}
+            <div className="mt-12 grid grid-cols-3 gap-8">
+              <div className="animate-on-scroll border-l-2 border-futurity-orange/30 pl-4">
                 <div className="text-4xl font-bold text-futurity-orange mb-2">150%</div>
-                <div className="text-white/80">Client Growth</div>
+                <div className="text-white/80 text-sm">Average Client Growth</div>
               </div>
-              <div>
+              <div className="animate-on-scroll stagger-delay-1 border-l-2 border-futurity-orange/30 pl-4">
                 <div className="text-4xl font-bold text-futurity-orange mb-2">100%</div>
-                <div className="text-white/80">Client Satisfaction</div>
+                <div className="text-white/80 text-sm">Client Satisfaction</div>
               </div>
-              <div>
+              <div className="animate-on-scroll stagger-delay-2 border-l-2 border-futurity-orange/30 pl-4">
                 <div className="text-4xl font-bold text-futurity-orange mb-2">50+</div>
-                <div className="text-white/80">Innovative Solutions Deployed</div>
+                <div className="text-white/80 text-sm">Projects Launched</div>
               </div>
             </div>
           </div>
-          <div className="hidden lg:block">
-            <img 
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80"
-              alt="Team collaboration" 
-              className="rounded-lg shadow-xl max-w-full"
-            />
+          
+          <div className="lg:col-span-5 hidden lg:block">
+            <div className="relative animate-float">
+              {/* Modern floating image with decoration */}
+              <div className="absolute -top-6 -left-6 w-24 h-24 bg-futurity-orange/20 rounded-full blur-xl z-0"></div>
+              <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-futurity-blue-light/30 rounded-full blur-xl z-0"></div>
+              
+              <img 
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80"
+                alt="Team collaboration" 
+                className="rounded-2xl shadow-2xl max-w-full relative z-10 hover-lift"
+              />
+              
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -right-4 w-24 h-24 border-2 border-futurity-orange/30 rounded-2xl z-0"></div>
+              <div className="absolute -bottom-4 -left-4 w-24 h-24 border-2 border-futurity-orange/30 rounded-2xl z-0"></div>
+            </div>
           </div>
         </div>
+        
+        {/* Modern bottom curve */}
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-white" style={{ 
+          clipPath: "polygon(0 100%, 100% 100%, 100% 0, 0 100%)" 
+        }}></div>
       </section>
 
-      {/* About Section - alternating background */}
-      <section className="section section-alternate">
+      {/* About Section - With white background */}
+      <section className="section bg-white">
         <div className="container-wide grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="animate-on-scroll">
+          <div className="animate-on-scroll relative">
+            <div className="absolute -top-6 -left-6 w-32 h-32 bg-futurity-orange/10 rounded-full z-0"></div>
+            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-futurity-blue/10 rounded-full z-0"></div>
+            <img 
+              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80"
+              alt="Futurity Team" 
+              className="rounded-2xl shadow-lg relative z-10 hover-grow"
+            />
+          </div>
+          <div className="animate-on-scroll stagger-delay-1">
             <SectionHeading
               title="Who We Are"
               subtitle="Futurity is a team of digital experts passionate about creating exceptional digital experiences that drive business growth."
             />
-            <p className="mb-6">
+            <p className="mb-6 text-gray-600">
               Launched in 2024, Futurity was born from a collective passion for empowering businesses to navigate and succeed in the evolving digital landscape.
             </p>
-            <p className="mb-6">
+            <p className="mb-6 text-gray-600">
               Our team brings together dedicated specialists across UX/UI design, bespoke development, strategic marketing, and cutting-edge AI. We believe in a collaborative approach, working closely with you to transform challenges into opportunities.
             </p>
-            <p className="mb-6">
-              Our focus is on building more than just websites or campaigns; we forge strategic partnerships aimed at delivering exceptional, user-centric digital experiences that resonate deeply and achieve tangible results for your business.
-            </p>
-          </div>
-          <div className="animate-on-scroll stagger-delay-1 relative">
-            <div className="absolute -top-4 -left-4 w-32 h-32 bg-futurity-orange/10 rounded-lg z-0"></div>
-            <img 
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80"
-              alt="Futurity Team" 
-              className="rounded-lg shadow-lg relative z-10"
-            />
-            <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-futurity-blue/10 rounded-lg z-0"></div>
+            <Button asChild className="mt-6 bg-futurity-blue hover:bg-futurity-blue/90 text-white rounded-full px-8">
+              <Link to="/about">Learn More About Us</Link>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Services Section - with alternating background */}
-      <section id="services" className="section">
+      {/* Services Section - White background with modern cards */}
+      <section id="services" className="section bg-white">
         <div className="container-wide">
           <SectionHeading
             title="Our Services"
@@ -117,40 +137,40 @@ const Index = () => {
               title="Web Design"
               description="Beautiful, responsive websites that captivate your audience"
               href="/services/web-design"
-              className="animate-on-scroll"
+              className="animate-on-scroll hover-lift"
             />
             <ServiceCard
               icon={<Globe size={28} />}
               title="Web Development"
               description="Custom web applications built with modern technologies"
               href="/services/web-development"
-              className="animate-on-scroll stagger-delay-1"
+              className="animate-on-scroll stagger-delay-1 hover-lift"
             />
             <ServiceCard
               icon={<LayoutDashboard size={28} />}
               title="UX/UI Design"
               description="User-centered design for intuitive digital experiences"
               href="/services/ui-ux-design"
-              className="animate-on-scroll stagger-delay-2"
+              className="animate-on-scroll stagger-delay-2 hover-lift"
             />
             <ServiceCard
               icon={<Compass size={28} />}
               title="Branding"
               description="Distinctive brand identities that make you stand out"
               href="/services/branding-services"
-              className="animate-on-scroll"
+              className="animate-on-scroll hover-lift"
             />
             <ServiceCard
               icon={<FileText size={28} />}
               title="Content Writing"
               description="Compelling copy that engages and drives action"
               href="/services/content-writing"
-              className="animate-on-scroll stagger-delay-1"
+              className="animate-on-scroll stagger-delay-1 hover-lift"
             />
-            <div className="animate-on-scroll stagger-delay-2 rounded-lg p-6 flex flex-col items-center justify-center text-center bg-futurity-orange/10">
-              <h3 className="text-xl font-semibold mb-4">Need a Custom Solution?</h3>
-              <p className="mb-6">Let's discuss how we can help you achieve your business goals.</p>
-              <Button asChild className="bg-futurity-orange text-white hover:bg-futurity-orange/90 border-0">
+            <div className="animate-on-scroll stagger-delay-2 rounded-2xl p-8 flex flex-col items-center justify-center text-center bg-gradient-to-br from-futurity-blue/5 to-futurity-blue/10 border border-futurity-blue/10 hover-lift">
+              <h3 className="text-xl font-semibold mb-4 text-futurity-blue">Need a Custom Solution?</h3>
+              <p className="mb-6 text-gray-600">Let's discuss how we can help you achieve your business goals.</p>
+              <Button asChild className="bg-futurity-orange text-white hover:bg-futurity-orange/90 border-0 rounded-full px-8">
                 <Link to="/contact">Contact Us</Link>
               </Button>
             </div>
@@ -158,8 +178,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Portfolio Section */}
-      <section className="section">
+      {/* Portfolio Section - Clean white background */}
+      <section className="section bg-white">
         <div className="container-wide">
           <SectionHeading
             title="Our Recent Work"
@@ -173,37 +193,37 @@ const Index = () => {
               title="TechVision Rebrand"
               category="Web Design & Development"
               href="/portfolio/tech-vision"
-              className="animate-on-scroll"
+              className="animate-on-scroll hover-lift"
             />
             <PortfolioCard
               image="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80"
               title="Eco Mobile App"
               category="Mobile Development"
               href="/portfolio/eco-app"
-              className="animate-on-scroll stagger-delay-1"
+              className="animate-on-scroll stagger-delay-1 hover-lift"
             />
             <PortfolioCard
               image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80"
               title="Finance Dashboard"
               category="UI/UX & Development"
               href="/portfolio/finance-dashboard"
-              className="animate-on-scroll stagger-delay-2"
+              className="animate-on-scroll stagger-delay-2 hover-lift"
             />
           </div>
           
           <div className="text-center mt-12">
-            <Button asChild className="bg-futurity-orange text-white hover:bg-futurity-orange/90 border-0">
+            <Button asChild className="bg-futurity-blue hover:bg-futurity-blue/90 text-white rounded-full px-8">
               <Link to="/portfolio">View All Projects</Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Our Process Section - NEW */}
+      {/* Process Section - Updated styling */}
       <ProcessSection />
 
-      {/* Testimonials Section with star ratings */}
-      <section className="section section-alternate">
+      {/* Testimonials Section - Modern cards with shadow */}
+      <section className="section bg-white">
         <div className="container-wide">
           <SectionHeading
             title="What Our Clients Say"
@@ -218,7 +238,7 @@ const Index = () => {
               position="Marketing Director"
               company="TechVision"
               rating={5}
-              className="animate-on-scroll"
+              className="animate-on-scroll hover-lift"
             />
             <TestimonialCard
               quote="The mobile app developed by Futurity has been a game-changer for our business. Their team was professional, responsive, and delivered on time and within budget."
@@ -226,7 +246,7 @@ const Index = () => {
               position="CEO"
               company="Eco Solutions"
               rating={5}
-              className="animate-on-scroll stagger-delay-1"
+              className="animate-on-scroll stagger-delay-1 hover-lift"
             />
             <TestimonialCard
               quote="Their strategic approach to digital marketing has significantly increased our online visibility and lead generation. We couldn't be happier with the results."
@@ -234,28 +254,30 @@ const Index = () => {
               position="CMO"
               company="FinanceHub"
               rating={4}
-              className="animate-on-scroll stagger-delay-2"
+              className="animate-on-scroll stagger-delay-2 hover-lift"
             />
           </div>
         </div>
       </section>
 
-      {/* FAQ Section - NEW */}
+      {/* FAQ Section */}
       <FAQSection />
 
-      {/* CTA Section */}
-      <section className="section bg-futurity-blue text-white relative overflow-hidden">
+      {/* CTA Section - Modern gradient background */}
+      <section className="section bg-gradient-to-r from-futurity-blue to-futurity-blue-light text-white relative overflow-hidden">
+        {/* Modern background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="h-full w-full bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
         </div>
+        
         <div className="container-tight text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 animate-on-scroll">Ready to Transform Your Digital Presence?</h2>
-          <p className="text-xl mb-8 text-white/90 animate-on-scroll stagger-delay-1">
-            Let's discuss how we can help you achieve your business goals with our digital expertise.
+          <p className="text-xl mb-8 text-white/90 animate-on-scroll stagger-delay-1 max-w-2xl mx-auto">
+            Let's collaborate to create digital experiences that captivate your audience and drive business growth.
           </p>
           <div className="animate-on-scroll stagger-delay-2">
-            <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white border-0">
-              <Link to="/contact">Get Started Today</Link>
+            <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white border-0 rounded-full px-8">
+              <Link to="/contact">Start Your Project</Link>
             </Button>
           </div>
         </div>

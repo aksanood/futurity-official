@@ -221,7 +221,6 @@ export type Database = {
       }
       portfolio: {
         Row: {
-          portfolio_category: string
           challenge: string
           client: string
           created_at: string
@@ -231,6 +230,7 @@ export type Database = {
           gallery: string[] | null
           id: string
           image_url: string
+          portfolio_category: string | null
           results: string
           slug: string
           solution: string
@@ -238,7 +238,6 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          portfolio_category: string
           challenge: string
           client: string
           created_at?: string
@@ -248,6 +247,7 @@ export type Database = {
           gallery?: string[] | null
           id?: string
           image_url: string
+          portfolio_category?: string | null
           results: string
           slug: string
           solution: string
@@ -255,7 +255,6 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          portfolio_category?: string
           challenge?: string
           client?: string
           created_at?: string
@@ -265,13 +264,22 @@ export type Database = {
           gallery?: string[] | null
           id?: string
           image_url?: string
+          portfolio_category?: string | null
           results?: string
           slug?: string
           solution?: string
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_portfolio_category_fkey"
+            columns: ["portfolio_category"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
@@ -308,6 +316,30 @@ export type Database = {
           position?: string
           rating?: number
           status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      service_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          slug?: string
           updated_at?: string
         }
         Relationships: []
