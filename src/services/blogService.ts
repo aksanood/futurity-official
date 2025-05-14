@@ -1,5 +1,7 @@
+
 import { supabase } from '@/integrations/supabase/client';
-import { BlogPost, Category, Tag } from '@/types/blog';
+import { BlogPost, Category, Tag, Author } from '@/types/blog';
+import { Json } from '@/integrations/supabase/types';
 
 // Helper function to parse author's social data
 const parseSocialData = (socialData: any): Author['social'] => {
@@ -226,9 +228,11 @@ export async function updateBlogPost(id: string, post: Partial<BlogPost>, tagIds
   // Add new tag relations
   if (uniqueTagIds.length > 0) {
     const tagRelations = uniqueTagIds.map(tagId => ({ post_id: id, tag_id: tagId }));
+    
+    // Fix for array insertion
     const { error: tagsError } = await supabase
       .from('blog_posts_tags')
-      .upsert(tagRelations, { onConflict: ['post_id', 'tag_id'] });
+      .insert(tagRelations);
 
     if (tagsError) {
       console.error('Error adding tags to post:', tagsError);
@@ -288,9 +292,16 @@ export async function getAuthorById(id: string) {
 }
 
 export async function createAuthor(author: Omit<Author, 'id' | 'created_at' | 'updated_at'>) {
+  // Fix the insertion by explicitly setting the fields
   const { data, error } = await supabase
     .from('blog_authors')
-    .insert(author)
+    .insert({
+      name: author.name,
+      avatar: author.avatar || '',
+      bio: author.bio || '',
+      role: author.role || '',
+      social: author.social || {}
+    })
     .select();
 
   if (error) {

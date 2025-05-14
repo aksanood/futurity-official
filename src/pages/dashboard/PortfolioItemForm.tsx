@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
@@ -80,7 +81,7 @@ const DashboardEditPortfolioItem = () => {
           <TabsTrigger value="settings">Settings</TabsTrigger> */}
         </TabsList>
         <TabsContent value="content">
-          <PortfolioItemForm item={item} />
+          <PortfolioItemForm item={item} isEditMode={true} />
         </TabsContent>
         {/* <TabsContent value="images">
           <p>Images content</p>

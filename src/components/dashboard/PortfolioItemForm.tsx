@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import RichTextEditor from '@/components/dashboard/RichTextEditor';
-import { X, Image, Loader2, FileUp } from 'lucide-react';
+import { X, Image as ImageIcon, Loader2, FileUp } from 'lucide-react';
 import { getPortfolioItemById, createPortfolioItem, updatePortfolioItem } from '@/services/portfolioService';
 import { PortfolioItem } from '@/types/portfolio';
 import { useToast } from '@/hooks/use-toast';
@@ -16,24 +17,27 @@ import { supabase } from '@/integrations/supabase/client';
 import { getServiceCategories } from '@/data/portfolioData';
 
 interface PortfolioItemFormProps {
+  item?: PortfolioItem;
   isEditMode?: boolean;
 }
 
-const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ isEditMode = false }) => {
+const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ item, isEditMode = false }) => {
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [client, setClient] = useState('');
   const [date, setDate] = useState('');
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
-  const [content, setContent] = useState('');
+  const [challenge, setChallenge] = useState('');
+  const [solution, setSolution] = useState('');
+  const [results, setResults] = useState('');
   const [featured, setFeatured] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
-	const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [portfolioItem, setPortfolioItem] = useState<PortfolioItem | null>(null);
   const [categories, setCategories] = useState<Array<{id: string, name: string}>>([]);
-	const [loadingCategories, setLoadingCategories] = useState(true);
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { id } = useParams<{ id: string }>();
@@ -56,18 +60,20 @@ const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ isEditMode = fals
   useEffect(() => {
     if (isEditMode && id) {
       const fetchPortfolioItem = async () => {
-        const item = await getPortfolioItemById(id);
-        if (item) {
-          setPortfolioItem(item);
-          setTitle(item.title);
-          setSlug(item.slug);
-          setClient(item.client);
-          setDate(item.date);
-          setCategory(item.portfolio_category);
-          setDescription(item.description);
-          setContent(item.content);
-          setFeatured(item.featured);
-          setImageUrl(item.image_url);
+        const fetchedItem = await getPortfolioItemById(id);
+        if (fetchedItem) {
+          setPortfolioItem(fetchedItem);
+          setTitle(fetchedItem.title);
+          setSlug(fetchedItem.slug);
+          setClient(fetchedItem.client);
+          setDate(fetchedItem.date);
+          setCategory(fetchedItem.portfolio_category);
+          setDescription(fetchedItem.description);
+          setChallenge(fetchedItem.challenge);
+          setSolution(fetchedItem.solution);
+          setResults(fetchedItem.results);
+          setFeatured(fetchedItem.featured);
+          setImageUrl(fetchedItem.image_url);
         } else {
           toast({
             title: 'Error',
@@ -77,58 +83,72 @@ const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ isEditMode = fals
         }
       };
       fetchPortfolioItem();
+    } else if (item) {
+      // When item is provided through props
+      setTitle(item.title);
+      setSlug(item.slug);
+      setClient(item.client);
+      setDate(item.date);
+      setCategory(item.portfolio_category);
+      setDescription(item.description);
+      setChallenge(item.challenge);
+      setSolution(item.solution);
+      setResults(item.results);
+      setFeatured(item.featured || false);
+      setImageUrl(item.image_url);
+      setPortfolioItem(item);
     }
-  }, [isEditMode, id, toast]);
+  }, [isEditMode, id, toast, item]);
 
-	const uploadImage = async (file: File) => {
-		setUploading(true);
-		try {
-			const fileExt = file.name.split('.').pop();
-			const fileName = `${Math.random()}.${fileExt}`;
-			const filePath = `portfolio/${fileName}`;
+  const uploadImage = async (file: File) => {
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `portfolio/${fileName}`;
 
-			const { data, error } = await supabase.storage
-				.from('images')
-				.upload(filePath, file);
+      const { data, error } = await supabase.storage
+        .from('images')
+        .upload(filePath, file);
 
-			if (error) {
-				console.error('Error uploading image:', error);
-				toast({
-					title: 'Error',
-					description: 'Failed to upload image.',
-					variant: 'destructive',
-				});
-				return null;
-			}
+      if (error) {
+        console.error('Error uploading image:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to upload image.',
+          variant: 'destructive',
+        });
+        return null;
+      }
 
-			const publicUrl = supabase.storage
-				.from('images')
-				.getPublicUrl(data.path).data.publicUrl;
-			return publicUrl;
-		} catch (error) {
-			console.error('Unexpected error uploading image:', error);
-			toast({
-				title: 'Error',
-				description: 'Unexpected error uploading image.',
-				variant: 'destructive',
-			});
-			return null;
-		} finally {
-			setUploading(false);
-		}
-	};
+      const publicUrl = supabase.storage
+        .from('images')
+        .getPublicUrl(data.path).data.publicUrl;
+      return publicUrl;
+    } catch (error) {
+      console.error('Unexpected error uploading image:', error);
+      toast({
+        title: 'Error',
+        description: 'Unexpected error uploading image.',
+        variant: 'destructive',
+      });
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
 
-	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (!file) return;
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-		setImageFile(file);
+    setImageFile(file);
 
-		const uploadedUrl = await uploadImage(file);
-		if (uploadedUrl) {
-			setImageUrl(uploadedUrl);
-		}
-	};
+    const uploadedUrl = await uploadImage(file);
+    if (uploadedUrl) {
+      setImageUrl(uploadedUrl);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,9 +160,12 @@ const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ isEditMode = fals
       date,
       portfolio_category: category,
       description,
-      content,
+      challenge,
+      solution,
+      results,
       featured,
       image_url: imageUrl,
+      gallery: [] as string[], // Empty gallery array
     };
 
     try {
@@ -235,64 +258,88 @@ const PortfolioItemForm: React.FC<PortfolioItemFormProps> = ({ isEditMode = fals
         />
       </div>
       <div>
-        <Label htmlFor="content">Content</Label>
-        <RichTextEditor value={content} onChange={setContent} />
+        <Label htmlFor="challenge">Challenge</Label>
+        <Textarea
+          id="challenge"
+          value={challenge}
+          onChange={(e) => setChallenge(e.target.value)}
+          required
+        />
       </div>
-			<div>
-				<Label>Featured Image</Label>
-				<div className="flex items-center space-x-4">
-					<AspectRatio ratio={16 / 9} className="w-64 h-36 rounded-md overflow-hidden border shadow">
-						{imageUrl ? (
-							<Image
-								src={imageUrl}
-								alt="Featured"
-								className="object-cover w-full h-full"
-							/>
-						) : (
-							<div className="flex items-center justify-center h-full bg-gray-100 text-gray-500">
-								No Image
-							</div>
-						)}
-					</AspectRatio>
-					<div>
-						<Input
-							type="file"
-							id="image"
-							accept="image/*"
-							onChange={handleImageUpload}
-							className="hidden"
-						/>
-						<Label htmlFor="image" className="bg-secondary hover:bg-secondary-foreground text-secondary-foreground hover:text-primary-foreground rounded-md px-4 py-2 cursor-pointer">
-							{uploading ? (
-								<div className="flex items-center justify-center">
-									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									<span>Uploading...</span>
-								</div>
-							) : (
-								<div className="flex items-center justify-center">
-									<FileUp className="mr-2 h-4 w-4" />
-									<span>Upload</span>
-								</div>
-							)}
-						</Label>
-						{imageUrl && (
-							<Button
-								type="button"
-								variant="ghost"
-								size="sm"
-								onClick={() => {
-									setImageUrl('');
-									setImageFile(null);
-								}}
-								className="mt-2"
-							>
-								<X className="mr-2 h-4 w-4" />
-								Remove
-							</Button>
-						)}
-					</div>
-				</div>
-			</div>
+      <div>
+        <Label htmlFor="solution">Solution</Label>
+        <Textarea
+          id="solution"
+          value={solution}
+          onChange={(e) => setSolution(e.target.value)}
+          required
+        />
+      </div>
+      <div>
+        <Label htmlFor="results">Results</Label>
+        <Textarea
+          id="results"
+          value={results}
+          onChange={(e) => setResults(e.target.value)}
+          required
+        />
+      </div>
+      <div>
+        <Label>Featured Image</Label>
+        <div className="flex items-center space-x-4">
+          <AspectRatio ratio={16 / 9} className="w-64 h-36 rounded-md overflow-hidden border shadow">
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt="Featured"
+                className="object-cover w-full h-full"
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full bg-gray-100 text-gray-500">
+                <ImageIcon className="h-10 w-10" />
+                <span className="ml-2">No Image</span>
+              </div>
+            )}
+          </AspectRatio>
+          <div>
+            <Input
+              type="file"
+              id="image"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+            <Label htmlFor="image" className="bg-secondary hover:bg-secondary-foreground text-secondary-foreground hover:text-primary-foreground rounded-md px-4 py-2 cursor-pointer">
+              {uploading ? (
+                <div className="flex items-center justify-center">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <span>Uploading...</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center">
+                  <FileUp className="mr-2 h-4 w-4" />
+                  <span>Upload</span>
+                </div>
+              )}
+            </Label>
+            {imageUrl && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setImageUrl('');
+                  setImageFile(null);
+                }}
+                className="mt-2"
+              >
+                <X className="mr-2 h-4 w-4" />
+                Remove
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
       <div>
         <Label htmlFor="featured">Featured</Label>
         <Switch

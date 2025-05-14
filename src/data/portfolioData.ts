@@ -80,10 +80,11 @@ export async function getFilteredPortfolioItems(tag: string) {
       
       // Find the category that matches the tag
       const matchingCategory = categories.find(cat => cat.id === tag);
-      const categoryToMatch = matchingCategory ? matchingCategory.name : tag;
+      const categoryToMatch = matchingCategory ? matchingCategory.id : tag;
       
       console.log('Filtering by category:', categoryToMatch);
-      const filtered = items.filter(item => item.category === categoryToMatch);
+      // Use portfolio_category instead of category
+      const filtered = items.filter(item => item.portfolio_category === categoryToMatch);
       console.log('Filtered items:', filtered);
       return filtered;
     }

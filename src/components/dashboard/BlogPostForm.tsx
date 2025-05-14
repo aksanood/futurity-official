@@ -114,8 +114,8 @@ const BlogPostForm = ({ post, onSave, isSubmitting = false }: BlogPostFormProps)
       excerpt: '',
       content: '',
       featured_image: '',
-      author_id: undefined,
-      category_id: undefined,
+      author_id: '',
+      category_id: '',
       published_date: new Date(),
       read_time: 0,
     },
@@ -208,10 +208,9 @@ const BlogPostForm = ({ post, onSave, isSubmitting = false }: BlogPostFormProps)
     // Calculate read time
     const readTime = values.read_time || calculateReadTime(values.content);
     
-    // Prepare post data
+    // Prepare post data with a required ID
     const postData: BlogPost = {
-      // Only include id if editing an existing post
-      ...(post?.id ? { id: post.id } : {}),
+      id: post?.id || '', // Provide an empty string as fallback for new posts
       title: values.title,
       slug: values.slug,
       excerpt: values.excerpt,
