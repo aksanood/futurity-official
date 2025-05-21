@@ -60,7 +60,7 @@ const NavLinks = ({
       <Link to="/" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         Home
       </Link>
-      <Link to="/about" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
+      <Link to="/about-futurity" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         About
       </Link>
       <Link to="/services" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
@@ -70,9 +70,9 @@ const NavLinks = ({
         Portfolio
       </Link>
       <Link to="/reviews" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>Reviews</Link>
-      <Link to="/blog" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
+      {/* <Link to="/blog" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         Blog
-      </Link>
+      </Link> */}
       <Link to="/contact" className={`font-medium transition-colors ${scrolled ? 'text-gray-800 hover:text-futurity-orange' : 'text-white/90 hover:text-white'}`}>
         Contact
       </Link>
@@ -87,7 +87,7 @@ const NavLinksMobile = ({
       <Link to="/" className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors" onClick={toggleMenu}>
         Home
       </Link>
-      <Link to="/about" className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors" onClick={toggleMenu}>
+      <Link to="/about-futurity" className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors" onClick={toggleMenu}>
         About
       </Link>
       <Link to="/services" className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors" onClick={toggleMenu}>
@@ -99,9 +99,9 @@ const NavLinksMobile = ({
       <Link to="/reviews" className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors" onClick={toggleMenu}>
         Customer Reviews
       </Link>
-      <Link to="/blog" className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors" onClick={toggleMenu}>
+      {/* <Link to="/blog" className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors" onClick={toggleMenu}>
         Blog
-      </Link>
+      </Link> */}
       <Link to="/contact" className="font-medium py-2 text-gray-800 hover:text-futurity-orange transition-colors" onClick={toggleMenu}>
         Contact
       </Link>

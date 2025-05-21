@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Search, Grid, List } from 'lucide-react';
 import BlogLayout from '@/components/blog/BlogLayout';
@@ -10,6 +9,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { BlogPost, Category, Tag } from '@/types/blog';
 import { getAllPosts, getRecentPosts, getAllCategories, getAllTags } from '@/data/blogData';
 import PageHero from '@/components/ui/page-hero';
+import { Link } from 'react-router-dom';
 
 const POSTS_PER_PAGE = 8;
 
@@ -213,6 +213,12 @@ const Blog = () => {
                 </Pagination>
               </div>
             )}
+            
+            <div className="text-center mt-12">
+              <Button asChild className="mt-8 bg-futurity-blue hover:bg-futurity-blue/90 text-white rounded-full px-8">
+                <Link to="/about-futurity">Who is Futurity?</Link>
+              </Button>
+            </div>
           </div>
           
           {/* Sidebar */}

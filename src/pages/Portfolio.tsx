@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import PageHero from '@/components/ui/page-hero';
@@ -11,14 +10,15 @@ import PortfolioCard from '@/components/ui/portfolio-card';
 import { useToast } from '@/components/ui/use-toast';
 import SectionHeading from '@/components/ui/section-heading';
 
+const ITEMS_PER_PAGE = 6;
+
 const Portfolio = () => {
   const [activeFilter, setActiveFilter] = useState('all');
-  const [visibleItems, setVisibleItems] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<Array<{id: string, name: string}>>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
-  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
   const { toast } = useToast();
 
   // Fetch service categories
@@ -70,34 +70,22 @@ const Portfolio = () => {
   // Filtering logic (client-side)
   const filteredItems = portfolioItems.filter(item => {
     const matchesCategory = activeFilter === 'all' || item.portfolio_category === activeFilter;
-    const matchesFeatured = showFeaturedOnly ? item.featured : true;
-    return matchesCategory && matchesFeatured;
+    return matchesCategory;
   });
 
-  const displayedItems = filteredItems;
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+  const displayedItems = filteredItems.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
+  // Scroll to top effect
   useEffect(() => {
-    // Re-run scroll animation observer after displayedItems or visibleItems change
-    const elements = document.querySelectorAll('.animate-on-scroll');
-    if (window.IntersectionObserver) {
-      const observer = new window.IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animated');
-          }
-        });
-      }, { threshold: 0.15 });
-      elements.forEach((el) => observer.observe(el));
-      return () => observer.disconnect();
+    // Scroll to the top of the portfolio section (not the page)
+    const section = document.querySelector('section.section');
+    if (section) {
+      section.scrollIntoView({ behavior: 'auto', block: 'start' });
     } else {
-      // Fallback: just show all
-      elements.forEach((el) => el.classList.add('animated'));
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
-  }, [displayedItems, visibleItems]);
-
-  const loadMore = () => {
-    setVisibleItems((prev) => prev + 3);
-  };
+  }, [currentPage]);
 
   return (
     <Layout>
@@ -105,33 +93,13 @@ const Portfolio = () => {
         title="Our Portfolio"
         subtitle="Explore our latest work and see how we've helped businesses achieve their digital goals through innovative solutions and strategic thinking."
       />
-
       <section className="section">
         <div className="container-wide">
-          <SectionHeading 
-            title="Featured Projects" 
-            subtitle="Browse our recent work across various industries and services."
+          <SectionHeading
+            title="Our Work"
+            subtitle="Explore our portfolio of successful projects."
             center
           />
-          
-          {/* Filter Buttons */}
-          <div className="flex justify-center gap-4 mb-6">
-            <Button
-              variant={!showFeaturedOnly ? 'default' : 'outline'}
-              onClick={() => setShowFeaturedOnly(false)}
-              className={showFeaturedOnly ? '' : 'bg-futurity-blue text-white'}
-            >
-              All
-            </Button>
-            <Button
-              variant={showFeaturedOnly ? 'default' : 'outline'}
-              onClick={() => setShowFeaturedOnly(true)}
-              className={showFeaturedOnly ? 'bg-futurity-blue text-white' : ''}
-            >
-              Featured
-            </Button>
-          </div>
-          
           {/* Category Filters */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             <Button
@@ -142,7 +110,6 @@ const Portfolio = () => {
             >
               All
             </Button>
-            
             {loadingCategories ? (
               <div className="p-2">Loading categories...</div>
             ) : (
@@ -158,7 +125,6 @@ const Portfolio = () => {
               ))
             )}
           </div>
-          
           {/* Portfolio Items */}
           {loading ? (
             <div className="flex justify-center items-center h-64">
@@ -169,34 +135,53 @@ const Portfolio = () => {
               <p>No portfolio items found for this selection.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {displayedItems.slice(0, visibleItems).map((item, index) => {
-                const categoryObj = categories.find(cat => cat.id === item.portfolio_category);
-                const categoryName = categoryObj ? categoryObj.name : '';
-                return (
-                  <PortfolioCard
-                    key={item.id}
-                    image={item.image_url}
-                    title={item.title}
-                    category={categoryName}
-                    href={`/portfolio/${item.slug}`}
-                    className={`animate-on-scroll hover:shadow-lg transition-all duration-300 ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}
-                  />
-                );
-              })}
-            </div>
-          )}
-          
-          {/* Load More Button */}
-          {visibleItems < displayedItems.length && (
-            <div className="text-center mt-12">
-              <Button 
-                onClick={loadMore} 
-                className="bg-futurity-blue text-white hover:bg-futurity-blue/90 border-0"
-              >
-                Load More Projects
-              </Button>
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {displayedItems.map((item, index) => {
+                  const categoryObj = categories.find(cat => cat.id === item.portfolio_category);
+                  const categoryName = categoryObj ? categoryObj.name : '';
+                  return (
+                    <PortfolioCard
+                      key={item.id}
+                      image={item.image_url}
+                      title={item.title}
+                      category={categoryName}
+                      href={`/portfolio/${item.slug}`}
+                      className={`animate-on-scroll hover:shadow-lg transition-all duration-300 ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}
+                    />
+                  );
+                })}
+              </div>
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-10 gap-2">
+                  <Button
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    variant="outline"
+                  >
+                    Previous
+                  </Button>
+                  {[...Array(totalPages)].map((_, i) => (
+                    <Button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      variant={currentPage === i + 1 ? 'default' : 'outline'}
+                      className={currentPage === i + 1 ? 'bg-futurity-blue text-white' : ''}
+                    >
+                      {i + 1}
+                    </Button>
+                  ))}
+                  <Button
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    variant="outline"
+                  >
+                    Next
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
@@ -215,6 +200,12 @@ const Portfolio = () => {
           </div>
         </div>
       </section>
+
+      <div className="text-center mt-12">
+        <Button asChild className="mt-8 bg-futurity-blue hover:bg-futurity-blue/90 text-white rounded-full px-8">
+          <Link to="/about-futurity">Meet the Futurity Team</Link>
+        </Button>
+      </div>
     </Layout>
   );
 };

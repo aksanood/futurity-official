@@ -1,12 +1,12 @@
-
 import { cn } from "@/lib/utils";
 
 interface PageHeroProps {
-  title: string;
+  title: React.ReactNode;
   subtitle?: string;
   className?: string;
   children?: React.ReactNode;
   size?: "sm" | "md" | "lg";
+  showBottomLine?: boolean;
 }
 
 const PageHero = ({ 
@@ -14,7 +14,8 @@ const PageHero = ({
   subtitle, 
   className,
   children,
-  size = "md"
+  size = "md",
+  showBottomLine = true
 }: PageHeroProps) => {
   return (
     <div className="hero-secondary relative overflow-hidden">
@@ -42,9 +43,11 @@ const PageHero = ({
       </div>
       
       {/* Straight line instead of wave */}
-      <div className="hero-straight-line">
-        <div className="h-16 bg-white absolute bottom-0 left-0 right-0"></div>
-      </div>
+      {showBottomLine && (
+        <div className="hero-straight-line">
+          <div className="h-16 bg-white absolute bottom-0 left-0 right-0"></div>
+        </div>
+      )}
     </div>
   );
 };

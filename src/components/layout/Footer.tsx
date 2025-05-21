@@ -42,10 +42,10 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-semibold mb-6">Quick Links</h3>
             <ul className="space-y-3">
-              <FooterLink href="/about">About Us</FooterLink>
+              <FooterLink href="/about-futurity">About Us</FooterLink>
               <FooterLink href="/services">Services</FooterLink>
               <FooterLink href="/portfolio">Portfolio</FooterLink>
-              <FooterLink href="/blog">Blog</FooterLink>
+              {/* <FooterLink href="/blog">Blog</FooterLink> */}
               <FooterLink href="/contact">Contact</FooterLink>
             </ul>
           </div>

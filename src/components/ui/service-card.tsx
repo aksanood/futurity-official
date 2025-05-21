@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +8,7 @@ interface ServiceCardProps {
   href?: string;
   onClick?: () => void;
   className?: string;
+  bgColorClass?: string; // New prop for background color
 }
 
 const ServiceCard = ({ 
@@ -17,17 +17,21 @@ const ServiceCard = ({
   description, 
   href,
   onClick,
-  className 
+  className,
+  bgColorClass // New prop
 }: ServiceCardProps) => {
   // If both href and onClick are provided, prefer onClick
+  const baseCardClass = cn(
+    "group block text-center rounded-lg p-6 shadow-sm border border-gray-100 transition-all hover:shadow-md hover:border-futurity-orange hover:-translate-y-1 w-full",
+    bgColorClass || "bg-white",
+    className
+  );
+
   if (onClick) {
     return (
       <button 
         onClick={onClick}
-        className={cn(
-          "group block text-center bg-white rounded-lg p-6 shadow-sm border border-gray-100 transition-all hover:shadow-md hover:border-futurity-orange hover:-translate-y-1 w-full",
-          className
-        )}
+        className={baseCardClass}
       >
         <div className="h-16 w-16 rounded-full bg-futurity-orange/10 flex items-center justify-center mb-6 text-futurity-orange group-hover:bg-futurity-orange group-hover:text-white transition-all mx-auto">
           {icon}
@@ -54,10 +58,7 @@ const ServiceCard = ({
     return (
       <Link 
         to={href}
-        className={cn(
-          "group block text-center bg-white rounded-lg p-6 shadow-sm border border-gray-100 transition-all hover:shadow-md hover:border-futurity-orange hover:-translate-y-1",
-          className
-        )}
+        className={baseCardClass}
       >
         <div className="h-16 w-16 rounded-full bg-futurity-orange/10 flex items-center justify-center mb-6 text-futurity-orange group-hover:bg-futurity-orange group-hover:text-white transition-all mx-auto">
           {icon}
@@ -83,10 +84,7 @@ const ServiceCard = ({
   // Fallback to a div if neither onClick nor href is provided
   return (
     <div 
-      className={cn(
-        "group block text-center bg-white rounded-lg p-6 shadow-sm border border-gray-100",
-        className
-      )}
+      className={baseCardClass}
     >
       <div className="h-16 w-16 rounded-full bg-futurity-orange/10 flex items-center justify-center mb-6 text-futurity-orange mx-auto">
         {icon}

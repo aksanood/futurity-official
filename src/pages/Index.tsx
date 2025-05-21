@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -116,14 +115,14 @@ const Index = () => {
               Our team brings together dedicated specialists across UX/UI design, bespoke development, strategic marketing, and cutting-edge AI. We believe in a collaborative approach, working closely with you to transform challenges into opportunities.
             </p>
             <Button asChild className="mt-6 bg-futurity-blue hover:bg-futurity-blue/90 text-white rounded-full px-8">
-              <Link to="/about">Learn More About Us</Link>
+              <Link to="/about-futurity">Learn More About Us</Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Services Section - White background with modern cards */}
-      <section id="services" className="section bg-white">
+      {/* Services Section - Alternating to gray-50 */}
+      <section id="services" className="section bg-gray-50">
         <div className="container-wide">
           <SectionHeading
             title="Our Services"
@@ -138,6 +137,7 @@ const Index = () => {
               description="Beautiful, responsive websites that captivate your audience"
               href="/services/web-design"
               className="animate-on-scroll hover-lift"
+              bgColorClass="bg-green-100"
             />
             <ServiceCard
               icon={<Globe size={28} />}
@@ -145,6 +145,7 @@ const Index = () => {
               description="Custom web applications built with modern technologies"
               href="/services/web-development"
               className="animate-on-scroll stagger-delay-1 hover-lift"
+              bgColorClass="bg-blue-100"
             />
             <ServiceCard
               icon={<LayoutDashboard size={28} />}
@@ -152,6 +153,7 @@ const Index = () => {
               description="User-centered design for intuitive digital experiences"
               href="/services/ui-ux-design"
               className="animate-on-scroll stagger-delay-2 hover-lift"
+              bgColorClass="bg-purple-100"
             />
             <ServiceCard
               icon={<Compass size={28} />}
@@ -159,6 +161,7 @@ const Index = () => {
               description="Distinctive brand identities that make you stand out"
               href="/services/branding-services"
               className="animate-on-scroll hover-lift"
+              bgColorClass="bg-yellow-100"
             />
             <ServiceCard
               icon={<FileText size={28} />}
@@ -166,11 +169,12 @@ const Index = () => {
               description="Compelling copy that engages and drives action"
               href="/services/content-writing"
               className="animate-on-scroll stagger-delay-1 hover-lift"
+              bgColorClass="bg-red-100"
             />
             <div className="animate-on-scroll stagger-delay-2 rounded-2xl p-8 flex flex-col items-center justify-center text-center bg-gradient-to-br from-futurity-blue/5 to-futurity-blue/10 border border-futurity-blue/10 hover-lift">
               <h3 className="text-xl font-semibold mb-4 text-futurity-blue">Need a Custom Solution?</h3>
               <p className="mb-6 text-gray-600">Let's discuss how we can help you achieve your business goals.</p>
-              <Button asChild className="bg-futurity-orange text-white hover:bg-futurity-orange/90 border-0 rounded-full px-8">
+              <Button asChild className="bg-futurity-blue text-white hover:bg-futurity-blue/90 border-0 rounded-full px-8">
                 <Link to="/contact">Contact Us</Link>
               </Button>
             </div>
@@ -178,7 +182,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Portfolio Section - Clean white background */}
+      {/* Portfolio Section - Alternating to white */}
       <section className="section bg-white">
         <div className="container-wide">
           <SectionHeading
@@ -219,10 +223,12 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Process Section - Updated styling */}
-      <ProcessSection />
+      {/* Process Section - Alternating to gray-50 */}
+      <section className="section bg-gray-50">
+        <ProcessSection />
+      </section>
 
-      {/* Testimonials Section - Modern cards with shadow */}
+      {/* Testimonials Section - Alternating to white */}
       <section className="section bg-white">
         <div className="container-wide">
           <SectionHeading
@@ -260,8 +266,10 @@ const Index = () => {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <FAQSection />
+      {/* FAQ Section - Alternating to gray-50 */}
+      <section className="section bg-gray-50">
+        <FAQSection />
+      </section>
 
       {/* CTA Section - Modern gradient background */}
       <section className="section bg-gradient-to-r from-futurity-blue to-futurity-blue-light text-white relative overflow-hidden">

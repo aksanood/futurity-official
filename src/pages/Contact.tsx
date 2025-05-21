@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -8,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { inquiriesService } from '@/services/inquiriesService';
 import PageHero from '@/components/ui/page-hero';
+import { Link } from 'react-router-dom';
 
 interface FormState {
   name: string;
@@ -213,6 +213,10 @@ const Contact = () => {
                   <SocialButton name="Instagram" />
                 </div>
               </div>
+
+              <Button asChild className="mt-8 bg-futurity-blue hover:bg-futurity-blue/90 text-white rounded-full px-8">
+                <Link to="/about-futurity">About Futurity Digital Agency</Link>
+              </Button>
             </div>
           </div>
         </div>

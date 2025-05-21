@@ -237,7 +237,7 @@ const ContentWritingPage = () => {
         <div className="container-tight">
           <div className="text-center mb-12">
             <SectionHeading 
-              title="Frequently Asked Questions" 
+              title="Frequently Asked Questions"
               subtitle="Common questions about our content writing services"
               center
             />

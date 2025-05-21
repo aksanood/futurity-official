@@ -1,4 +1,3 @@
-
 import { BarChart, LineChart, PieChart } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -159,7 +158,7 @@ const DashboardAnalytics = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-medium">About Us</div>
-                  <div className="text-xs text-muted-foreground">/about</div>
+                  <div className="text-xs text-muted-foreground">/about-futurity</div>
                 </div>
                 <div className="font-medium">12,871 views</div>
               </div>
