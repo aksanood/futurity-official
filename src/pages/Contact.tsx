@@ -8,6 +8,8 @@ import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { inquiriesService } from '@/services/inquiriesService';
 import PageHero from '@/components/ui/page-hero';
 import { Link } from 'react-router-dom';
+import { FaFacebookSquare, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { SiX } from 'react-icons/si';
 
 interface FormState {
   name: string;
@@ -182,25 +184,25 @@ const Contact = () => {
                 <ContactInfoItem
                   icon={<Phone size={24} />}
                   title="Phone"
-                  content="+1 (555) 123-4567"
-                  href="tel:+15551234567"
+                  content="+44 7356 250335"
+                  href="tel:+447356250335"
                 />
                 <ContactInfoItem
                   icon={<Mail size={24} />}
                   title="Email"
-                  content="hello@futurity.com"
-                  href="mailto:hello@futurity.com"
+                  content="info@futurity.biz"
+                  href="mailto:info@futurity.biz"
                 />
                 <ContactInfoItem
                   icon={<MapPin size={24} />}
-                  title="Office"
-                  content="123 Innovation Drive, San Francisco, CA 94105"
+                  title="Location"
+                  content="Leamington Spa, Warwickshire, UK"
                   href="https://maps.google.com"
                 />
                 <ContactInfoItem
                   icon={<Clock size={24} />}
                   title="Business Hours"
-                  content="Monday - Friday: 9:00 AM - 5:00 PM"
+                  content={"Monday - Friday: 9:00 AM - 6:00 PM\nSaturday - 9:00 AM - 12:30 PM\nSunday - Closed"}
                 />
               </div>
               
@@ -208,9 +210,9 @@ const Contact = () => {
                 <h3 className="text-xl font-semibold mb-4">Follow Us</h3>
                 <div className="flex space-x-4">
                   <SocialButton name="Facebook" />
-                  <SocialButton name="Twitter" />
-                  <SocialButton name="LinkedIn" />
                   <SocialButton name="Instagram" />
+                  <SocialButton name="LinkedIn" />
+                  <SocialButton name="X" />
                 </div>
               </div>
 
@@ -228,10 +230,17 @@ const Contact = () => {
           <div className="bg-white p-6 rounded-lg shadow-sm -mt-16 mb-8 hover:shadow-md transition-shadow">
             <h3 className="text-xl font-semibold mb-4">Our Location</h3>
             <div className="aspect-[21/9] rounded-lg overflow-hidden">
-              {/* Placeholder for Google Maps - Would integrate actual Google Maps in a real implementation */}
-              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                <p className="text-futurity-gray">Google Maps integration would be here</p>
-              </div>
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d39050.91755981965!2d-1.56843894889817!3d52.28546863789879!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48773134f8c8a587%3A0xc558ff5e604fbae3!2sRoyal%20Leamington%20Spa!5e0!3m2!1sen!2suk!4v1749850229511!5m2!1sen!2suk"
+                width="600"
+                height="450"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-full border-0"
+                title="Royal Leamington Spa Map"
+              ></iframe>
             </div>
           </div>
         </div>
@@ -285,14 +294,28 @@ const ContactInfoItem = ({ icon, title, content, href }: ContactInfoItemProps) =
 };
 
 const SocialButton = ({ name }: { name: string }) => {
+  // Colorful icons for each platform
+  const icons: Record<string, JSX.Element> = {
+    Facebook: <FaFacebookSquare size={24} color="#1877F3" />,
+    Instagram: <FaInstagram size={24} color="#E4405F" />,
+    LinkedIn: <FaLinkedin size={24} color="#0077B5" />,
+    X: <SiX size={24} color="#000000" />,
+  };
+  const links: Record<string, string> = {
+    Facebook: 'https://www.facebook.com/profile.php?id=61576895284214',
+    Instagram: 'https://www.instagram.com/futurity.biz/',
+    LinkedIn: 'https://www.linkedin.com/in/futurity-digital-solutions-b5b199363/',
+    X: 'https://x.com/futurity_biz',
+  };
   return (
-    <a 
-      href="#" 
-      className="h-10 w-10 rounded-full bg-futurity-blue flex items-center justify-center text-white hover:bg-futurity-orange transition-colors"
+    <a
+      href={links[name] || '#'}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="h-10 w-10 rounded-full flex items-center justify-center hover:bg-futurity-orange transition-colors"
       aria-label={name}
     >
-      {/* Placeholder for actual social icons */}
-      <span className="text-sm">{name.charAt(0)}</span>
+      {icons[name]}
     </a>
   );
 };

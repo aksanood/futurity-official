@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import HeroSection from '@/components/sections/HeroSection';
@@ -8,14 +7,16 @@ import PortfolioSection from '@/components/sections/PortfolioSection';
 import ProcessSection from '@/components/ui/process-section';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import CtaSection from '@/components/sections/CtaSection';
-import { getAllPortfolioItems } from '@/data/portfolioData';
+import { getAllPortfolioItems, getServiceCategories } from '@/data/portfolioData';
 import { reviewsService } from '@/services/reviewsService';
 import { PortfolioItem } from '@/types/portfolio';
 import { Review } from '@/services/reviewsService';
+import { ServiceCategory } from '@/types/portfolio';
 
 const Index = () => {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,14 +24,15 @@ const Index = () => {
     const fetchData = async () => {
       try {
         console.log('Starting to fetch portfolio and reviews data...');
-        
-        const [portfolioData, reviewsData] = await Promise.all([
+        const [portfolioData, reviewsData, categoriesData] = await Promise.all([
           getAllPortfolioItems(),
-          reviewsService.getPublicReviews()
+          reviewsService.getPublicReviews(),
+          getServiceCategories()
         ]);
         
         console.log('Portfolio data fetched:', portfolioData);
         console.log('Reviews data fetched:', reviewsData);
+        console.log('Categories data fetched:', categoriesData);
         
         // Get featured portfolio items or latest 3
         const featuredPortfolio = portfolioData
@@ -53,6 +55,7 @@ const Index = () => {
         const reviewsToShow = reviewsData.slice(0, 3);
         console.log('Reviews to show:', reviewsToShow);
         setReviews(reviewsToShow);
+        setCategories(categoriesData);
         
         setError(null);
       } catch (error) {
@@ -66,7 +69,7 @@ const Index = () => {
     fetchData();
   }, []);
 
-  console.log('Current state - loading:', loading, 'portfolioItems:', portfolioItems, 'reviews:', reviews, 'error:', error);
+  console.log('Current state - loading:', loading, 'portfolioItems:', portfolioItems, 'reviews:', reviews, 'categories:', categories, 'error:', error);
 
   return (
     <Layout>
@@ -77,6 +80,7 @@ const Index = () => {
         portfolioItems={portfolioItems}
         loading={loading}
         error={error}
+        categories={categories}
       />
       <ProcessSection />
       <TestimonialsSection 

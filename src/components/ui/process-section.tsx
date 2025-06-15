@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { Button } from './button';
 import { cn } from '@/lib/utils';
@@ -15,15 +14,12 @@ interface ProcessStepProps {
 
 const ProcessStep = ({ number, title, description, icon, className, isLast }: ProcessStepProps) => {
   return (
-    <div className={cn("relative", className)}>
-      {/* Connection line */}
-      {!isLast && (
-        <div className="hidden lg:block absolute top-16 left-1/2 w-full h-0.5 bg-gradient-to-r from-futurity-blue/30 to-futurity-orange/30 transform -translate-x-1/2 z-0"></div>
-      )}
-      
-      <div className="relative z-10 text-center group">
+    <div className={cn("relative flex flex-col items-center text-center", className)}>
+      {/* Connection line - always show for visual continuity */}
+      <div className="hidden lg:block absolute top-16 left-1/2 w-full h-0.5 bg-gradient-to-r from-futurity-blue/30 to-futurity-orange/30 transform -translate-x-1/2 z-0"></div>
+      <div className="relative z-10 group flex flex-col items-center w-full">
         {/* Step number and icon */}
-        <div className="relative mx-auto mb-6">
+        <div className="relative mb-6">
           <div className="w-32 h-32 bg-white rounded-3xl shadow-lg border border-gray-100 flex items-center justify-center group-hover:shadow-2xl transition-all duration-500 group-hover:scale-105">
             <div className="relative">
               <div className="w-16 h-16 bg-gradient-to-br from-futurity-blue to-futurity-blue-light rounded-2xl flex items-center justify-center text-white text-2xl font-bold mb-2 group-hover:from-futurity-orange group-hover:to-yellow-400 transition-all duration-500">
@@ -35,12 +31,11 @@ const ProcessStep = ({ number, title, description, icon, className, isLast }: Pr
             </div>
           </div>
         </div>
-        
-        <div className="max-w-sm mx-auto">
+        <div className="max-w-sm mx-auto flex flex-col items-center">
           <h3 className="text-2xl font-bold mb-4 text-futurity-blue group-hover:text-futurity-orange transition-colors duration-300">
             {title}
           </h3>
-          <p className="text-gray-600 leading-relaxed">{description}</p>
+          <p className="text-gray-600 leading-relaxed text-center">{description}</p>
         </div>
       </div>
     </div>
@@ -76,7 +71,7 @@ const ProcessSection = () => {
   ];
 
   return (
-    <section className="section bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+    <section className="section" style={{ backgroundColor: '#FBFCFC' }}>
       {/* Background elements */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-futurity-blue/5 rounded-full blur-3xl -z-10"></div>
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-futurity-orange/5 rounded-full blur-3xl -z-10"></div>
@@ -110,32 +105,6 @@ const ProcessSection = () => {
               className={`animate-on-scroll ${index === 1 ? 'stagger-delay-1' : index === 2 ? 'stagger-delay-2' : index === 3 ? 'stagger-delay-3' : ''}`}
             />
           ))}
-        </div>
-
-        {/* Call to Action */}
-        <div className="text-center animate-on-scroll">
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-lg border border-gray-100 max-w-4xl mx-auto">
-            <div className="space-y-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-futurity-blue to-futurity-orange rounded-2xl flex items-center justify-center mx-auto">
-                <CheckCircle className="w-10 h-10 text-white" />
-              </div>
-              
-              <h3 className="text-3xl md:text-4xl font-bold text-futurity-blue">
-                Ready to Start Your Journey?
-              </h3>
-              
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Let's schedule a consultation to discuss your project and see how our proven process can help you achieve your digital goals.
-              </p>
-              
-              <Button asChild className="group bg-futurity-blue hover:bg-futurity-blue/90 text-white rounded-2xl px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-2xl transition-all duration-300">
-                <Link to="/contact" className="flex items-center gap-2">
-                  Schedule a Consultation
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-                </Link>
-              </Button>
-            </div>
-          </div>
         </div>
       </div>
     </section>

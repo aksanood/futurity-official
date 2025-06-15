@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, MapPin } from 'lucide-react';
+import { FaFacebookSquare, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { SiX } from 'react-icons/si';
+import { Mail, Phone, MapPin } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 const Footer = () => {
@@ -23,17 +25,17 @@ const Footer = () => {
               We create digital experiences that matter. Transforming businesses through innovative design and technology.
             </p>
             <div className="flex space-x-4 mt-4">
-              <a href="#" aria-label="Facebook" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-                <Facebook size={18} />
+              <a href="https://www.facebook.com/profile.php?id=61576895284214" aria-label="Facebook" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+                <FaFacebookSquare size={22} color="#1877F3" />
               </a>
-              <a href="#" aria-label="Twitter" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-                <Twitter size={18} />
+              <a href="https://x.com/futurity_biz" aria-label="X" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+                <SiX size={22} color="#000000" />
               </a>
-              <a href="#" aria-label="LinkedIn" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-                <Linkedin size={18} />
+              <a href="https://www.linkedin.com/in/futurity-digital-solutions-b5b199363/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+                <FaLinkedin size={22} color="#0077B5" />
               </a>
-              <a href="#" aria-label="Instagram" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
-                <Instagram size={18} />
+              <a href="https://www.instagram.com/futurity.biz/" aria-label="Instagram" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+                <FaInstagram size={22} color="#E4405F" />
               </a>
             </div>
           </div>

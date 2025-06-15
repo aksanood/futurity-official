@@ -44,9 +44,8 @@ const PageHero = ({
       
       {/* Straight line instead of wave */}
       {showBottomLine && (
-        <div className="hero-straight-line">
-          <div className="h-16 bg-white absolute bottom-0 left-0 right-0"></div>
-        </div>
+        // Removed the white bar for cleaner section spacing
+        null
       )}
     </div>
   );

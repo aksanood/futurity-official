@@ -1,4 +1,3 @@
-
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
@@ -17,11 +16,11 @@ const PortfolioCard = ({ title, category, image, href, className }: PortfolioCar
       className
     )}>
       <Link to={href} className="block">
-        <div className="relative overflow-hidden aspect-[16/9]">
+        <div className="relative overflow-hidden aspect-[16/9] flex items-center justify-center bg-gray-50">
           <img 
             src={image} 
             alt={title} 
-            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute top-4 left-4">
             <span className="bg-orange-500 text-white text-sm font-medium px-3 py-1 rounded-md">

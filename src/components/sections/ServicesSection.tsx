@@ -4,7 +4,7 @@ import { ArrowRight, Image, Globe, LayoutDashboard, Compass, FileText } from 'lu
 
 const ServicesSection = () => {
   return (
-    <section className="section bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+    <section className="section" style={{ backgroundColor: '#FBFCFC' }}>
       <div className="absolute inset-0 bg-grid opacity-5"></div>
       
       <div className="container-wide relative z-10">

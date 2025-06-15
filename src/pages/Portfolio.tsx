@@ -27,7 +27,7 @@ const Portfolio = () => {
       try {
         setLoadingCategories(true);
         const data = await getServiceCategories();
-        console.log('Retrieved service categories for portfolio:', data);
+        console.log('SERVICE CATEGORIES:', data);
         setCategories(data);
       } catch (error) {
         console.error('Error fetching service categories:', error);
@@ -50,7 +50,7 @@ const Portfolio = () => {
         setLoading(true);
         console.log('Fetching all portfolio items...');
         const items = await getAllPortfolioItems();
-        console.log('Retrieved items:', items);
+        console.log('PORTFOLIO ITEMS:', items);
         setPortfolioItems(items);
       } catch (error) {
         console.error('Error fetching portfolio items:', error);
@@ -147,7 +147,7 @@ const Portfolio = () => {
                       title={item.title}
                       category={categoryName}
                       href={`/portfolio/${item.slug}`}
-                      className={`hover:shadow-lg transition-all duration-300 ${index % 3 === 1 ? 'stagger-delay-1' : index % 3 === 2 ? 'stagger-delay-2' : ''}`}
+                      className="h-full"
                     />
                   );
                 })}
