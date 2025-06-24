@@ -3,8 +3,8 @@ import React from 'react';
 
 const ProcessSection = () => {
   return (
-    <section className="section bg-white">
-      <div className="container-wide">
+    <section className="py-12 md:py-16 lg:py-24 bg-white">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-16 text-slate-900">
           From Idea to Launch in <span className="text-orange-500">3 Simple Steps</span>
         </h2>

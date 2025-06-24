@@ -21,7 +21,7 @@ const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
       </div>
       
       {/* Hero Content */}
-      <div className="container-wide relative z-20 text-center text-white py-20">
+      <div className="w-full relative z-20 text-center text-white px-4 sm:px-6 lg:px-8 py-20">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
           Get Your Local Business <br />
           <span className="text-orange-500">Online in Days</span>, <br />

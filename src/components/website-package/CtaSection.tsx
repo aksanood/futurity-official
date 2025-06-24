@@ -30,8 +30,8 @@ const CtaSection = ({ isSubmitted, onSubmit }: CtaSectionProps) => {
   });
 
   return (
-    <section className="section bg-slate-900 text-white">
-      <div className="container-wide">
+    <section className="py-12 md:py-16 lg:py-24 bg-slate-900 text-white">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
             Ready to Launch Your Business <span className="text-orange-500">Online</span>?

@@ -4,8 +4,8 @@ import { Eye, Users, TrendingDown } from 'lucide-react';
 
 const ProblemSection = () => {
   return (
-    <section className="section bg-gray-50">
-      <div className="container-wide">
+    <section className="py-12 md:py-16 lg:py-24 bg-gray-50">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-16 text-slate-900">
           Is Your Business <span className="text-orange-500">Invisible Online</span>?
         </h2>
