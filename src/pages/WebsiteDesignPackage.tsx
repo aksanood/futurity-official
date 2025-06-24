@@ -68,7 +68,7 @@ const WebsiteDesignPackage = () => {
         </div>
         
         {/* Hero Content */}
-        <div className="container-wide relative z-20 text-center text-white px-4 py-20">
+        <div className="container-wide relative z-20 text-center text-white py-20">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
             Get Your Local Business <br />
             <span className="text-orange-500">Online in Days</span>, <br />
@@ -92,8 +92,8 @@ const WebsiteDesignPackage = () => {
       </section>
 
       {/* Problem Section */}
-      <section className="py-16 md:py-24 bg-gray-50">
-        <div className="container-wide px-4">
+      <section className="section bg-gray-50">
+        <div className="container-wide">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-16 text-slate-900">
             Is Your Business <span className="text-orange-500">Invisible Online</span>?
           </h2>
@@ -139,8 +139,8 @@ const WebsiteDesignPackage = () => {
       </section>
 
       {/* Solution Section */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="container-wide px-4">
+      <section className="section bg-white">
+        <div className="container-wide">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-slate-900">
               Your Complete Website Solution for Just <span className="text-orange-500">£250</span>
@@ -203,8 +203,8 @@ const WebsiteDesignPackage = () => {
       </section>
 
       {/* Proof Section */}
-      <section className="py-16 md:py-24 bg-gray-50">
-        <div className="container-wide px-4">
+      <section className="section bg-gray-50">
+        <div className="container-wide">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-6 text-slate-900">
             Our Work & Design Capabilities
           </h2>
@@ -263,8 +263,8 @@ const WebsiteDesignPackage = () => {
       </section>
 
       {/* Process Section */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="container-wide px-4">
+      <section className="section bg-white">
+        <div className="container-wide">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-16 text-slate-900">
             From Idea to Launch in <span className="text-orange-500">3 Simple Steps</span>
           </h2>
@@ -306,8 +306,8 @@ const WebsiteDesignPackage = () => {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-16 md:py-24 bg-slate-900 text-white">
-        <div className="container-wide px-4">
+      <section className="section bg-slate-900 text-white">
+        <div className="container-wide">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
               Ready to Launch Your Business <span className="text-orange-500">Online</span>?
