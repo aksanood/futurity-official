@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,6 +26,7 @@ import DashboardReviews from "./pages/dashboard/DashboardReviews";
 import DashboardAnalytics from "./pages/dashboard/DashboardAnalytics";
 import DashboardStyleGuide from "./pages/dashboard/DashboardStyleGuide";
 import DashboardStaff from "./pages/dashboard/DashboardStaff";
+import WebsiteDesignPackage from "./pages/WebsiteDesignPackage";
 
 // Service Pages
 import WebDesignPage from "./pages/services/WebDesign";
@@ -67,6 +69,9 @@ const App = () => (
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/portfolio/:slug" element={<PortfolioDetail />} />
               <Route path="/contact" element={<Contact />} />
+              
+              {/* Website Design Package Route */}
+              <Route path="/website-design-package" element={<WebsiteDesignPackage />} />
               
               {/* Auth Route */}
               <Route path="/auth" element={<Auth />} />
