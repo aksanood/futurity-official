@@ -49,7 +49,7 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
             <div className="text-gray-500 text-lg">Loading reviews...</div>
           </div>
         ) : reviews && reviews.length > 0 ? (
-          <div className="relative px-12">
+          <div className="relative px-16">
             <Carousel
               opts={{
                 align: "start",
@@ -57,6 +57,8 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
               }}
               plugins={[plugin.current]}
               className="w-full max-w-6xl mx-auto"
+              onMouseEnter={plugin.current.stop}
+              onMouseLeave={plugin.current.reset}
             >
               <CarouselContent className="-ml-2 md:-ml-4">
                 {reviews.map((review, index) => (
@@ -104,8 +106,8 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="hidden md:flex" />
-              <CarouselNext className="hidden md:flex" />
+              <CarouselPrevious className="hidden md:flex left-2 bg-white/90 hover:bg-white border-gray-200" />
+              <CarouselNext className="hidden md:flex right-2 bg-white/90 hover:bg-white border-gray-200" />
             </Carousel>
           </div>
         ) : (
