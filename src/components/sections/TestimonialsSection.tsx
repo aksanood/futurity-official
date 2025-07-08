@@ -8,7 +8,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import type { CarouselApi } from "@/components/ui/carousel";
 
 interface TestimonialsSectionProps {
   reviews: Review[];
@@ -20,6 +21,7 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
   const plugin = useRef(
     Autoplay({ delay: 4000, stopOnInteraction: true })
   );
+  const [api, setApi] = useState<CarouselApi>();
   return (
     <section className="py-16 md:py-24 bg-white relative overflow-hidden">
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-900/5 rounded-full blur-3xl -z-10"></div>
@@ -49,7 +51,7 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
             <div className="text-gray-500 text-lg">Loading reviews...</div>
           </div>
         ) : reviews && reviews.length > 0 ? (
-          <div className="relative px-16">
+          <div className="relative">
             <Carousel
               opts={{
                 align: "start",
@@ -59,6 +61,7 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
               className="w-full max-w-6xl mx-auto"
               onMouseEnter={plugin.current.stop}
               onMouseLeave={plugin.current.reset}
+              setApi={setApi}
             >
               <CarouselContent className="-ml-2 md:-ml-4">
                 {reviews.map((review, index) => (
@@ -106,8 +109,27 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="hidden md:flex left-2 bg-white/90 hover:bg-white border-gray-200" />
-              <CarouselNext className="hidden md:flex right-2 bg-white/90 hover:bg-white border-gray-200" />
+              
+              {/* Custom positioned buttons */}
+              <button
+                onClick={() => api?.scrollPrev()}
+                className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white border border-gray-200 rounded-full p-2 shadow-lg transition-all duration-200 hover:shadow-xl"
+                aria-label="Previous testimonial"
+              >
+                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              <button
+                onClick={() => api?.scrollNext()}
+                className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white border border-gray-200 rounded-full p-2 shadow-lg transition-all duration-200 hover:shadow-xl"
+                aria-label="Next testimonial"
+              >
+                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
             </Carousel>
           </div>
         ) : (
