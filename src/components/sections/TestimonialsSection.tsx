@@ -1,14 +1,6 @@
-import { Star } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Review } from '@/services/reviewsService';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { useState } from 'react';
-import type { CarouselApi } from "@/components/ui/carousel";
+import { useState, useEffect } from 'react';
 
 interface TestimonialsSectionProps {
   reviews: Review[];
@@ -17,21 +9,45 @@ interface TestimonialsSectionProps {
 }
 
 const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionProps) => {
-  const [api, setApi] = useState<CarouselApi>();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const handlePrevious = () => {
-    console.log('Previous clicked, API exists:', !!api);
-    if (api) {
-      api.scrollPrev();
-    }
-  };
+  // Auto-slide functionality
+  useEffect(() => {
+    if (!reviews || reviews.length === 0 || isHovered) return;
+
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % reviews.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [reviews, isHovered]);
 
   const handleNext = () => {
-    console.log('Next clicked, API exists:', !!api);
-    if (api) {
-      api.scrollNext();
-    }
+    console.log('Next clicked - Current slide:', currentSlide);
+    setCurrentSlide((prev) => (prev + 1) % reviews.length);
   };
+
+  const handlePrevious = () => {
+    console.log('Previous clicked - Current slide:', currentSlide);
+    setCurrentSlide((prev) => (prev - 1 + reviews.length) % reviews.length);
+  };
+
+  const getVisibleReviews = () => {
+    if (!reviews || reviews.length === 0) return [];
+    
+    // On mobile, show 1 review; on desktop, show 3
+    const itemsToShow = window.innerWidth >= 768 ? 3 : 1;
+    const visibleReviews = [];
+    
+    for (let i = 0; i < itemsToShow; i++) {
+      const index = (currentSlide + i) % reviews.length;
+      visibleReviews.push(reviews[index]);
+    }
+    
+    return visibleReviews;
+  };
+
   return (
     <section className="py-16 md:py-24 bg-white relative overflow-hidden">
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-900/5 rounded-full blur-3xl -z-10"></div>
@@ -61,72 +77,66 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
             <div className="text-gray-500 text-lg">Loading reviews...</div>
           </div>
         ) : reviews && reviews.length > 0 ? (
-          <div className="relative px-16 md:px-20">
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              className="w-full max-w-6xl mx-auto"
-              setApi={setApi}
-            >
-              <CarouselContent className="-ml-2 md:-ml-4">
-                {reviews.map((review, index) => (
-                  <CarouselItem key={review.id} className="pl-2 md:pl-4 basis-full md:basis-1/3">
-                    <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
-                      {/* Star Rating */}
-                      <div className="flex space-x-1 mb-4">
-                        {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            size={18}
-                            fill={i < review.rating ? "#F97316" : "none"}
-                            className={i < review.rating ? "text-orange-500" : "text-gray-300"}
-                          />
-                        ))}
-                      </div>
-                      
-                      {/* Quote Icon */}
-                      <div className="mb-4">
-                        <svg className="h-8 w-8 text-orange-500 opacity-70" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M14.017 21v-7.391C14.017 10.645 15.995 7.5 20 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6.001zm-8 0v-7.391C6.017 10.645 7.995 7.5 12 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6z" />
-                        </svg>
-                      </div>
-                      
-                      {/* Review Content */}
-                      <p className="text-blue-900 font-medium mb-6 flex-grow leading-relaxed">
-                        "{review.content}"
-                      </p>
-                      
-                      {/* Author Info */}
-                      <div className="flex items-center mt-auto">
-                        {review.featured_image && (
-                          <img 
-                            src={review.featured_image} 
-                            alt={review.name} 
-                            className="w-12 h-12 rounded-full mr-4 object-cover"
-                          />
-                        )}
-                        <div>
-                          <h4 className="font-semibold text-base text-gray-900">{review.name}</h4>
-                          <p className="text-gray-600 text-sm">{review.position}, {review.company}</p>
-                        </div>
+          <div 
+            className="relative px-16 md:px-20"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            {/* Testimonials Container */}
+            <div className="w-full max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                {getVisibleReviews().map((review, index) => (
+                  <div key={`${review.id}-${currentSlide}-${index}`} className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
+                    {/* Star Rating */}
+                    <div className="flex space-x-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <Star 
+                          key={i} 
+                          size={18}
+                          fill={i < review.rating ? "#F97316" : "none"}
+                          className={i < review.rating ? "text-orange-500" : "text-gray-300"}
+                        />
+                      ))}
+                    </div>
+                    
+                    {/* Quote Icon */}
+                    <div className="mb-4">
+                      <svg className="h-8 w-8 text-orange-500 opacity-70" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391C14.017 10.645 15.995 7.5 20 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6.001zm-8 0v-7.391C6.017 10.645 7.995 7.5 12 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6z" />
+                      </svg>
+                    </div>
+                    
+                    {/* Review Content */}
+                    <p className="text-blue-900 font-medium mb-6 flex-grow leading-relaxed">
+                      "{review.content}"
+                    </p>
+                    
+                    {/* Author Info */}
+                    <div className="flex items-center mt-auto">
+                      {review.featured_image && (
+                        <img 
+                          src={review.featured_image} 
+                          alt={review.name} 
+                          className="w-12 h-12 rounded-full mr-4 object-cover"
+                        />
+                      )}
+                      <div>
+                        <h4 className="font-semibold text-base text-gray-900">{review.name}</h4>
+                        <p className="text-gray-600 text-sm">{review.position}, {review.company}</p>
                       </div>
                     </div>
-                  </CarouselItem>
+                  </div>
                 ))}
-              </CarouselContent>
-            </Carousel>
+              </div>
+            </div>
             
-            {/* Navigation buttons positioned outside the carousel */}
+            {/* Navigation buttons */}
             <button
               onClick={handlePrevious}
               className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gray-50 border border-gray-200 rounded-full p-3 shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
               aria-label="Previous testimonial"
             >
-              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
+              <ChevronLeft className="w-5 h-5 text-gray-600" />
             </button>
             
             <button
@@ -134,10 +144,22 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
               className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gray-50 border border-gray-200 rounded-full p-3 shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
               aria-label="Next testimonial"
             >
-              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
+              <ChevronRight className="w-5 h-5 text-gray-600" />
             </button>
+
+            {/* Dots indicator */}
+            <div className="flex justify-center mt-8 space-x-2">
+              {reviews.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                    index === currentSlide ? 'bg-orange-500' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         ) : (
           <div className="text-center text-gray-500 bg-gray-50 rounded-xl p-12">
