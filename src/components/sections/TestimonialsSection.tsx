@@ -19,7 +19,12 @@ interface TestimonialsSectionProps {
 
 const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionProps) => {
   const plugin = useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: true })
+    Autoplay({ 
+      delay: 4000, 
+      stopOnInteraction: false,
+      stopOnMouseEnter: true,
+      stopOnFocusIn: false
+    })
   );
   const [api, setApi] = useState<CarouselApi>();
   return (
@@ -51,7 +56,7 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
             <div className="text-gray-500 text-lg">Loading reviews...</div>
           </div>
         ) : reviews && reviews.length > 0 ? (
-          <div className="relative">
+          <div className="relative px-16 md:px-20">
             <Carousel
               opts={{
                 align: "start",
@@ -60,7 +65,7 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
               plugins={[plugin.current]}
               className="w-full max-w-6xl mx-auto"
               onMouseEnter={plugin.current.stop}
-              onMouseLeave={plugin.current.reset}
+              onMouseLeave={() => plugin.current.play()}
               setApi={setApi}
             >
               <CarouselContent className="-ml-2 md:-ml-4">
@@ -109,28 +114,28 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              
-              {/* Custom positioned buttons */}
-              <button
-                onClick={() => api?.scrollPrev()}
-                className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white border border-gray-200 rounded-full p-2 shadow-lg transition-all duration-200 hover:shadow-xl"
-                aria-label="Previous testimonial"
-              >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              
-              <button
-                onClick={() => api?.scrollNext()}
-                className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-white border border-gray-200 rounded-full p-2 shadow-lg transition-all duration-200 hover:shadow-xl"
-                aria-label="Next testimonial"
-              >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
             </Carousel>
+            
+            {/* Navigation buttons positioned outside the carousel */}
+            <button
+              onClick={() => api?.scrollPrev()}
+              className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gray-50 border border-gray-200 rounded-full p-3 shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
+              aria-label="Previous testimonial"
+            >
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <button
+              onClick={() => api?.scrollNext()}
+              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gray-50 border border-gray-200 rounded-full p-3 shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
+              aria-label="Next testimonial"
+            >
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         ) : (
           <div className="text-center text-gray-500 bg-gray-50 rounded-xl p-12">
