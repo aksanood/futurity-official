@@ -35,17 +35,17 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
 
   const getVisibleReviews = () => {
     if (!reviews || reviews.length === 0) return [];
-    
-    // On mobile, show 1 review; on desktop, show 3
+    return reviews;
+  };
+
+  const getTransformStyle = () => {
     const itemsToShow = window.innerWidth >= 768 ? 3 : 1;
-    const visibleReviews = [];
-    
-    for (let i = 0; i < itemsToShow; i++) {
-      const index = (currentSlide + i) % reviews.length;
-      visibleReviews.push(reviews[index]);
-    }
-    
-    return visibleReviews;
+    const slideWidth = 100 / itemsToShow;
+    const translateX = -(currentSlide * slideWidth);
+    return {
+      transform: `translateX(${translateX}%)`,
+      transition: 'transform 0.5s ease-in-out'
+    };
   };
 
   return (
@@ -83,46 +83,51 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
             onMouseLeave={() => setIsHovered(false)}
           >
             {/* Testimonials Container */}
-            <div className="w-full max-w-6xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <div className="w-full max-w-6xl mx-auto overflow-hidden">
+              <div 
+                className="flex transition-transform duration-500 ease-in-out"
+                style={getTransformStyle()}
+              >
                 {getVisibleReviews().map((review, index) => (
-                  <div key={`${review.id}-${currentSlide}-${index}`} className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
-                    {/* Star Rating */}
-                    <div className="flex space-x-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
-                          size={18}
-                          fill={i < review.rating ? "#F97316" : "none"}
-                          className={i < review.rating ? "text-orange-500" : "text-gray-300"}
-                        />
-                      ))}
-                    </div>
-                    
-                    {/* Quote Icon */}
-                    <div className="mb-4">
-                      <svg className="h-8 w-8 text-orange-500 opacity-70" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M14.017 21v-7.391C14.017 10.645 15.995 7.5 20 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6.001zm-8 0v-7.391C6.017 10.645 7.995 7.5 12 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6z" />
-                      </svg>
-                    </div>
-                    
-                    {/* Review Content */}
-                    <p className="text-blue-900 font-medium mb-6 flex-grow leading-relaxed">
-                      "{review.content}"
-                    </p>
-                    
-                    {/* Author Info */}
-                    <div className="flex items-center mt-auto">
-                      {review.featured_image && (
-                        <img 
-                          src={review.featured_image} 
-                          alt={review.name} 
-                          className="w-12 h-12 rounded-full mr-4 object-cover"
-                        />
-                      )}
-                      <div>
-                        <h4 className="font-semibold text-base text-gray-900">{review.name}</h4>
-                        <p className="text-gray-600 text-sm">{review.position}, {review.company}</p>
+                  <div key={`${review.id}-${index}`} className="w-full md:w-1/3 flex-shrink-0 px-2 md:px-3">
+                    <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
+                      {/* Star Rating */}
+                      <div className="flex space-x-1 mb-4">
+                        {[...Array(5)].map((_, i) => (
+                          <Star 
+                            key={i} 
+                            size={18}
+                            fill={i < review.rating ? "#F97316" : "none"}
+                            className={i < review.rating ? "text-orange-500" : "text-gray-300"}
+                          />
+                        ))}
+                      </div>
+                      
+                      {/* Quote Icon */}
+                      <div className="mb-4">
+                        <svg className="h-8 w-8 text-orange-500 opacity-70" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M14.017 21v-7.391C14.017 10.645 15.995 7.5 20 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6.001zm-8 0v-7.391C6.017 10.645 7.995 7.5 12 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6z" />
+                        </svg>
+                      </div>
+                      
+                      {/* Review Content */}
+                      <p className="text-blue-900 font-medium mb-6 flex-grow leading-relaxed">
+                        "{review.content}"
+                      </p>
+                      
+                      {/* Author Info */}
+                      <div className="flex items-center mt-auto">
+                        {review.featured_image && (
+                          <img 
+                            src={review.featured_image} 
+                            alt={review.name} 
+                            className="w-12 h-12 rounded-full mr-4 object-cover"
+                          />
+                        )}
+                        <div>
+                          <h4 className="font-semibold text-base text-gray-900">{review.name}</h4>
+                          <p className="text-gray-600 text-sm">{review.position}, {review.company}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
