@@ -15,18 +15,18 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md mx-auto bg-black rounded-2xl shadow-2xl p-6 md:p-8 flex flex-col gap-6"
+        className="relative w-full max-w-md mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 flex flex-col gap-6"
         style={{ zIndex: 10001 }}
         onClick={e => e.stopPropagation()}
       >
         <button
-          className="absolute top-3 right-3 text-white/80 hover:text-white p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-futurity-orange"
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-futurity-orange"
           onClick={onClose}
           aria-label="Close"
         >
           <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
-        <div style={{ minHeight: 200, color: 'white' }}>
+        <div style={{ minHeight: 200, color: 'black' }}>
           {children ? children : <div>Modal content missing</div>}
         </div>
       </div>
