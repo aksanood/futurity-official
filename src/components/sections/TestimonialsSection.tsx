@@ -7,8 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import type { CarouselApi } from "@/components/ui/carousel";
 
 interface TestimonialsSectionProps {
@@ -18,25 +17,17 @@ interface TestimonialsSectionProps {
 }
 
 const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionProps) => {
-  const plugin = useRef(
-    Autoplay({ 
-      delay: 4000, 
-      stopOnInteraction: false,
-      stopOnMouseEnter: true,
-      stopOnFocusIn: false
-    })
-  );
   const [api, setApi] = useState<CarouselApi>();
 
   const handlePrevious = () => {
-    console.log('Previous clicked, API:', api);
+    console.log('Previous clicked, API exists:', !!api);
     if (api) {
       api.scrollPrev();
     }
   };
 
   const handleNext = () => {
-    console.log('Next clicked, API:', api);
+    console.log('Next clicked, API exists:', !!api);
     if (api) {
       api.scrollNext();
     }
@@ -76,10 +67,7 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
                 align: "start",
                 loop: true,
               }}
-              plugins={[plugin.current]}
               className="w-full max-w-6xl mx-auto"
-              onMouseEnter={plugin.current.stop}
-              onMouseLeave={() => plugin.current.play()}
               setApi={setApi}
             >
               <CarouselContent className="-ml-2 md:-ml-4">
