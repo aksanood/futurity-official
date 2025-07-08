@@ -1,7 +1,7 @@
 
 /* Utility classes and special effects */
 
-/* Background utilities */
+/* Enhanced Background utilities */
 .bg-gradient-mesh {
   background-image: 
     radial-gradient(at 80% 0%, rgba(249, 115, 22, 0.25) 0px, transparent 50%),
@@ -9,11 +9,110 @@
     radial-gradient(at 80% 100%, rgba(249, 115, 22, 0.1) 0px, transparent 50%);
 }
 
-.bg-grid {
-  background-size: 30px 30px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+/* Spacing Utilities */
+.section-padding {
+  @apply py-16 md:py-20 lg:py-24;
+}
+
+.section-margin {
+  @apply mb-16 md:mb-20 lg:mb-24;
+}
+
+/* Animation Utilities */
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-500 { animation-delay: 500ms; }
+
+/* Gradient Text */
+.gradient-text-orange {
+  @apply bg-gradient-to-r from-futurity-orange to-yellow-400 bg-clip-text text-transparent;
+}
+
+.gradient-text-blue {
+  @apply bg-gradient-to-r from-futurity-blue to-futurity-blue-light bg-clip-text text-transparent;
+}
+
+/* Shadow Utilities */
+.shadow-futurity {
+  box-shadow: 0 10px 30px -10px rgba(249, 115, 22, 0.3);
+}
+
+.shadow-glow {
+  box-shadow: 0 0 40px rgba(249, 115, 22, 0.4);
+}
+
+/* Responsive Text Sizes */
+.text-display {
+  @apply text-4xl md:text-5xl lg:text-6xl;
+}
+
+.text-headline {
+  @apply text-3xl md:text-4xl lg:text-5xl;
+}
+
+.text-subheading {
+  @apply text-xl md:text-2xl;
+}
+
+.text-body-large {
+  @apply text-lg md:text-xl;
+}
+
+/* Positioning Utilities */
+.center-absolute {
+  @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+}
+
+/* Backdrop Effects */
+.backdrop-futurity {
+  @apply backdrop-blur-sm bg-white/10;
+}
+
+/* Border Utilities */
+.border-futurity {
+  @apply border border-futurity-orange/20;
+}
+
+.border-dashed-futurity {
+  @apply border-2 border-dashed border-futurity-blue/20;
+}
+
+/* Flex Utilities */
+.flex-center {
+  @apply flex items-center justify-center;
+}
+
+.flex-between {
+  @apply flex items-center justify-between;
+}
+
+/* Image Utilities */
+.img-cover {
+  @apply w-full h-full object-cover object-center;
+}
+
+.img-hero {
+  @apply w-full h-full object-cover object-center opacity-60;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Status Indicators */
+.status-dot {
+  @apply w-2 h-2 rounded-full;
+}
+
+.status-online {
+  @apply bg-green-500;
+}
+
+.status-warning {
+  @apply bg-yellow-500;
+}
+
+.status-error {
+  @apply bg-red-500;
 }
 
 /* Global button transitions */
