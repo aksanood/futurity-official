@@ -47,7 +47,7 @@ const About = () => {
       <PageHero
         title={
           <>
-            About Futurity: Your Partner in{' '}
+            Your Partner in{' '}
             <span className="text-futurity-orange">Innovation</span>{' '}
             and{' '}
             <span className="text-futurity-orange">Growth</span>
