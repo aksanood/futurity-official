@@ -27,6 +27,20 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
     })
   );
   const [api, setApi] = useState<CarouselApi>();
+
+  const handlePrevious = () => {
+    console.log('Previous clicked, API:', api);
+    if (api) {
+      api.scrollPrev();
+    }
+  };
+
+  const handleNext = () => {
+    console.log('Next clicked, API:', api);
+    if (api) {
+      api.scrollNext();
+    }
+  };
   return (
     <section className="py-16 md:py-24 bg-white relative overflow-hidden">
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-900/5 rounded-full blur-3xl -z-10"></div>
@@ -118,7 +132,7 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
             
             {/* Navigation buttons positioned outside the carousel */}
             <button
-              onClick={() => api?.scrollPrev()}
+              onClick={handlePrevious}
               className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gray-50 border border-gray-200 rounded-full p-3 shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
               aria-label="Previous testimonial"
             >
@@ -128,7 +142,7 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
             </button>
             
             <button
-              onClick={() => api?.scrollNext()}
+              onClick={handleNext}
               className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-gray-50 border border-gray-200 rounded-full p-3 shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
               aria-label="Next testimonial"
             >
