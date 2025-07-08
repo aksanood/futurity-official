@@ -1,5 +1,13 @@
 import { Star } from 'lucide-react';
 import { Review } from '@/services/reviewsService';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 interface TestimonialsSectionProps {
   reviews: Review[];
@@ -37,51 +45,68 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
             <div className="text-gray-500 text-lg">Loading reviews...</div>
           </div>
         ) : reviews && reviews.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {reviews.map((review, index) => (
-              <div key={review.id} className="group">
-                <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
-                  {/* Star Rating */}
-                  <div className="flex space-x-1 mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        size={18}
-                        fill={i < review.rating ? "#F97316" : "none"}
-                        className={i < review.rating ? "text-orange-500" : "text-gray-300"}
-                      />
-                    ))}
-                  </div>
-                  
-                  {/* Quote Icon */}
-                  <div className="mb-4">
-                    <svg className="h-8 w-8 text-orange-500 opacity-70" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M14.017 21v-7.391C14.017 10.645 15.995 7.5 20 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6.001zm-8 0v-7.391C6.017 10.645 7.995 7.5 12 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6z" />
-                    </svg>
-                  </div>
-                  
-                  {/* Review Content */}
-                  <p className="text-blue-900 font-medium mb-6 flex-grow leading-relaxed">
-                    "{review.content}"
-                  </p>
-                  
-                  {/* Author Info */}
-                  <div className="flex items-center mt-auto">
-                    {review.featured_image && (
-                      <img 
-                        src={review.featured_image} 
-                        alt={review.name} 
-                        className="w-12 h-12 rounded-full mr-4 object-cover"
-                      />
-                    )}
-                    <div>
-                      <h4 className="font-semibold text-base text-gray-900">{review.name}</h4>
-                      <p className="text-gray-600 text-sm">{review.position}, {review.company}</p>
+          <div className="relative">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              plugins={[
+                Autoplay({
+                  delay: 4000,
+                }),
+              ]}
+              className="w-full max-w-7xl mx-auto"
+            >
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {reviews.map((review, index) => (
+                  <CarouselItem key={review.id} className="pl-2 md:pl-4 basis-full md:basis-1/3">
+                    <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
+                      {/* Star Rating */}
+                      <div className="flex space-x-1 mb-4">
+                        {[...Array(5)].map((_, i) => (
+                          <Star 
+                            key={i} 
+                            size={18}
+                            fill={i < review.rating ? "#F97316" : "none"}
+                            className={i < review.rating ? "text-orange-500" : "text-gray-300"}
+                          />
+                        ))}
+                      </div>
+                      
+                      {/* Quote Icon */}
+                      <div className="mb-4">
+                        <svg className="h-8 w-8 text-orange-500 opacity-70" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M14.017 21v-7.391C14.017 10.645 15.995 7.5 20 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6.001zm-8 0v-7.391C6.017 10.645 7.995 7.5 12 7.5v3.482c-1.792 0-3.001.913-3.001 2.733v1.649h3.001V21h-6z" />
+                        </svg>
+                      </div>
+                      
+                      {/* Review Content */}
+                      <p className="text-blue-900 font-medium mb-6 flex-grow leading-relaxed">
+                        "{review.content}"
+                      </p>
+                      
+                      {/* Author Info */}
+                      <div className="flex items-center mt-auto">
+                        {review.featured_image && (
+                          <img 
+                            src={review.featured_image} 
+                            alt={review.name} 
+                            className="w-12 h-12 rounded-full mr-4 object-cover"
+                          />
+                        )}
+                        <div>
+                          <h4 className="font-semibold text-base text-gray-900">{review.name}</h4>
+                          <p className="text-gray-600 text-sm">{review.position}, {review.company}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="hidden md:flex -left-12" />
+              <CarouselNext className="hidden md:flex -right-12" />
+            </Carousel>
           </div>
         ) : (
           <div className="text-center text-gray-500 bg-gray-50 rounded-xl p-12">
