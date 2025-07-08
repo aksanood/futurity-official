@@ -9,6 +9,8 @@
 
   .section-primary {
     background-color: #FBFCFC;
+    background-image: radial-gradient(circle, hsl(222, 70%, 14%) 1px, transparent 1px);
+    background-size: 20px 20px;
   }
 
   .section-secondary {
@@ -139,7 +141,7 @@
   }
 
   .text-secondary {
-    @apply text-gray-600;
+    @apply text-gray-800;
   }
 
   .text-accent {

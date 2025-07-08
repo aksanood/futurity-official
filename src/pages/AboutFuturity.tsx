@@ -67,7 +67,6 @@ const About = () => {
       <section className="section section-secondary">
         <div className="floating-orb-blue top-0 left-0"></div>
         <div className="floating-orb-orange bottom-0 right-0"></div>
-        <div className="absolute inset-0 bg-grid opacity-5"></div>
         
         <div className="container-wide relative z-10">
           <SectionHeading

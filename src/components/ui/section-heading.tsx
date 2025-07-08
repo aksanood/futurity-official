@@ -35,8 +35,8 @@ const SectionHeading = ({
     >
       {badge && (
         <div className={cn(
-          "section-badge justify-center mb-4",
-          center ? "flex" : "inline-flex",
+          "section-badge mb-4",
+          center ? "flex justify-center" : "inline-flex",
           badgeVariant === 'orange' ? "section-badge-orange" : "section-badge-blue"
         )}>
           <div className={cn(
