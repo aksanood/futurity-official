@@ -62,7 +62,7 @@
   }
 
   .card-interactive {
-    @apply group cursor-pointer;
+    @apply cursor-pointer;
   }
 
   .card-gradient-overlay {
