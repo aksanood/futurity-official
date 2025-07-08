@@ -8,6 +8,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { useRef } from 'react';
 
 interface TestimonialsSectionProps {
   reviews: Review[];
@@ -16,6 +17,9 @@ interface TestimonialsSectionProps {
 }
 
 const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionProps) => {
+  const plugin = useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  );
   return (
     <section className="py-16 md:py-24 bg-white relative overflow-hidden">
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-900/5 rounded-full blur-3xl -z-10"></div>
@@ -45,18 +49,14 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
             <div className="text-gray-500 text-lg">Loading reviews...</div>
           </div>
         ) : reviews && reviews.length > 0 ? (
-          <div className="relative">
+          <div className="relative px-12">
             <Carousel
               opts={{
                 align: "start",
                 loop: true,
               }}
-              plugins={[
-                Autoplay({
-                  delay: 4000,
-                }),
-              ]}
-              className="w-full max-w-7xl mx-auto"
+              plugins={[plugin.current]}
+              className="w-full max-w-6xl mx-auto"
             >
               <CarouselContent className="-ml-2 md:-ml-4">
                 {reviews.map((review, index) => (
@@ -104,8 +104,8 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="hidden md:flex -left-12" />
-              <CarouselNext className="hidden md:flex -right-12" />
+              <CarouselPrevious className="hidden md:flex" />
+              <CarouselNext className="hidden md:flex" />
             </Carousel>
           </div>
         ) : (
