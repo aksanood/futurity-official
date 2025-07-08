@@ -64,47 +64,36 @@ const About = () => {
       </PageHero>
 
       {/* Our Story */}
-      <section className="section section-secondary">
-        <div className="floating-orb-blue top-0 left-0"></div>
-        <div className="floating-orb-orange bottom-0 right-0"></div>
-        
-        <div className="container-wide relative z-10">
+      <section className="section bg-white">
+        <div className="container-wide">
           <SectionHeading
-            badge="Our Story"
-            badgeVariant="orange"
-            title="Forging the Future of Digital."
-            center
+            title="Our Story"
+            subtitle="Forging the Future of Digital."
           />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Story Cards Column - now on the left */}
             <div className="flex flex-col h-full justify-between gap-6 order-1 lg:order-1">
               {/* Card 1 */}
-              <div className="card-base card-hover card-interactive relative overflow-hidden">
-                <div className="card-gradient-overlay card-orange"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-3">
-                    <span className="icon-container-base icon-orange">
-                      {/* Spark/idea icon */}
-                      <svg width="24" height="24" fill="none" viewBox="0 0 28 28"><path d="M14 2v4M14 22v4M4 14H2M26 14h-2M6.22 6.22l2.83 2.83M21.78 21.78l-2.83-2.83M6.22 21.78l2.83-2.83M21.78 6.22l-2.83 2.83" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><circle cx="14" cy="14" r="5" stroke="currentColor" strokeWidth="2"/></svg>
-                    </span>
-                    <h3 className="font-semibold text-primary-heading text-base tracking-tight">Our Spark: A Vision for Better Digital</h3>
-                  </div>
-                  <p className="text-secondary text-sm leading-relaxed">Our digital agency story began with a clear conviction: businesses deserve more effective, client-focused digital agency support. We saw common frustrations with underperforming sites and a lack of focus on long-term digital value, sparking Futurity's mission to deliver superior digital experiences.</p>
+              <div className="flex-1 flex flex-col justify-between bg-white/90 rounded-xl border border-futurity-orange/20 shadow-md p-6 transition-transform hover:-translate-y-1 hover:shadow-lg">
+                <div className="flex items-center gap-4 mb-3">
+                  <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-futurity-orange/10 border border-futurity-orange">
+                    {/* Spark/idea icon */}
+                    <svg width="24" height="24" fill="none" viewBox="0 0 28 28"><path d="M14 2v4M14 22v4M4 14H2M26 14h-2M6.22 6.22l2.83 2.83M21.78 21.78l-2.83-2.83M6.22 21.78l2.83-2.83M21.78 6.22l-2.83 2.83" stroke="#FF9800" strokeWidth="2" strokeLinecap="round"/><circle cx="14" cy="14" r="5" stroke="#FF9800" strokeWidth="2"/></svg>
+                  </span>
+                  <h3 className="font-semibold text-futurity-orange text-base tracking-tight">Our Spark: A Vision for Better Digital</h3>
                 </div>
+                <p className="text-futurity-gray text-sm leading-relaxed">Our digital agency story began with a clear conviction: businesses deserve more effective, client-focused digital agency support. We saw common frustrations with underperforming sites and a lack of focus on long-term digital value, sparking Futurity's mission to deliver superior digital experiences.</p>
               </div>
               {/* Card 2 */}
-              <div className="card-base card-hover card-interactive relative overflow-hidden">
-                <div className="card-gradient-overlay card-blue"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-3">
-                    <span className="icon-container-base icon-blue">
-                      {/* Calendar/star icon */}
-                      <svg width="24" height="24" fill="none" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" stroke="currentColor" strokeWidth="2"/><path d="M14 7l1.76 3.57 3.94.57-2.85 2.78.67 3.91L14 15.25l-3.52 1.85.67-3.91-2.85-2.78 3.94-.57L14 7z" stroke="currentColor" strokeWidth="1.5"/></svg>
-                    </span>
-                    <h3 className="font-semibold text-primary-heading text-base tracking-tight">Founded in 2024: Purpose-Driven Digital Excellence</h3>
-                  </div>
-                  <p className="text-secondary text-sm leading-relaxed">As a digital agency founded in 2024, Futurity was established to redefine digital service. Our purpose is to be an innovative digital solutions provider, merging strategic insight with cutting-edge development to foster partnerships that drive sustainable business growth and tangible value.</p>
+              <div className="flex-1 flex flex-col justify-between bg-white/90 rounded-xl border border-futurity-orange/20 shadow-md p-6 transition-transform hover:-translate-y-1 hover:shadow-lg">
+                <div className="flex items-center gap-4 mb-3">
+                  <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-futurity-blue/10 border border-futurity-blue">
+                    {/* Calendar/star icon */}
+                    <svg width="24" height="24" fill="none" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" stroke="#0A1840" strokeWidth="2"/><path d="M14 7l1.76 3.57 3.94.57-2.85 2.78.67 3.91L14 15.25l-3.52 1.85.67-3.91-2.85-2.78 3.94-.57L14 7z" stroke="#0A1840" strokeWidth="1.5"/></svg>
+                  </span>
+                  <h3 className="font-semibold text-futurity-blue text-base tracking-tight">Founded in 2024: Purpose-Driven Digital Excellence</h3>
                 </div>
+                <p className="text-futurity-gray text-sm leading-relaxed">As a digital agency founded in 2024, Futurity was established to redefine digital service. Our purpose is to be an innovative digital solutions provider, merging strategic insight with cutting-edge development to foster partnerships that drive sustainable business growth and tangible value.</p>
               </div>
               {/* Card 3 */}
               <div className="flex-1 flex flex-col justify-between bg-white/90 rounded-xl border border-futurity-orange/20 shadow-md p-6 transition-transform hover:-translate-y-1 hover:shadow-lg">
@@ -236,19 +225,14 @@ const About = () => {
       </section>
 
       {/* Our Values - alternate to gray-50 */}
-      <section className="section section-primary">
-        <div className="floating-orb-blue top-0 right-0"></div>
-        <div className="floating-orb-orange bottom-0 left-0"></div>
-        <div className="absolute inset-0 bg-grid opacity-5"></div>
-        
-        <div className="container-wide relative z-10">
+      <section className="section bg-gray-50">
+        <div className="container-wide">
           <SectionHeading 
-            badge="Futurity's Core Values"
-            badgeVariant="blue"
-            title="Principles for Impactful Digital Results"
+            title="Futurity's Core Values" 
+            subtitle="Principles for Impactful Digital Results"
             center
           />
-          <div className="card-grid-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <ValueCard
               title="Innovation"
               description="For us, innovation means constantly seeking out and mastering the latest digital advancements, from AI-powered applications to cutting-edge UX/UI design trends. This allows us to provide you with forward-thinking, innovative digital solutions that give you a distinct competitive advantage and prepare your business for the future."
@@ -337,26 +321,21 @@ const About = () => {
       </section> */}
 
       {/* Why Choose Us - alternate to gray-50 */}
-      <section className="section section-secondary">
-        <div className="floating-orb-orange top-0 left-0"></div>
-        <div className="floating-orb-blue bottom-0 right-0"></div>
-        <div className="absolute inset-0 bg-grid opacity-5"></div>
-        
-        <div className="container-wide relative z-10">
+      <section className="section bg-gray-50">
+        <div className="container-wide">
           <SectionHeading
-            badge="Why Partner with Futurity?"
-            badgeVariant="orange"
-            title="Your Advantage in Digital Success"
+            title="Why Partner with Futurity?"
+            subtitle="Your Advantage in Digital Success"
             center
           />
-          <div className="card-grid-2 mt-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
             <WhyCard
               icon={
                 // Target/goal icon
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="20" cy="20" r="20" fill="hsl(222, 70%, 14%)"/>
+                  <circle cx="20" cy="20" r="20" fill="#0A1840"/>
                   <circle cx="20" cy="20" r="10" fill="#fff" fillOpacity="0.15"/>
-                  <circle cx="20" cy="20" r="5" fill="hsl(24, 95%, 53%)"/>
+                  <circle cx="20" cy="20" r="5" fill="#FF9800"/>
                   <path d="M20 10v10l7 7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               }
@@ -452,19 +431,16 @@ const About = () => {
       </section>
 
       {/* CTA Section - alternate to white */}
-      <section className="section section-brand">
-        <div className="floating-orb-orange top-0 right-0 opacity-30"></div>
-        <div className="floating-orb-blue bottom-0 left-0 opacity-30"></div>
-        
-        <div className="container-tight text-center relative z-10">
-          <h2 className="text-headline font-bold mb-6 animate-on-scroll gradient-text-orange">
+      <section className="section bg-futurity-blue text-white">
+        <div className="container-tight text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-on-scroll text-futurity-orange">
             Inspired by Our Vision? Let's Create Yours.
           </h2>
-          <p className="text-body-large mb-8 text-white/90 animate-on-scroll stagger-delay-1">
+          <p className="text-xl mb-8 text-white/90 animate-on-scroll stagger-delay-1">
             You've seen our commitment to empowering businesses through innovative digital solutions. Now, let's explore how our range of expert services, from bespoke web design to AI app development, can help build your custom digital strategy and achieve measurable results.
           </p>
           <div className="flex justify-center animate-on-scroll stagger-delay-2">
-            <Button asChild size="lg" className="btn-primary">
+            <Button asChild size="lg" className="bg-futurity-orange hover:bg-futurity-orange/90 text-white">
               <Link to="/services">Discover Our Full Range of Services</Link>
             </Button>
           </div>
@@ -472,19 +448,14 @@ const About = () => {
       </section>
 
       {/* FAQ Section - alternate to gray-50 */}
-      <section className="section section-primary">
-        <div className="floating-orb-blue top-0 left-0"></div>
-        <div className="floating-orb-orange bottom-0 right-0"></div>
-        <div className="absolute inset-0 bg-grid opacity-5"></div>
-        
-        <div className="container-wide relative z-10">
+      <section className="section bg-gray-50">
+        <div className="container-wide">
           <SectionHeading
-            badge="Frequently Asked Questions"
-            badgeVariant="blue"
-            title="Everything you need to know about Futurity as your digital agency partner."
+            title="Frequently Asked Questions"
+            subtitle="Everything you need to know about Futurity as your digital agency partner."
             center
           />
-          <div className="card-grid-2 mt-16">
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
             {faqData.map((faq, idx) => (
               <FaqCard
                 key={idx}
@@ -503,15 +474,12 @@ const About = () => {
 // Helper components
 const ValueCard = ({ title, description, icon, className }: { title: string; description: string; icon: React.ReactNode; className?: string }) => {
   return (
-    <div className={`card-base card-hover card-interactive relative overflow-hidden ${className}`}>
-      <div className="card-gradient-overlay card-orange"></div>
-      <div className="relative z-10">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xl font-semibold text-primary-heading flex-1">{title}</h3>
-          <span className="ml-4 flex-shrink-0">{icon}</span>
-        </div>
-        <p className="text-secondary">{description}</p>
+    <div className={`bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow ${className}`}>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-xl font-semibold text-futurity-blue flex-1">{title}</h3>
+        <span className="ml-4 flex-shrink-0">{icon}</span>
       </div>
+      <p className="text-futurity-gray">{description}</p>
     </div>
   );
 };
@@ -587,25 +555,21 @@ const BenefitItem = ({ text }: { text: string }) => {
 
 // WhyCard component
 const WhyCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
-  <div className="card-base card-hover card-interactive relative overflow-hidden">
-    <div className="card-gradient-overlay card-blue"></div>
-    <div className="relative z-10 flex flex-col items-start gap-4">
-      <div className="mb-2">{icon}</div>
-      <h3 className="text-lg font-semibold text-primary-heading">{title}</h3>
-      <p className="text-secondary text-base">{description}</p>
-    </div>
+  <div className="bg-white rounded-xl shadow-md p-6 flex flex-col items-start gap-4 border border-gray-100 hover:shadow-lg transition-shadow">
+    <div className="mb-2">{icon}</div>
+    <h3 className="text-lg font-semibold text-futurity-blue">{title}</h3>
+    <p className="text-futurity-gray text-base">{description}</p>
   </div>
 );
 
 // FAQ Card component styled like ValueCard
 const FaqCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
-  <div className="card-base card-hover card-interactive relative overflow-hidden flex flex-col h-full">
-    <div className="card-gradient-overlay card-yellow"></div>
-    <div className="relative z-10 flex items-start gap-4 mb-3">
-      <span className="flex-shrink-0">{icon}</span>
-      <h3 className="text-lg font-semibold text-primary-heading flex-1">{title}</h3>
+  <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col h-full">
+    <div className="flex items-center mb-3">
+      <span className="flex-shrink-0 mr-4">{icon}</span>
+      <h3 className="text-lg font-semibold text-futurity-blue flex-1">{title}</h3>
     </div>
-    <p className="text-secondary text-base mt-2 relative z-10">{description}</p>
+    <p className="text-futurity-gray text-base mt-2">{description}</p>
   </div>
 );
 

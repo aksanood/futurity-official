@@ -1,191 +1,61 @@
 
-/* Universal component styles */
+/* Component-specific styles */
 
 @layer components {
-  /* Section Layouts */
-  .section {
-    @apply py-16 md:py-20 lg:py-24 relative overflow-hidden;
-  }
-
-  .section-primary {
-    background-color: #FBFCFC;
-    background-image: radial-gradient(circle, hsl(222, 70%, 14%) 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-
-  .section-secondary {
-    @apply bg-white;
-  }
-
-  .section-brand {
-    @apply bg-futurity-blue text-white;
-  }
-
-  .container-wide {
-    @apply max-w-7xl mx-auto px-4 md:px-6 lg:px-8;
-  }
-
+  /* Layout containers */
   .container-tight {
-    @apply max-w-4xl mx-auto px-4 md:px-6 lg:px-8;
+    @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-
-  /* Section Headers with Icon Badges */
-  .section-badge {
-    @apply inline-flex items-center gap-2 rounded-full px-4 py-2 font-medium text-sm mb-4;
+  .container-wide {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-
-  .section-badge-orange {
-    @apply bg-futurity-orange/10 text-futurity-orange;
+  .section {
+    @apply py-12 md:py-16 lg:py-24;
   }
-
-  .section-badge-blue {
-    @apply bg-futurity-blue/10 text-futurity-blue;
+  .section-alternate {
+    @apply bg-[#EDF1FC];
   }
-
-  .section-badge-dot {
-    @apply w-2 h-2 rounded-full;
-  }
-
-  .section-badge-dot-orange {
-    @apply bg-futurity-orange;
-  }
-
-  .section-badge-dot-blue {
-    @apply bg-futurity-blue;
-  }
-
-  /* Card System */
-  .card-base {
-    @apply bg-white rounded-3xl p-8 shadow-lg border border-gray-100 transition-all duration-500;
-  }
-
-  .card-hover {
-    @apply hover:shadow-2xl hover:-translate-y-1;
-  }
-
-  .card-interactive {
-    @apply cursor-pointer;
-  }
-
-  .card-gradient-overlay {
-    @apply absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500;
-  }
-
-  .card-green { @apply bg-gradient-to-br from-green-400/10 to-green-600/10; }
-  .card-blue { @apply bg-gradient-to-br from-blue-400/10 to-blue-600/10; }
-  .card-purple { @apply bg-gradient-to-br from-purple-400/10 to-purple-600/10; }
-  .card-yellow { @apply bg-gradient-to-br from-yellow-400/10 to-yellow-600/10; }
-  .card-red { @apply bg-gradient-to-br from-red-400/10 to-red-600/10; }
-  .card-orange { @apply bg-gradient-to-br from-orange-400/10 to-orange-600/10; }
-
-  /* Icon Containers */
-  .icon-container-base {
-    @apply w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300;
-  }
-
-  .icon-green { @apply bg-green-100 text-green-600; }
-  .icon-blue { @apply bg-blue-100 text-blue-600; }
-  .icon-purple { @apply bg-purple-100 text-purple-600; }
-  .icon-yellow { @apply bg-yellow-100 text-yellow-600; }
-  .icon-red { @apply bg-red-100 text-red-600; }
-  .icon-orange { @apply bg-orange-100 text-orange-600; }
-
-  /* Background Decorations */
-  .bg-grid {
-    background-image: radial-gradient(circle, hsl(222, 70%, 14%) 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-
-  .floating-orb-blue {
-    @apply absolute w-96 h-96 bg-futurity-blue/5 rounded-full blur-3xl -z-10;
-  }
-
-  .floating-orb-orange {
-    @apply absolute w-80 h-80 bg-futurity-orange/5 rounded-full blur-3xl -z-10;
-  }
-
-  /* Grid Layouts */
-  .card-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
-  }
-
-  .card-grid-2 {
-    @apply grid grid-cols-1 md:grid-cols-2 gap-8;
-  }
-
-  .card-grid-4 {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8;
-  }
-
-  /* Button Variants */
-  .btn-primary {
-    @apply bg-futurity-orange hover:bg-futurity-orange/90 text-white rounded-2xl px-8 py-6 font-semibold transition-all duration-300;
-  }
-
-  .btn-secondary {
-    @apply bg-futurity-blue hover:bg-futurity-blue/90 text-white rounded-2xl px-8 py-6 font-semibold transition-all duration-300;
-  }
-
-  .btn-outline {
-    @apply border-2 border-futurity-orange text-futurity-orange hover:bg-futurity-orange hover:text-white rounded-2xl px-8 py-6 font-semibold transition-all duration-300;
-  }
-
-  /* Link Styles */
-  .link-arrow {
-    @apply inline-flex items-center gap-2 text-futurity-orange font-semibold hover:gap-3 transition-all duration-300;
-  }
-
-  /* Text Colors */
-  .text-primary-heading {
-    @apply text-futurity-blue;
-  }
-
-  .text-secondary {
-    @apply text-gray-800;
-  }
-
-  .text-accent {
-    @apply text-futurity-orange;
-  }
-
-  /* Hero Section Styles */
-  .hero-primary {
-    @apply relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-futurity-blue via-futurity-blue-light to-futurity-blue py-16 md:py-24;
-  }
-
-  .hero-secondary {
-    @apply relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-futurity-blue via-futurity-blue-light to-futurity-blue py-16 md:py-20;
-  }
-
-  .hero-overlay {
-    @apply absolute inset-0 bg-black/50;
-  }
-
-  .gradient-mesh {
-    background: linear-gradient(135deg, rgba(10, 24, 64, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%);
-  }
-
-  /* Legacy styles for backward compatibility */
+  
+  /* Portfolio card styles */
   .portfolio-card {
-    @apply card-base;
+    @apply bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300;
+  }
+  .portfolio-card-content {
+    @apply p-6;
   }
   
+  /* Testimonial card styles */
   .testimonial-card {
-    @apply card-base;
+    @apply bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow;
+  }
+  .star-rating {
+    @apply flex space-x-1 mb-4;
   }
   
+  /* Hero section styles */
   .hero-main {
-    @apply hero-primary;
+    @apply bg-[#0A1840] text-white py-20 md:py-32 relative overflow-hidden;
   }
-  
+  .hero-secondary {
+    @apply bg-[#0A1840] text-white py-16 md:py-24 relative overflow-hidden;
+  }
+  .hero-wave {
+    @apply absolute bottom-0 left-0 right-0;
+  }
+  .hero-straight-line {
+    @apply absolute bottom-0 left-0 right-0;
+  }
+
+  /* Portfolio filter buttons */
   .portfolio-filter-btn {
-    @apply bg-white text-futurity-blue border border-futurity-blue/20 hover:bg-futurity-blue hover:text-white transition-colors;
+    @apply bg-white text-[#0A1840] border border-[#0A1840]/20 hover:bg-[#0A1840] hover:text-white transition-colors;
   }
 
   .portfolio-filter-btn.active {
-    @apply bg-futurity-blue text-white;
+    @apply bg-[#0A1840] text-white;
   }
 
+  /* Accordion card effects */
   .accordion-card {
     transition: all 0.3s ease;
   }

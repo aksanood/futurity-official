@@ -53,26 +53,20 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// Futurity custom colors - enhanced color scheme with HSL values
+				// Futurity custom colors - updated with enhanced color scheme
 				futurity: {
 					blue: {
-						DEFAULT: 'hsl(222, 70%, 14%)', // #0A1840
-						light: 'hsl(222, 38%, 29%)',   // #3B4A7D
-						lighter: 'hsl(222, 30%, 53%)'  // #6A78AD
+						DEFAULT: '#0A1840',
+						light: '#3B4A7D',
+						lighter: '#6A78AD'
 					},
 					gray: {
-						DEFAULT: 'hsl(216, 4%, 56%)',  // #8E9196
-						light: 'hsl(213, 44%, 96%)'    // #EDF1FC
+						DEFAULT: '#8E9196',
+						light: '#EDF1FC'
 					},
 					orange: {
-						DEFAULT: 'hsl(24, 95%, 53%)',  // #F97316
-						light: 'hsl(24, 100%, 93%)'    // #FFEAD5
-					},
-					green: {
-						DEFAULT: 'hsl(122, 39%, 49%)'  // #43A047
-					},
-					pink: {
-						DEFAULT: 'hsl(340, 82%, 52%)'  // #E91E63
+						DEFAULT: '#F97316',
+						light: '#FFEAD5'
 					}
 				}
 			},

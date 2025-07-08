@@ -8,9 +8,6 @@ interface SectionHeadingProps {
   className?: string;
   subtitleClassName?: string;
   descriptionClassName?: string;
-  badge?: string;
-  badgeVariant?: 'orange' | 'blue';
-  icon?: React.ReactNode;
 }
 
 const SectionHeading = ({
@@ -20,54 +17,30 @@ const SectionHeading = ({
   center = false,
   className = "",
   subtitleClassName = "",
-  descriptionClassName = "",
-  badge,
-  badgeVariant = 'orange',
-  icon
+  descriptionClassName = ""
 }: SectionHeadingProps) => {
   return (
     <div 
       className={cn(
-        "mb-16 animate-on-scroll",
+        "mb-12",
         center ? "text-center" : "",
         className
       )}
     >
-      {badge && (
-        <div className={cn(
-          "section-badge mb-4",
-          center ? "flex justify-center" : "inline-flex",
-          badgeVariant === 'orange' ? "section-badge-orange" : "section-badge-blue"
-        )}>
-          <div className={cn(
-            "section-badge-dot",
-            badgeVariant === 'orange' ? "section-badge-dot-orange" : "section-badge-dot-blue"
-          )}></div>
-          {badge}
-        </div>
-      )}
-      
-      <h2 className={cn(
-        "text-headline font-bold mb-6 text-primary-heading",
-        center ? "text-center" : ""
-      )}>
+      <h2 className="text-3xl md:text-4xl font-bold mb-4">
         {title}
       </h2>
-      
       {subtitle && (
         <p className={cn(
           "text-sm md:text-base font-medium uppercase tracking-wider text-futurity-gray mb-2",
-          center ? "text-center" : "",
           subtitleClassName
         )}>
           {subtitle}
         </p>
       )}
-      
       {description && (
         <p className={cn(
-          "text-body-large text-secondary max-w-3xl",
-          center ? "text-center mx-auto" : "",
+          "mt-4 text-lg text-futurity-gray",
           descriptionClassName
         )}>
           {description}
