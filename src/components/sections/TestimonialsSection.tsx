@@ -11,6 +11,7 @@ interface TestimonialsSectionProps {
 const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Auto-slide functionality
   useEffect(() => {
@@ -24,13 +25,21 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
   }, [reviews, isHovered]);
 
   const handleNext = () => {
-    console.log('Next clicked - Current slide:', currentSlide);
-    setCurrentSlide((prev) => (prev + 1) % reviews.length);
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentSlide((prev) => (prev + 1) % reviews.length);
+      setIsTransitioning(false);
+    }, 150);
   };
 
   const handlePrevious = () => {
-    console.log('Previous clicked - Current slide:', currentSlide);
-    setCurrentSlide((prev) => (prev - 1 + reviews.length) % reviews.length);
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentSlide((prev) => (prev - 1 + reviews.length) % reviews.length);
+      setIsTransitioning(false);
+    }, 150);
   };
 
   const getVisibleReviews = () => {
@@ -84,9 +93,9 @@ const TestimonialsSection = ({ reviews, loading, error }: TestimonialsSectionPro
           >
             {/* Testimonials Container */}
             <div className="w-full max-w-6xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+              <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
                 {getVisibleReviews().map((review, index) => (
-                  <div key={`${review.id}-${currentSlide}-${index}`} className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
+                  <div key={`${review.id}-${currentSlide}-${index}`} className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col animate-fade-in">
                     {/* Star Rating */}
                     <div className="flex space-x-1 mb-4">
                       {[...Array(5)].map((_, i) => (
